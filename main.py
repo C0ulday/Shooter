@@ -1,5 +1,6 @@
 import math
 import pygame
+import viseur
 pygame.init()
 
 
@@ -22,20 +23,26 @@ class Player:
 pygame.display.set_caption("Z-Shooter")
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 
+# Ajout du viseur
+jouer_viseur = viseur.Viseur()
+viseur_sprites = pygame.sprite.Group()
+viseur_sprites.add(jouer_viseur)
 
 # Background
-background = pygame.image.load("assets/background.jpg")
+background = pygame.image.load("assets/images/background.jpg")
 running = True
 
-# Projectiles
 
-zombie1 = Projectile("assets/zomboe1.png")
 while running :
 
+    timer.tick(fps)
     screen.blit(background, (0,0))
+
+    viseur_sprites.update()
+    viseur_sprites.draw(screen)
     pygame.display.flip()
 
-    screen.blit(game.zombie1, game.zombie1.rect)
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
