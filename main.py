@@ -36,12 +36,12 @@ while running :
 
     timer.tick(fps)
     screen.blit(background, (0,0))
-
-    le_jeu.viseur_sprites.update()
-    le_jeu.viseur_sprites.draw(screen)
    
     le_jeu.all_zombies_sprites.draw(screen)
     le_jeu.all_zombies_sprites.update(WIDTH,HEIGHT)
+
+    le_jeu.viseur_sprites.update()
+    le_jeu.viseur_sprites.draw(screen)
    
     pygame.display.flip()
 

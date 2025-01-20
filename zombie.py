@@ -47,11 +47,11 @@ class Zombie(pygame.sprite.Sprite):
             self.rect.bottom = HEIGHT  # Éviter qu'il sorte de l'écran
 
             # Appliquer un amortissement pour réduire l'énergie du rebond
-            if abs(self.velocity_y) < 1:
-                self.velocity_y = 0  # Arrêter le rebond s'il est trop faible
-                self.velocity_x *= 0.95  # Réduire la vitesse horizontale
+            #if abs(self.velocity_y) < 1:
+                #self.velocity_y = 0  # Arrêter le rebond s'il est trop faible
+                #self.velocity_x *= 0.95  # Réduire la vitesse horizontale
 
-        # Faire tourner l'image en fonction de la vitesse
+        # faire tourner l'image en fonction de la vitesse
         self.rotation_angle += self.rotation_speed
         self.image = pygame.transform.rotate(self.original_image, self.rotation_angle)
         self.rect = self.image.get_rect(center=self.rect.center)
