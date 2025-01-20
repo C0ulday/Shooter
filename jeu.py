@@ -1,5 +1,5 @@
 import pygame
-from zombie import Zombie
+from zombie import *
 from joueur import Joueur
 from viseur import Viseur
 
@@ -13,7 +13,7 @@ class Jeu:
 
         # groupe de projectiles/zombies
         self.all_zombies_sprites = pygame.sprite.Group()
-        self.lancer_zombie(1)
+        self.lancer_zombie()
 
         # le viseur
         self.viseur_sprites = pygame.sprite.Group()
@@ -28,36 +28,11 @@ class Jeu:
 
 
 
-    def lancer_zombie(self,type):
+    def lancer_zombie(self):
 
-        match type:
-            case 1:
-                
-                x = 0
-                y = 0
-                point = 10
-                velocity = 4
-                image_path = "assets/images/zombie1.png"
-
-                le_zombie = Zombie(x,y,point,velocity,image_path)
-                self.all_zombies_sprites.add(le_zombie)
-            case 2:
-                x = 0
-                y = 0
-                point = 10
-                velocity = 4
-                image_path = "assets/images/zombie2.png"
-                
-                le_zombie = Zombie(x,y,point,velocity,image_path)
-                self.all_zombies_sprites.add(le_zombie)
-            case 3:
-                x = 0
-                y = 0
-                point = 10
-                velocity = 4
-                image_path = "assets/images/zombie3.png"
-                
-                le_zombie = Zombie(x,y,point,velocity,image_path)
-                self.all_zombies_sprites.add(le_zombie)
-                le_zombie = Zombie()
-                self.all_zombies_sprites.add(le_zombie)
+        self.all_zombies_sprites.add(Zombie_Facile(500,600))
+        self.all_zombies_sprites.add(Zombie_Moyen(600,700))
+        self.all_zombies_sprites.add(Zombie_Difficile(700,800))
+        self.all_zombies_sprites.add(Zombie_Facile(900,100))
+        self.all_zombies_sprites.add(Zombie_Extreme(400,600))
+    
