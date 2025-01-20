@@ -1,6 +1,6 @@
 import math
 import pygame
-import viseur
+from jeu import Jeu
 pygame.init()
 
 
@@ -26,26 +26,23 @@ class Player:
         self.health = 100
         self.score = 0
 
+# Le jeu
 
-
-# Ajout du viseur
-jouer_viseur = viseur.Viseur()
-viseur_sprites = pygame.sprite.Group()
-viseur_sprites.add(jouer_viseur)
+le_jeu = Jeu()
 
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
-
 
 while running :
 
     timer.tick(fps)
     screen.blit(background, (0,0))
 
-    viseur_sprites.update()
-    viseur_sprites.draw(screen)
+    le_jeu.viseur_sprites.update()
+    le_jeu.viseur_sprites.draw(screen)
+   
+    #le_jeu.all_zombies_sprites.draw(screen)
+   
     pygame.display.flip()
-
-
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
