@@ -9,6 +9,14 @@ pygame.init()
 WIDTH = 1080
 HEIGHT = 720
 fps = 60
+
+#### AFFICHAGE
+pygame.display.set_caption("Z-Shooter")
+
+# Background
+background = pygame.image.load("assets/images/background.jpg")
+running = True
+
 timer = pygame.time.Clock()
 font = pygame.font.Font("assets/font/BPdots.otf")
 
@@ -19,18 +27,13 @@ class Player:
         self.score = 0
 
 
-#### AFFICHAGE
-pygame.display.set_caption("Z-Shooter")
-screen = pygame.display.set_mode((WIDTH,HEIGHT))
 
 # Ajout du viseur
 jouer_viseur = viseur.Viseur()
 viseur_sprites = pygame.sprite.Group()
 viseur_sprites.add(jouer_viseur)
 
-# Background
-background = pygame.image.load("assets/images/background.jpg")
-running = True
+screen = pygame.display.set_mode((WIDTH,HEIGHT))
 
 
 while running :
