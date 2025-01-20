@@ -41,6 +41,7 @@ while running :
     le_jeu.viseur_sprites.draw(screen)
    
     le_jeu.all_zombies_sprites.draw(screen)
+    le_jeu.all_zombies_sprites.update(WIDTH,HEIGHT)
    
     pygame.display.flip()
 
