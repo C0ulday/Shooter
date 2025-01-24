@@ -10,7 +10,7 @@ class Viseur(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         
-        self.image = pygame.image.load("assets/images/viseur.png")
+        self.image = pygame.image.load("assets/viseur/cursor.png")
         
         # Définir la taille de l'image du sprite
         self.rect = self.image.get_rect()

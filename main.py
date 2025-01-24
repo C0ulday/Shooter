@@ -30,7 +30,7 @@ class Player:
 
 # Le jeu
 
-jeu = Jeu()
+le_jeu = Jeu()
 
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 
@@ -43,11 +43,11 @@ while running :
     #le_jeu.all_zombies_sprites.draw(screen)
     #le_jeu.all_zombies_sprites.update(WIDTH,HEIGHT)
 
-    #le_jeu.viseur_sprites.update()
-    #le_jeu.viseur_sprites.draw(screen)
+    le_jeu.viseur_sprites.update()
+    le_jeu.viseur_sprites.draw(screen)
 
-    jeu.aigles_sprites.draw()
-    jeu.spawn_aigle()
+    le_jeu.aigles_sprites.draw(screen)
+    le_jeu.aigles_sprites.update()
    
     pygame.display.flip()
 
