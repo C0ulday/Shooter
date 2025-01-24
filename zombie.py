@@ -11,19 +11,23 @@ class Zombie(pygame.sprite.Sprite):
         self.y = y
         self.velocity = velocity
         self.point = point
-        self.image = pygame.image.load(image_path)
-        
+        self.image = pygame.image.load(image_path) 
+
+        # modifier la taille de l'image
         self.image = pygame.transform.smoothscale(self.image, (90, 90))
-        self.original_image = self.image
+
+        # sauvegarde de l'image pour la rotation
+        self.original_image = self.image 
         self.rect = self.image.get_rect()
-        self.rect.topleft = (self.x, self.y)  # positionnement initial
+        # positionnement initial
+        self.rect.topleft = (self.x, self.y)  
 
         # vitesse initiale aléatoire
         self.velocity_x = random.uniform(-10, 10)
         self.velocity_y = random.uniform(-15, -5)
 
         # gravité et amortissement (perte d'énergie)
-        self.gravity = 0.5
+        self.gravity = 0.8
         self.bounce_factor = 0.8
         self.rotation_angle = 0  # angle de rotation actuel
         self.rotation_speed = random.uniform(5, 10)

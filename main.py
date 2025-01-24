@@ -6,15 +6,17 @@ pygame.init()
 
 
 
-WIDTH = 1080
-HEIGHT = 720
+WIDTH = 1000
+HEIGHT = 472
 fps = 60
 
 #### AFFICHAGE
 pygame.display.set_caption("Z-Shooter")
 
 # Background
-background = pygame.image.load("assets/images/background.jpg")
+background = pygame.image.load("assets/environnement/back.png")
+sol = pygame.image.load("assets/environnement/tiles.png")
+
 running = True
 
 timer = pygame.time.Clock()
@@ -28,7 +30,7 @@ class Player:
 
 # Le jeu
 
-le_jeu = Jeu()
+jeu = Jeu()
 
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 
@@ -36,12 +38,16 @@ while running :
 
     timer.tick(fps)
     screen.blit(background, (0,0))
+    screen.blit(sol, (0,0))
    
-    le_jeu.all_zombies_sprites.draw(screen)
-    le_jeu.all_zombies_sprites.update(WIDTH,HEIGHT)
+    #le_jeu.all_zombies_sprites.draw(screen)
+    #le_jeu.all_zombies_sprites.update(WIDTH,HEIGHT)
 
-    le_jeu.viseur_sprites.update()
-    le_jeu.viseur_sprites.draw(screen)
+    #le_jeu.viseur_sprites.update()
+    #le_jeu.viseur_sprites.draw(screen)
+
+    jeu.aigles_sprites.draw()
+    jeu.spawn_aigle()
    
     pygame.display.flip()
 
