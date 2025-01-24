@@ -11,7 +11,7 @@ HEIGHT = 472
 fps = 60
 
 #### AFFICHAGE
-pygame.display.set_caption("Z-Shooter")
+pygame.display.set_caption("M-Shooter")
 
 # Background
 background = pygame.image.load("assets/environnement/back.png")
