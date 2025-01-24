@@ -20,12 +20,14 @@ class Aigle(pygame.sprite.Sprite):
                               pygame.image.load("assets/ennemis/aigle/fly2.png"),
                               pygame.image.load("assets/ennemis/aigle/fly3.png"),
                               pygame.image.load("assets/ennemis/aigle/fly4.png")]
+        
+        
         self.vol_mort =       [pygame.image.load("assets/ennemis/aigle/hurt1.png"),
                               pygame.image.load("assets/ennemis/aigle/hurt2.png"),
                               pygame.image.load("assets/ennemis/aigle/hurt3.png"),
                               pygame.image.load("assets/ennemis/aigle/hurt4.png")]
         
-
+        
         # définition de l'image actuelle et du rectangle de position
         self.image = self.vol_de_droite[0]
         self.rect = self.image.get_rect(center=(random.randint(100, 500), random.randint(100, 300)))
