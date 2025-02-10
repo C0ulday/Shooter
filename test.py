@@ -16,7 +16,7 @@ timer = pygame.time.Clock()
 font = pygame.font.Font("assets/font/BPdots.otf")
 
 # Le jeu
-jeu = Jeu()
+jeu = Jeu(160+500)
 score = 0  # Initialisation du score
 
 screen = pygame.display.set_mode((jeu.WIDTH,jeu.HEIGHT))

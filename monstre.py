@@ -5,7 +5,7 @@ import random
 
 class Aigle(pygame.sprite.Sprite):
 
-    def __init__(self, jeu):
+    def __init__(self, jeu, xlimit=None, ylimit=None):
         super().__init__()
         self.jeu = jeu
         self.points = 50
@@ -14,6 +14,12 @@ class Aigle(pygame.sprite.Sprite):
         self.animation_count = 0
         self.speed = 5
         self.direction = -1
+        self.xlimit = xlimit
+        self.ylimit = ylimit
+        if (not xlimit):
+            self.xlimit = jeu.WIDTH
+        if (not ylimit):
+            self.ylimit = jeu.HEIGHT
 
         self.vol = [pygame.image.load("assets/ennemis/aigle/fly1.png"),
                               pygame.image.load("assets/ennemis/aigle/fly2.png"),
@@ -28,14 +34,16 @@ class Aigle(pygame.sprite.Sprite):
         
         # définition de l'image actuelle et du rectangle de position
         self.image = self.vol[0]
-        self.rect = self.image.get_rect(center=(800, random.randint(100, 200)))
+        self.rect = self.image.get_rect(center=(500, 236))
+        print(self.rect.x)
+        
 
     def updateAnimation(self):
         self.animation_count += 1
 
         if self.vivant:
             # Animation en vol normal
-            index = (self.animation_count // 4) % len(self.vol)
+            index = (self.animation_count // 5) % len(self.vol)
             self.image = self.vol[index]
         else:
             # Animation en état "mort"
@@ -52,6 +60,7 @@ class Aigle(pygame.sprite.Sprite):
     def update(self):
         # Met à jour la position et l'animation
         self.updateAnimation()
+        #print(self.rect.x)
         # déplacement horizontal
         if self.vol_droit:
             self.rect.x += self.direction*self.speed
@@ -61,10 +70,10 @@ class Aigle(pygame.sprite.Sprite):
              
         # détruit le sprite si sort de la fenêtre
         if self.vivant :
-            if (self.rect.x < -self.jeu.WIDTH/10) or (self.rect.x > self.jeu.WIDTH): 
+            if (self.rect.centerx < 1000-self.xlimit) or (self.rect.centerx > self.xlimit): 
                 self.changeDirection() 
 
-        if (self.rect.y > self.jeu.HEIGHT):
+        if (self.rect.centery > self.ylimit):
             self.kill()
 
     def setSpeed(self,speed):

@@ -6,11 +6,13 @@ from viseur import Viseur
 
 class Jeu:
 
-    def __init__(self):
+    def __init__(self,xlimit=None,ylimit=None):
         self.WIDTH = 1000
         self.HEIGHT = 472
         self.fps = 60
-
+        self.xlimit = xlimit
+        self.ylimit = ylimit
+        
         # Le monstre 
         self.aigles = pygame.sprite.Group()
         self.spawnAigle()
@@ -24,7 +26,7 @@ class Jeu:
         #self.lancer_zombie()
 
     def spawnAigle(self):
-        aigle = Aigle(self)
+        aigle = Aigle(self,self.xlimit,self.ylimit)
         self.aigles.add(aigle)
 
     def ajouter_viseur(self):

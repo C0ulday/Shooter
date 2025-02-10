@@ -38,7 +38,7 @@ class Viseur(pygame.sprite.Sprite):
 
     def detecteur_tir(self, aigles):
         for aigle in aigles:
-            if self.rect.colliderect(aigle.rect):  # Vérifie la collision entre le viseur et l'aigle
+            if self.rect.colliderect(aigle.rect) and aigle.vivant:  # Vérifie la collision entre le viseur et l'aigle
                 aigle.vivant = False  
                 return True
         return False
