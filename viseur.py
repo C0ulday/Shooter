@@ -35,3 +35,10 @@ class Viseur(pygame.sprite.Sprite):
         if self.clicSouris:
             if not pygame.mouse.get_pressed()[0]:  # Quand la souris n'est plus cliquée
                 self.clicSouris = False  # Réinitialiser le clic
+
+    def detecteur_tir(self, aigles):
+        for aigle in aigles:
+            if self.rect.colliderect(aigle.rect):  # Vérifie la collision entre le viseur et l'aigle
+                aigle.vivant = False  
+                return True
+        return False
