@@ -3,8 +3,6 @@ pygame.init()
 
 import pygame
 
-
-
 class Viseur(pygame.sprite.Sprite):
     
     def __init__(self):
@@ -29,7 +27,7 @@ class Viseur(pygame.sprite.Sprite):
         
         # Vérifier si la souris a été cliquée (bouton gauche de la souris)
         if pygame.mouse.get_pressed()[0] and not self.clicSouris:
-            self.gunShotSound.play()  # Jouer le son du tir
+            # self.gunShotSound.play()  # Jouer le son du tir
             self.total_shots += 1  # Incrémenter le nombre de tirs
             self.clicSouris = True  # Marquer que le clic a eu lieu
 

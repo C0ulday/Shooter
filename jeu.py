@@ -12,11 +12,11 @@ class Jeu:
 
         # générer le joueur
         #self.joueur = Joueur()
-        self.aigles_sprites = pygame.sprite.Group()
+        self.aigles = pygame.sprite.Group()
         self.spawnAigle()
 
         # le viseur
-        self.viseur_sprites = pygame.sprite.Group()
+        self.viseur = pygame.sprite.Group()
         self.ajouter_viseur()
 
          # groupe de projectiles/zombies
@@ -25,12 +25,12 @@ class Jeu:
 
     def spawnAigle(self):
         aigle = Aigle()
-        self.aigles_sprites.add(aigle)
+        self.aigles.add(aigle)
     def ajouter_viseur(self):
 
         # Ajout du viseur
-        le_viseur = Viseur()
-        self.viseur_sprites.add(le_viseur)
+        viseur = Viseur()
+        self.viseur.add(viseur)
 
 
 
