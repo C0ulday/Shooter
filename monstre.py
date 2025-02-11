@@ -1,25 +1,18 @@
 import pygame
 import math
 import random
-
+from jeu import *
 
 class Aigle(pygame.sprite.Sprite):
 
-    def __init__(self, jeu, xlimit=None, ylimit=None):
+    def __init__(self,x,y,speed):
         super().__init__()
-        self.jeu = jeu
+
         self.points = 50
         self.vivant = True
-        self.vol_droit = True
         self.animation_count = 0
-        self.speed = 5
+        self.speed = speed
         self.direction = -1
-        self.xlimit = xlimit
-        self.ylimit = ylimit
-        if (not xlimit):
-            self.xlimit = jeu.WIDTH
-        if (not ylimit):
-            self.ylimit = jeu.HEIGHT
 
         self.vol = [pygame.image.load("assets/ennemis/aigle/fly1.png"),
                               pygame.image.load("assets/ennemis/aigle/fly2.png"),
@@ -33,9 +26,17 @@ class Aigle(pygame.sprite.Sprite):
                               pygame.image.load("assets/ennemis/aigle/hurt4.png")]
         
         # définition de l'image actuelle et du rectangle de position
+
         self.image = self.vol[0]
-        self.rect = self.image.get_rect(center=(500, 236))
-        print(self.rect.x)
+        self.rect = self.image.get_rect()
+
+    
+        self.rect.x = x
+        self.rect.y = y
+
+        self.height = self.image.get_height()
+
+       
         
 
     def updateAnimation(self):
@@ -57,30 +58,27 @@ class Aigle(pygame.sprite.Sprite):
         else : 
             self.direction = -1
 
-    def update(self):
+    def update(self,isVolDroit):
         # Met à jour la position et l'animation
         self.updateAnimation()
-        #print(self.rect.x)
+
         # déplacement horizontal
-        if self.vol_droit:
+        if isVolDroit:
             self.rect.x += self.direction*self.speed
-        elif not self.vol_droit:
+        elif not isVolDroit:
             self.rect.x -= self.speed
             self.rect.y += random.randint(10,20)
-             
-        # détruit le sprite si sort de la fenêtre
-        if self.vivant :
-            if (self.rect.centerx < 1000-self.xlimit) or (self.rect.centerx > self.xlimit): 
-                self.changeDirection() 
 
-        if (self.rect.centery > self.ylimit):
+        # détruit le sprite si sort de la fenêtre
+        if (self.rect.y < 0):
             self.kill()
 
-    def setSpeed(self,speed):
-        self.speed = speed
+    def getAigleHeight(self):
+        return self.height
+    
+    def getPoints(self):
+        return self.points
 
-    def setVolAleatoire(self):
-        self.vol_droit = False
 
 class Dog(pygame.sprite.Sprite):
      ""
