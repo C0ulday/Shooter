@@ -8,7 +8,7 @@ class Viseur(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         
-        self.image = pygame.image.load("assets/viseur/cursor.png")
+        self.image = pygame.image.load("shooter.jeu/assets/viseur/cursor.png")
         
         # Définir la taille de l'image du sprite
         self.rect = self.image.get_rect()
@@ -19,7 +19,7 @@ class Viseur(pygame.sprite.Sprite):
         # Variables pour le son et le comptage des tirs
         self.clicSouris = False
         self.total_shots = 0
-        self.gunShotSound = pygame.mixer.Sound("assets/sounds/shot.wav")
+        self.gunShotSound = pygame.mixer.Sound("shooter.jeu/assets/sounds/shot.wav")
 
     def update(self):
         # Obtenir la position actuelle de la souris

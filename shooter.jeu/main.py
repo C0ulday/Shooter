@@ -8,7 +8,7 @@ pygame.init()
 
 def menu():
     pygame.display.set_caption("Menu - M-Shooter")
-    background = pygame.image.load("assets/environnement/back.png")
+    background = pygame.image.load("shooter.jeu/assets/environnement/back.png")
 
 
 

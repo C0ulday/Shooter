@@ -39,19 +39,29 @@ class Jeu:
         self.aigles.add(aigle)
 
     def jouer(self):
+
         #### AFFICHAGE
         pygame.display.set_caption("M-Shooter")
 
         # Initialisation fenêtre de jeu classique
-        background = pygame.image.load("assets/environnement/back.png")
-        sol = pygame.image.load("assets/environnement/tiles.png")
-        font = pygame.font.Font("assets/font/BPdots.otf",16)
+        background = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1.png")
+        clouds = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1-clouds.png")
+        decor = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1-decor.png")
+        rock = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1-rock.png")
+        sol = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1-sol.png")
+        
+        font = pygame.font.Font("shooter.jeu/assets/font/BPdots.otf",16)
         font.set_bold(True)
 
         score = 0  # Initialisation du score
 
         ######## Boucle de jeu
-        screen = pygame.display.set_mode((self.WIDTH,self.HEIGHT))
+
+        info = pygame.display.Info()
+        largeur = info.current_w
+        hauteur = info.current_h
+
+        screen = pygame.display.set_mode((largeur,hauteur),pygame.FULLSCREEN)
 
         # Définition d'un événement pour le spawn de monstres
         SPAWN_EVENT = pygame.USEREVENT + 1
@@ -69,7 +79,11 @@ class Jeu:
 
             clock.tick(fps)
             screen.blit(background, (0,0))
+            screen.blit(clouds, (0,0))
+            screen.blit(rock, (0,0))
+            screen.blit(decor, (0,0))
             screen.blit(sol, (0,0))
+
 
             # Affichagfe des aigles
             self.aigles.draw(screen)

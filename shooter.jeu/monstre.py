@@ -14,16 +14,16 @@ class Aigle(pygame.sprite.Sprite):
         self.speed = speed
         self.direction = -1
 
-        self.vol = [pygame.image.load("assets/ennemis/aigle/fly1.png"),
-                              pygame.image.load("assets/ennemis/aigle/fly2.png"),
-                              pygame.image.load("assets/ennemis/aigle/fly3.png"),
-                              pygame.image.load("assets/ennemis/aigle/fly4.png")] # il faut enlever fly3.png pour bien détecter l'image
+        self.vol = [pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/fly1.png"),
+                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/fly2.png"),
+                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/fly3.png"),
+                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/fly4.png")] # il faut enlever fly3.png pour bien détecter l'image
         
 
-        self.vol_mort =       [pygame.image.load("assets/ennemis/aigle/hurt1.png"),
-                              pygame.image.load("assets/ennemis/aigle/hurt2.png"),
-                              pygame.image.load("assets/ennemis/aigle/hurt3.png"),
-                              pygame.image.load("assets/ennemis/aigle/hurt4.png")]
+        self.vol_mort =       [pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/hurt1.png"),
+                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/hurt2.png"),
+                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/hurt3.png"),
+                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/hurt4.png")]
         
         # définition de l'image actuelle et du rectangle de position
 
