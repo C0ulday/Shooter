@@ -8,23 +8,25 @@ class Aigle(pygame.sprite.Sprite):
     def __init__(self,x,y,speed):
         super().__init__()
 
-        self.points = 50
+        self.points = 100
         self.vivant = True
         self.animation_count = 0
         self.speed = speed
         self.direction = -1
 
-        self.vol = [pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/fly1.png"),
-                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/fly2.png"),
-                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/fly3.png"),
-                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/fly4.png")] # il faut enlever fly3.png pour bien détecter l'image
-        
 
-        self.vol_mort =       [pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/hurt1.png"),
-                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/hurt2.png"),
-                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/hurt3.png"),
-                              pygame.image.load("shooter.jeu/assets/mode1/sprites/aigle/hurt4.png")]
+        # Définition des images de l'aigle
+        self.vol = []
+        self.vol_mort = []
+
+        for i in range(1,5):
+            image = f"shooter.jeu/assets/mode1/sprites/aigle/fly{i}.png"
+            self.vol.append(pygame.image.load(image))
         
+        for i in range(1,7):
+            image = f"shooter.jeu/assets/mode1/sprites/death/death{i}.png"
+            self.vol_mort.append(pygame.image.load(image))
+
         # définition de l'image actuelle et du rectangle de position
 
         self.image = self.vol[0]
@@ -36,9 +38,9 @@ class Aigle(pygame.sprite.Sprite):
 
         self.height = self.image.get_height()
 
+    def getAigleHeight(self):
+        return self.height
        
-        
-
     def updateAnimation(self):
         self.animation_count += 1
 
@@ -51,6 +53,8 @@ class Aigle(pygame.sprite.Sprite):
             index = (self.animation_count // 5) % len(self.vol_mort)
             self.image = self.vol_mort[index]
             self.rect.y += self.speed
+            if (self.image == self.vol_mort[5]):
+                self.kill()
 
     def changeDirection(self):
         if (self.direction == -1) :
@@ -73,12 +77,66 @@ class Aigle(pygame.sprite.Sprite):
         if (self.rect.y < 0):
             self.kill()
 
-    def getAigleHeight(self):
+class Frog(pygame.sprite.Sprite):
+    def __init__(self,speed):
+        super().__init__()
+
+        self.points = 80
+        self.vivant = True
+        self.animation_count = 0
+        self.speed = speed
+        self.direction = 1
+
+
+        # Définition des images de l'aigle
+        self.walk = []
+        self.walk_mort = []
+        self.tentation = []
+
+        for i in range(1,7):
+            image = f"shooter.jeu/assets/mode1/sprites/frog/jump{i}.png"
+            self.walk.append(pygame.image.load(image))
+        
+        for i in range(1,7):
+            image = f"shooter.jeu/assets/mode1/sprites/death/death{i}.png"
+            self.walk_mort.append(pygame.image.load(image))
+
+        # définition de l'image actuelle et du rectangle de position
+
+        self.image = self.walk[0]
+        self.rect = self.image.get_rect()
+
+        self.rect.x = 10
+        self.rect.y = 941
+
+        self.height = self.image.get_height()
+
+       
+    def updateAnimation(self):
+        self.animation_count += 1
+
+        if self.vivant:
+            # Animation en vol normal
+            index = (self.animation_count // 5) % len(self.walk)
+            self.image = self.walk[index]
+        else:
+            # Animation en état "mort"
+            index = (self.animation_count // 5) % len(self.walk_mort)
+            self.image = self.walk_mort[index]
+            self.rect.x += self.speed
+            if (self.image == self.walk_mort[5]):
+                self.kill()
+
+    def update(self):
+        # Met à jour la position et l'animation
+        self.updateAnimation()
+        
+        # déplacement horizontal
+        self.rect.x += self.direction*self.speed
+
+        # détruit le sprite si sort de la fenêtre
+        if (self.rect.x > 1920):
+            self.kill()
+
+    def getFrogHeight(self):
         return self.height
-    
-    def getPoints(self):
-        return self.points
-
-
-class Dog(pygame.sprite.Sprite):
-     ""

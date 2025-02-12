@@ -7,36 +7,14 @@ from viseur import Viseur
 class Jeu:
 
     def __init__(self):
-        self.WIDTH = 1000
-        self.HEIGHT = 472
-        
+
         # le viseur
         self.viseur = pygame.sprite.Group()
         self.ajouterViseur()
 
         # L'ensemble des monstres aigles
         self.aigles = pygame.sprite.Group()
-
-    #getters pour jeu
-
-    def getHeight(self):
-        return self.HEIGHT
-    
-    def getWidth(self):
-        return self.WIDTH
-
-    def ajouterViseur(self):
-        viseur = Viseur()
-        self.viseur.add(viseur)
-
-    # Lancer les monstres
-
-    def spawnAigles(self,x,y,speed):
-        aigle = Aigle(x,y,speed)
-        h = aigle.getAigleHeight() # utilisé pour obtenir la hauteur de l'image de l'aigle
-        aigle = Aigle(x,y - h,speed) # la soustraction permet de faire spawn l'aigle en entier sur l'écran 
-        # à chaque fois et non une seule partie
-        self.aigles.add(aigle)
+        self.frog = pygame.sprite.Group()
 
     def jouer(self):
 
@@ -44,11 +22,11 @@ class Jeu:
         pygame.display.set_caption("M-Shooter")
 
         # Initialisation fenêtre de jeu classique
-        background = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1.png")
-        clouds = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1-clouds.png")
-        decor = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1-decor.png")
-        rock = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1-rock.png")
-        sol = pygame.image.load("shooter.jeu/assets/mode1/env/bg-mode1-sol.png")
+        background = pygame.image.load("shooter.jeu/assets/mode1/env/back.png")
+        clouds = pygame.image.load("shooter.jeu/assets/mode1/env/clouds.png")
+        decor = pygame.image.load("shooter.jeu/assets/mode1/env/tiles.png")
+        rock = pygame.image.load("shooter.jeu/assets/mode1/env/rock.png")
+        sol = pygame.image.load("shooter.jeu/assets/mode1/env/front.png")
         
         font = pygame.font.Font("shooter.jeu/assets/font/BPdots.otf",16)
         font.set_bold(True)
@@ -77,17 +55,22 @@ class Jeu:
         running = True
         while running :
 
+            #environnement
             clock.tick(fps)
             screen.blit(background, (0,0))
             screen.blit(clouds, (0,0))
-            screen.blit(rock, (0,0))
-            screen.blit(decor, (0,0))
-            screen.blit(sol, (0,0))
+            screen.blit(rock, (930,840))
+            screen.blit(decor, (0,827))
+            screen.blit(sol, (0,1020))
 
 
             # Affichagfe des aigles
             self.aigles.draw(screen)
             self.aigles.update(True)
+
+            # Ajout des grenouilles
+            self.frog.draw(screen)
+            self.frog.update()
 
             # Affichage du viseur
             self.viseur.update()
@@ -102,6 +85,7 @@ class Jeu:
             temps_rect = temps_text.get_rect(topright=(screen.get_width() - 10, 10))
             screen.blit(temps_text, temps_rect)
         
+            # Mis à jour de la fenetre
             pygame.display.flip()
 
             # Gestion du temps de jeu
@@ -111,16 +95,19 @@ class Jeu:
             temps -=1
             # Gestion des évènements du jeu
             for event in pygame.event.get():
+
                 # Vérification du tir avec clic de la souris
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
                     if self.viseur.sprites()[0].detecteurTir(self.aigles):
                         score += 50
                         print(f"Score: {score}")
-
+                # Affichae de la grneouille
+                if (len(self.frog) <= 0):
+                    self.spawnFrog(5)
                 # Affichage des aigles à différentes positions
                 if event.type == SPAWN_EVENT:
-                    x = self.getWidth()
-                    y = random.randint(0, self.getHeight())
+                    x = largeur
+                    y = random.randint(0, hauteur - sol.get_height())
                     if temps < 2500:
                         self.spawnAigles(x,y,10)
                     if temps < 1500:
@@ -131,10 +118,31 @@ class Jeu:
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
+             
+                    
 
-                print(temps)
+                #print(temps)
             clock.tick(fps)
             
-        
+    
+    def ajouterViseur(self):
+        viseur = Viseur()
+        self.viseur.add(viseur)
+
+    # Lancer les monstres
+
+    def spawnAigles(self,x,y,speed):
+        aigle = Aigle(x,y,speed)
+        h = aigle.getAigleHeight() # utilisé pour obtenir la hauteur de l'image de l'aigle
+        aigle = Aigle(x,y - h,speed) # la soustraction permet de faire spawn l'aigle en entier sur l'écran 
+        # à chaque fois et non une seule partie
+        self.aigles.add(aigle)
+    
+    def spawnFrog(self,speed):
+        frog = Frog(speed)
+        frog = Frog(speed) # la soustraction permet de faire spawn l'aigle en entier sur l'écran 
+        # à chaque fois et non une seule partie
+        self.frog.add(frog)
+
 
 
