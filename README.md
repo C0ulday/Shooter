@@ -1,4 +1,5 @@
-# M-Shooter
-Application du jeu pour le Stand de Tir
+# Shooter
+
+Application du jeu pour le Stand de Tir - Projet PX
 
 
