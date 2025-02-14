@@ -158,12 +158,12 @@ class Jeu:
         self.viseur.add(viseur)
 
     def spawnAigles(self, x, y, speed):
-        aigle = Aigle(x, y, speed)
-        h = aigle.getAigleHeight()  # Récupération de la hauteur de l'image de l'aigle
-        aigle = Aigle(x, y - h, speed) # Pour éviter qu'une moitié de l'aigle ne spawn
+        aigle = Monstre("aigle",x, y, speed)
+        h = aigle.getHeight()  # Récupération de la hauteur de l'image de l'aigle
+        aigle = Monstre("aigle",x, y - h, speed) # Pour éviter qu'une moitié de l'aigle ne spawn
         self.aigles.add(aigle)
     
     def spawnFrog(self,x,y,speed):
-        frog = Frog(x,y,speed)
+        frog = Monstre("frog",x,y,speed)
         self.frogs.add(frog)
 
