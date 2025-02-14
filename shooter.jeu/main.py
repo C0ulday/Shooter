@@ -12,6 +12,9 @@ def menu():
 
 
 
+# Exemple d'exécution du jeu
 if __name__ == "__main__":
-    game = Jeu()
-    game.jouer()
+    pygame.init()
+    jeu = Jeu()
+    jeu.jouer()
+    pygame.quit()
