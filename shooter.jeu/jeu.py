@@ -40,10 +40,11 @@ class Jeu:
         # Récupération des dimensions de l'écran
         info = pygame.display.Info()
         # On démarre avec une fenêtre à la moitié des dimensions de l'écran
-        largeur = info.current_w // 2  
-        hauteur = info.current_h // 2
+        largeur = info.current_w
+        hauteur = info.current_h - 60
 
-        screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
+        
+        screen = pygame.display.set_mode((largeur, hauteur),pygame.RESIZABLE)
         
         # Redimensionnement
         background = pygame.transform.scale(self.back, (largeur, hauteur))
@@ -57,7 +58,7 @@ class Jeu:
         pygame.time.set_timer(SPAWN_EVENT, 2000)
 
         clock = pygame.time.Clock()
-        fps = 60 
+        fps = 120 
         temps = 3000
         score = 0
         temps_passe = False # Pour gérer l'activation de l'exclamation
@@ -69,17 +70,6 @@ class Jeu:
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
-                
-                # Gestion de l'événement de redimensionnement de la fenêtre
-                if event.type == pygame.VIDEORESIZE:
-                    largeur, hauteur = event.size
-                    screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
-                    # Redimensionnement dynamique des images en fonction des dimensions actuelles de la fenêtre
-                    background = pygame.transform.scale(self.back, (largeur, hauteur))
-                    clouds     = pygame.transform.scale(self.clouds, (largeur, hauteur))
-                    sol =  pygame.transform.scale(self.sol, (largeur, hauteur))
-                    rock =  pygame.transform.scale(self.rock, (largeur, hauteur))
-                    decor =  pygame.transform.scale(self.decor, (largeur, hauteur))
 
                 # Gestion du clic de souris pour tirer
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -96,9 +86,9 @@ class Jeu:
                     if temps < 2500:
                         self.spawnAigles(x, y, 20)
                     elif temps < 1500:
-                        self.spawnAigles(x, y, 30)
+                        self.spawnAigles(x, y, 40)
                     else:
-                        self.spawnAigles(x, y, 10)
+                        self.spawnAigles(x, y, 5)
 
             # Limite le nombre de frames par seconde
             clock.tick(fps)
@@ -150,7 +140,64 @@ class Jeu:
             
 ############################################################################################
 
+    def menu(self):
+        
+        # Récupération des dimensions de l'écran
+        info = pygame.display.Info()
+        # On démarre avec une fenêtre à la moitié des dimensions de l'écran
+        largeur = info.current_w
+        hauteur = info.current_h - 60
 
+        pygame.display.set_caption("Esi-SHOOT")
+        screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
+        # Chargement et redimensionnement de l'image d'arrière-plan
+        ecran_img = pygame.image.load("shooter.jeu/assets/gui/ecran_chargement.png")
+        ecran_img= pygame.transform.scale(ecran_img, (largeur, hauteur))
+
+        # Chargement et redimensionnement de toutes les images de boutons et du logo
+        jouer_btn    = pygame.image.load("shooter.jeu/assets/gui/jouer.png")
+        jouer_btn    = pygame.transform.scale(jouer_btn, (largeur, hauteur))
+
+        jouer_btn_b  = pygame.image.load("shooter.jeu/assets/gui/jouer_b.png")
+        jouer_btn_b  = pygame.transform.scale(jouer_btn_b, (largeur, hauteur))
+
+        param_btn    = pygame.image.load("shooter.jeu/assets/gui/param.png")
+        param_btn    = pygame.transform.scale(param_btn, (largeur, hauteur))
+
+        param_btn_b  = pygame.image.load("shooter.jeu/assets/gui/param_b.png")
+        param_btn_b  = pygame.transform.scale(param_btn_b, (largeur, hauteur))
+
+        class_btn    = pygame.image.load("shooter.jeu/assets/gui/classement.png")
+        class_btn    = pygame.transform.scale(class_btn, (largeur, hauteur))
+
+        class_btn_b  = pygame.image.load("shooter.jeu/assets/gui/classement_b.png")
+        class_btn_b  = pygame.transform.scale(class_btn_b, (largeur, hauteur))
+
+        logos        = pygame.image.load("shooter.jeu/assets/gui/logos.png")
+        logos        = pygame.transform.scale(logos, (largeur, hauteur))
+        
+        back = (98, 53, 138)
+        music = pygame.mixer.Sound("shooter.jeu/assets/sounds/luv.wav")
+        
+        running = True
+        count_temps = 0
+        while running:
+            count_temps +=1
+            music.play()
+            screen.blit(ecran_img,(0,0))
+            if(count_temps > 100):
+                screen.fill(back)
+                screen.blit(jouer_btn,(0,0))
+                screen.blit(class_btn,(0,0))
+                screen.blit(param_btn,(0,0))
+                screen.blit(logos,(0,0))
+            pygame.display.flip()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                        
+        pygame.quit()
 ############################################################################################
     def ajouterViseur(self):
         # Ajoute le viseur au groupe de sprites
