@@ -40,7 +40,7 @@ class Aigle(pygame.sprite.Sprite):
 
     def getAigleHeight(self):
         return self.height
-       
+    
     def updateAnimation(self):
         self.animation_count += 1
 
@@ -106,7 +106,7 @@ class Frog(pygame.sprite.Sprite):
         self.image = self.walk[0]
         self.rect = self.image.get_rect()
 
-        self.rect.x = 10
+        self.rect.x = 10  
         self.rect.y = 941
 
         self.height = self.image.get_height()
