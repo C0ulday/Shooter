@@ -27,9 +27,9 @@ class Viseur(pygame.sprite.Sprite):
         
         # Vérifier si la souris a été cliquée (bouton gauche de la souris)
         if pygame.mouse.get_pressed()[0] and not self.clicSouris:
-            # self.gunShotSound.play()  # Jouer le son du tir
-            self.total_shots += 1  # Incrémenter le nombre de tirs
-            self.clicSouris = True  # Marquer que le clic a eu lieu
+            self.gunShotSound.play()
+            self.total_shots += 1
+            self.clicSouris = True
 
         # Éviter les clics répétés (on réinitialise le clic après un certain temps)
         if self.clicSouris:

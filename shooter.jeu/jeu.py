@@ -21,8 +21,10 @@ class Jeu:
         self.rock       = pygame.image.load("shooter.jeu/assets/mode1/env/rock.png")
         self.sol        = pygame.image.load("shooter.jeu/assets/mode1/env/front.png")
         
+        self.exclamationSound = pygame.mixer.Sound("shooter.jeu/assets/sounds/exclamation.wav")
+        
         # Le joueur
-
+        self.joueur = Joueur("poulpy")
 
 ############################################################################################
 
@@ -31,10 +33,10 @@ class Jeu:
     def jouer(self):
         
         pygame.display.set_caption("Esi-SHOOT")
-        font = pygame.font.Font("shooter.jeu/assets/font/BPdots.otf", 16)
+        font_size = 16
+        font = pygame.font.Font("shooter.jeu/assets/font/BPdots.otf", font_size)
         font.set_bold(True)
-    
-        score = 0
+
         # Récupération des dimensions de l'écran
         info = pygame.display.Info()
         # On démarre avec une fenêtre à la moitié des dimensions de l'écran
@@ -49,8 +51,9 @@ class Jeu:
 
         clock = pygame.time.Clock()
         fps = 60 
-        temps = 3000
-
+        temps = 2000
+        score = 0
+        temps_passe = False # Pour gérer l'activation de l'exclamation
         running = True
         while running:
             for event in pygame.event.get():
@@ -66,7 +69,7 @@ class Jeu:
                 # Gestion du clic de souris pour tirer
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if self.viseur.sprites()[0].detecteurTir(self.aigles):
-                        score += 50
+                        score = self.joueur.setScore(50)
                         print(f"Score: {score}")
 
                 # Gestion de l'événement de spawn des monstres
@@ -113,8 +116,17 @@ class Jeu:
             score_text = font.render(f"Score: {score}", True, (255, 255, 255))
             screen.blit(score_text, (10, 10))
 
+            temps_sec = temps * 0.001
+            
             # Affichage du chronomètre dans le coin supérieur droit
-            temps_text = font.render(f"Temps: {temps} ms", True, (255, 255, 255))
+            temps_text = font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
+            if (temps_sec <= 1):
+                temps_text = font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
+                if(temps_passe == False):
+                    self.exclamationSound.play()
+                    temps_passe = True
+                
+                
             temps_rect = temps_text.get_rect(topright=(screen.get_width() - 10, 10))
             screen.blit(temps_text, temps_rect)
 

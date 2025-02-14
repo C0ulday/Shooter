@@ -43,18 +43,21 @@ class Aigle(pygame.sprite.Sprite):
     
     def updateAnimation(self):
         self.animation_count += 1
+        
 
         if self.vivant:
             # Animation en vol normal
             index = (self.animation_count // 5) % len(self.vol)
             self.image = self.vol[index]
         else:
-            # Animation en état "mort"
+            # Animation en état "mort" qui se joue une seule fois
             index = (self.animation_count // 5) % len(self.vol_mort)
-            self.image = self.vol_mort[index]
-            self.rect.y += self.speed
-            if (self.image == self.vol_mort[5]):
+            if self.image == self.vol_mort[len(self.vol_mort) - 1]:
                 self.kill()
+            self.image = self.vol_mort[index]
+            self.rect.y += self.speed   
+
+
 
     def changeDirection(self):
         if (self.direction == -1) :
@@ -106,7 +109,7 @@ class Frog(pygame.sprite.Sprite):
         self.image = self.walk[0]
         self.rect = self.image.get_rect()
 
-        self.rect.x = 10  
+        self.rect.x = 10
         self.rect.y = 941
 
         self.height = self.image.get_height()
