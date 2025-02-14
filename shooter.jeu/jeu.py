@@ -44,6 +44,13 @@ class Jeu:
         hauteur = info.current_h // 2
 
         screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
+        
+        # Redimensionnement
+        background = pygame.transform.scale(self.back, (largeur, hauteur))
+        clouds     = pygame.transform.scale(self.clouds, (largeur, hauteur))
+        sol =  pygame.transform.scale(self.sol, (largeur, hauteur))
+        rock =  pygame.transform.scale(self.rock, (largeur, hauteur))
+        decor =  pygame.transform.scale(self.decor, (largeur, hauteur))
 
         # Définition d'un événement personnalisé pour le spawn des monstres (toutes les 2 secondes)
         SPAWN_EVENT = pygame.USEREVENT + 1
@@ -51,10 +58,12 @@ class Jeu:
 
         clock = pygame.time.Clock()
         fps = 60 
-        temps = 2000
+        temps = 3000
         score = 0
         temps_passe = False # Pour gérer l'activation de l'exclamation
         running = True
+        
+
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -65,6 +74,12 @@ class Jeu:
                 if event.type == pygame.VIDEORESIZE:
                     largeur, hauteur = event.size
                     screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
+                    # Redimensionnement dynamique des images en fonction des dimensions actuelles de la fenêtre
+                    background = pygame.transform.scale(self.back, (largeur, hauteur))
+                    clouds     = pygame.transform.scale(self.clouds, (largeur, hauteur))
+                    sol =  pygame.transform.scale(self.sol, (largeur, hauteur))
+                    rock =  pygame.transform.scale(self.rock, (largeur, hauteur))
+                    decor =  pygame.transform.scale(self.decor, (largeur, hauteur))
 
                 # Gestion du clic de souris pour tirer
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -76,23 +91,17 @@ class Jeu:
                 if event.type == SPAWN_EVENT:
                     x = largeur
                     y = random.randint(0, hauteur - 50)
+                    self.spawnFrog(10)
                     # On spawn des aigles avec des vitesses différentes selon le temps restant
                     if temps < 2500:
-                        self.spawnAigles(x, y, 10)
+                        self.spawnAigles(x, y, 20)
                     elif temps < 1500:
-                        self.spawnAigles(x, y, 10)
+                        self.spawnAigles(x, y, 30)
                     else:
-                        self.spawnAigles(x, y, 5)
-            
-            # Redimensionnement dynamique des images en fonction des dimensions actuelles de la fenêtre
-            background = pygame.transform.scale(self.back, (largeur, hauteur))
-            clouds     = pygame.transform.scale(self.clouds, (largeur, hauteur))
-            sol =  pygame.transform.scale(self.sol, (largeur, hauteur))
-            rock =  pygame.transform.scale(self.rock, (largeur, hauteur))
-            decor =  pygame.transform.scale(self.decor, (largeur, hauteur))
-    
-            clock.tick(fps)
+                        self.spawnAigles(x, y, 10)
 
+            # Limite le nombre de frames par seconde
+            clock.tick(fps)
             # Affichage des éléments de l'environnement dans l'ordre souhaité
             screen.blit(background, (0, 0))
             screen.blit(clouds, (0, 0))
@@ -122,6 +131,7 @@ class Jeu:
             temps_text = font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
             if (temps_sec <= 1):
                 temps_text = font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
+                
                 if(temps_passe == False):
                     self.exclamationSound.play()
                     temps_passe = True

@@ -114,7 +114,6 @@ class Frog(pygame.sprite.Sprite):
 
         self.height = self.image.get_height()
 
-       
     def updateAnimation(self):
         self.animation_count += 1
 
