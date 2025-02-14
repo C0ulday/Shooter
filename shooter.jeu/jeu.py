@@ -91,7 +91,7 @@ class Jeu:
                 if event.type == SPAWN_EVENT:
                     x = largeur
                     y = random.randint(0, hauteur - 50)
-                    self.spawnFrog(10)
+                    self.spawnFrog(x,hauteur * 0.01,5)
                     # On spawn des aigles avec des vitesses différentes selon le temps restant
                     if temps < 2500:
                         self.spawnAigles(x, y, 20)
@@ -163,7 +163,7 @@ class Jeu:
         aigle = Aigle(x, y - h, speed) # Pour éviter qu'une moitié de l'aigle ne spawn
         self.aigles.add(aigle)
     
-    def spawnFrog(self, speed):
-        frog = Frog(speed)
+    def spawnFrog(self,x,y,speed):
+        frog = Frog(x,y,speed)
         self.frogs.add(frog)
 
