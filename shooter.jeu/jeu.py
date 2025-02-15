@@ -1,7 +1,8 @@
 import pygame, random
-from monstre import *  # Importation des classes liées aux monstres (Aigle, Frog, etc.)
+from monstre import *
 from joueur import Joueur
 from viseur import Viseur
+from bouton import *
 
 class Jeu:
     def __init__(self):
@@ -41,7 +42,7 @@ class Jeu:
         info = pygame.display.Info()
         # On démarre avec une fenêtre à la moitié des dimensions de l'écran
         largeur = info.current_w
-        hauteur = info.current_h - 60
+        hauteur = info.current_h - 50
 
         
         screen = pygame.display.set_mode((largeur, hauteur),pygame.RESIZABLE)
@@ -55,7 +56,7 @@ class Jeu:
 
         # Définition d'un événement personnalisé pour le spawn des monstres (toutes les 2 secondes)
         SPAWN_EVENT = pygame.USEREVENT + 1
-        pygame.time.set_timer(SPAWN_EVENT, 2000)
+        pygame.time.set_timer(SPAWN_EVENT, 1500)
 
         clock = pygame.time.Clock()
         fps = 120 
@@ -146,7 +147,11 @@ class Jeu:
         info = pygame.display.Info()
         # On démarre avec une fenêtre à la moitié des dimensions de l'écran
         largeur = info.current_w
-        hauteur = info.current_h - 60
+        hauteur = info.current_h - 50
+        font = "shooter.jeu/assets/font/Minecraft.ttf"
+        font_size = 30
+        color_pressed = (255,255,255)
+        color = (155,139,221)
 
         pygame.display.set_caption("Esi-SHOOT")
         screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
@@ -155,26 +160,13 @@ class Jeu:
         ecran_img= pygame.transform.scale(ecran_img, (largeur, hauteur))
 
         # Chargement et redimensionnement de toutes les images de boutons et du logo
-        jouer_btn    = pygame.image.load("shooter.jeu/assets/gui/jouer.png")
-        jouer_btn    = pygame.transform.scale(jouer_btn, (largeur, hauteur))
+        jouer_btn    = Bouton(largeur//2,hauteur//2 - 60 ,"Jouer",font,font_size,color)
+        param_btn    = Bouton(largeur//2,hauteur//2,"Parametres",font,font_size,color)
+        credits_btn  = Bouton(largeur//2,hauteur//2 + 60,"Credits",font,font_size,color)
+        class_btn    = Bouton(largeur//2,hauteur//2 + 120,"Classements",font,font_size,color)
 
-        jouer_btn_b  = pygame.image.load("shooter.jeu/assets/gui/jouer_b.png")
-        jouer_btn_b  = pygame.transform.scale(jouer_btn_b, (largeur, hauteur))
-
-        param_btn    = pygame.image.load("shooter.jeu/assets/gui/param.png")
-        param_btn    = pygame.transform.scale(param_btn, (largeur, hauteur))
-
-        param_btn_b  = pygame.image.load("shooter.jeu/assets/gui/param_b.png")
-        param_btn_b  = pygame.transform.scale(param_btn_b, (largeur, hauteur))
-
-        class_btn    = pygame.image.load("shooter.jeu/assets/gui/classement.png")
-        class_btn    = pygame.transform.scale(class_btn, (largeur, hauteur))
-
-        class_btn_b  = pygame.image.load("shooter.jeu/assets/gui/classement_b.png")
-        class_btn_b  = pygame.transform.scale(class_btn_b, (largeur, hauteur))
-
-        logos        = pygame.image.load("shooter.jeu/assets/gui/logos.png")
-        logos        = pygame.transform.scale(logos, (largeur, hauteur))
+        #logos        = pygame.image.load("shooter.jeu/assets/gui/logos.png")
+        #logos        = pygame.transform.scale(logos, (largeur, hauteur))
         
         back = (98, 53, 138)
         music = pygame.mixer.Sound("shooter.jeu/assets/sounds/luv.wav")
@@ -182,21 +174,28 @@ class Jeu:
         running = True
         count_temps = 0
         while running:
-            count_temps +=1
+            
+            pos_souris = pygame.mouse.get_pos()
+            #count_temps +=1
             music.play()
-            screen.blit(ecran_img,(0,0))
-            if(count_temps > 100):
-                screen.fill(back)
-                screen.blit(jouer_btn,(0,0))
-                screen.blit(class_btn,(0,0))
-                screen.blit(param_btn,(0,0))
-                screen.blit(logos,(0,0))
+            #screen.blit(ecran_img,(0,0))
+  
+            
+            screen.fill(back)
+            #screen.blit(logos,(0,0))
+            
+            jouer_btn.update(screen,pos_souris,color_pressed,color)
+            class_btn.update(screen,pos_souris,color_pressed,color)
+            param_btn.update(screen,pos_souris,color_pressed,color)
+            credits_btn.update(screen,pos_souris,color_pressed,color)
+            
             pygame.display.flip()
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                        
+                
+                
         pygame.quit()
 ############################################################################################
     def ajouterViseur(self):
@@ -213,4 +212,3 @@ class Jeu:
     def spawnFrog(self,x,y,speed):
         frog = Monstre("frog",x,y,speed)
         self.frogs.add(frog)
-
