@@ -17,5 +17,5 @@ if __name__ == "__main__":
     pygame.init()
     jeu = Jeu()
     jeu.jouer()
-    jeu.menu()
+    #jeu.menu()
     pygame.quit()
