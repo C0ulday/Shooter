@@ -1,6 +1,7 @@
 import socket
 import pickle
-from ..Jeu import jeu 
+import jeu
+
 
 class server:
     def __init__(self):
