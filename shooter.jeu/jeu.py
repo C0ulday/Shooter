@@ -26,6 +26,22 @@ class Jeu:
         
         # Le joueur
         self.joueur = Joueur("poulpy")
+        
+        # Matériels affichage
+        
+        info = pygame.display.Info()
+        self.largeur = info.current_w
+        self.hauteur = info.current_h - 50
+        
+        font_size = 16
+        self.font = pygame.font.Font("shooter.jeu/assets/font/BPdots.otf", font_size)
+        self.font.set_bold(True)
+        
+        self.font_btn = "shooter.jeu/assets/font/Minecraft.ttf"
+        self.font_size_btn = 30
+        self.color_pressed = (255,255,255)
+        self.color = (155,139,221)
+
 
 ############################################################################################
 
@@ -33,26 +49,18 @@ class Jeu:
 ############################################################################################
     def jouer(self):
         
+        screen = pygame.display.set_mode((self.largeur, self.hauteur),pygame.RESIZABLE)
         pygame.display.set_caption("Esi-SHOOT")
-        font_size = 16
-        font = pygame.font.Font("shooter.jeu/assets/font/BPdots.otf", font_size)
-        font.set_bold(True)
-
-        # Récupération des dimensions de l'écran
-        info = pygame.display.Info()
-        # On démarre avec une fenêtre à la moitié des dimensions de l'écran
-        largeur = info.current_w
-        hauteur = info.current_h - 50
 
         
-        screen = pygame.display.set_mode((largeur, hauteur),pygame.RESIZABLE)
+        screen = pygame.display.set_mode((self.largeur, self.hauteur),pygame.RESIZABLE)
         
         # Redimensionnement
-        background = pygame.transform.scale(self.back, (largeur, hauteur))
-        clouds     = pygame.transform.scale(self.clouds, (largeur, hauteur))
-        sol =  pygame.transform.scale(self.sol, (largeur, hauteur))
-        rock =  pygame.transform.scale(self.rock, (largeur, hauteur))
-        decor =  pygame.transform.scale(self.decor, (largeur, hauteur))
+        background = pygame.transform.scale(self.back, (self.largeur, self.hauteur))
+        clouds     = pygame.transform.scale(self.clouds, (self.largeur, self.hauteur))
+        sol =  pygame.transform.scale(self.sol, (self.largeur, self.hauteur))
+        rock =  pygame.transform.scale(self.rock, (self.largeur, self.hauteur))
+        decor =  pygame.transform.scale(self.decor, (self.largeur, self.hauteur))
 
         # Définition d'un événement personnalisé pour le spawn des monstres (toutes les 2 secondes)
         SPAWN_EVENT = pygame.USEREVENT + 1
@@ -80,9 +88,9 @@ class Jeu:
 
                 # Gestion de l'événement de spawn des monstres
                 if event.type == SPAWN_EVENT:
-                    x = largeur
-                    y = random.randint(0, hauteur - 50)
-                    self.spawnFrog(x,hauteur * 0.01,5)
+                    x = self.largeur
+                    y = random.randint(0, self.hauteur - 50)
+                    self.spawnFrog(x, self.hauteur * 0.01,5)
                     # On spawn des aigles avec des vitesses différentes selon le temps restant
                     if temps < 2500:
                         self.spawnAigles(x, y, 20)
@@ -113,15 +121,15 @@ class Jeu:
             self.viseur.draw(screen)
 
             # Affichage du score dans le coin supérieur gauche
-            score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+            score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
             screen.blit(score_text, (10, 10))
 
             temps_sec = temps * 0.001
             
             # Affichage du chronomètre dans le coin supérieur droit
-            temps_text = font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
+            temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
             if (temps_sec <= 1):
-                temps_text = font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
+                temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
                 
                 if(temps_passe == False):
                     self.exclamationSound.play()
@@ -143,58 +151,69 @@ class Jeu:
 
     def menu(self):
         
-        # Récupération des dimensions de l'écran
-        info = pygame.display.Info()
-        # On démarre avec une fenêtre à la moitié des dimensions de l'écran
-        largeur = info.current_w
-        hauteur = info.current_h - 50
-        font = "shooter.jeu/assets/font/Minecraft.ttf"
-        font_size = 30
-        color_pressed = (255,255,255)
-        color = (155,139,221)
-
         pygame.display.set_caption("Esi-SHOOT")
-        screen = pygame.display.set_mode((largeur, hauteur), pygame.RESIZABLE)
+        screen = pygame.display.set_mode((self.largeur, self.hauteur), pygame.RESIZABLE)
         # Chargement et redimensionnement de l'image d'arrière-plan
         ecran_img = pygame.image.load("shooter.jeu/assets/gui/ecran_chargement.png")
-        ecran_img= pygame.transform.scale(ecran_img, (largeur, hauteur))
+        ecran_img= pygame.transform.scale(ecran_img, (self.largeur, self.hauteur))
 
         # Chargement et redimensionnement de toutes les images de boutons et du logo
-        jouer_btn    = Bouton(largeur//2,hauteur//2 - 60 ,"Jouer",font,font_size,color)
-        param_btn    = Bouton(largeur//2,hauteur//2,"Parametres",font,font_size,color)
-        credits_btn  = Bouton(largeur//2,hauteur//2 + 60,"Credits",font,font_size,color)
-        class_btn    = Bouton(largeur//2,hauteur//2 + 120,"Classements",font,font_size,color)
+        jouer_btn    = Bouton(self.largeur//2,self.hauteur//2 - 60 ,"Jouer",self.font_btn,self.font_size_btn,self.color)
+        param_btn    = Bouton(self.largeur//2,self.hauteur//2,"Parametres",self.font_btn,self.font_size_btn,self.color)
+        credits_btn  = Bouton(self.largeur//2,self.hauteur//2 + 60,"Credits",self.font_btn,self.font_size_btn,self.color)
+        class_btn    = Bouton(self.largeur//2,self.hauteur//2 + 120,"Classements",self.font_btn,self.font_size_btn,self.color)
 
         #logos        = pygame.image.load("shooter.jeu/assets/gui/logos.png")
-        #logos        = pygame.transform.scale(logos, (largeur, hauteur))
+        #logos        = pygame.transform.scale(logos, (self.largeur, hauteur))
         
         back = (98, 53, 138)
         music = pygame.mixer.Sound("shooter.jeu/assets/sounds/luv.wav")
         
         running = True
-        count_temps = 0
         while running:
             
             pos_souris = pygame.mouse.get_pos()
             #count_temps +=1
             music.play()
             #screen.blit(ecran_img,(0,0))
-  
             
             screen.fill(back)
             #screen.blit(logos,(0,0))
             
-            jouer_btn.update(screen,pos_souris,color_pressed,color)
-            class_btn.update(screen,pos_souris,color_pressed,color)
-            param_btn.update(screen,pos_souris,color_pressed,color)
-            credits_btn.update(screen,pos_souris,color_pressed,color)
+            jouer_btn.update(screen,pos_souris,self.color_pressed,self.color)
+            class_btn.update(screen,pos_souris,self.color_pressed,self.color)
+            param_btn.update(screen,pos_souris,self.color_pressed,self.color)
+            credits_btn.update(screen,pos_souris,self.color_pressed,self.color)
             
             pygame.display.flip()
+            
+            # Affichage des modes de jeu
+            
+            if (jouer_btn.boutonHover(pos_souris) and pygame.mouse.get_pressed()[0]):
+                self.menu_jouer(screen,back)
+                
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 
+                
+        pygame.quit()
+        
+    def menu_jouer(self,screen,back):
+        
+        retour_btn =  Bouton(self.largeur//2,self.hauteur//2,"Retour",self.font_btn,self.font_size_btn,self.color)
+        running = True
+        while running:
+
+            pos_souris = pygame.mouse.get_pos()
+            screen.fill(back)
+            retour_btn.update(screen,pos_souris,self.color_pressed,self.color)
+            pygame.display.flip()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
                 
         pygame.quit()
 ############################################################################################

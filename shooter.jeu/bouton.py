@@ -18,15 +18,14 @@ class Bouton:
         screen.blit(self.text_surface, self.text_rect)
         
         
-    def boutonPressed(self, position):
+    def boutonHover(self, position):
         # On vérifie si le clic se trouve dans le rectangle du texte
         if self.text_rect.collidepoint(position):
             return True
         return False
     
     def changecolor(self, position, color_pressed, color_not_pressed):
-        if self.boutonPressed(position):
+        if self.boutonHover(position):
             self.text_surface = self.font.render(self.text_str, True, color_pressed)
         else:
             self.text_surface = self.font.render(self.text_str, True, color_not_pressed)
-
