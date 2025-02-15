@@ -1,8 +1,8 @@
 import pygame, random
-from monstre import *
-from joueur import Joueur
-from viseur import Viseur
-from bouton import *
+from game.monstre import *
+from game.joueur import Joueur
+from game.viseur import Viseur
+from game.bouton import *
 
 class Jeu:
     def __init__(self):
@@ -16,13 +16,13 @@ class Jeu:
         self.frogs   = pygame.sprite.Group()
 
         # Chargement des images de l'environnement
-        self.back = pygame.image.load("jeu/assets/mode1/env/back.png")
-        self.clouds     = pygame.image.load("jeu/assets/mode1/env/clouds.png")
-        self.decor      = pygame.image.load("jeu/assets/mode1/env/tiles.png")
-        self.rock       = pygame.image.load("jeu/assets/mode1/env/rock.png")
-        self.sol        = pygame.image.load("jeu/assets/mode1/env/front.png")
+        self.back = pygame.image.load("game/assets/mode1/env/back.png")
+        self.clouds     = pygame.image.load("game/assets/mode1/env/clouds.png")
+        self.decor      = pygame.image.load("game/assets/mode1/env/tiles.png")
+        self.rock       = pygame.image.load("game/assets/mode1/env/rock.png")
+        self.sol        = pygame.image.load("game/assets/mode1/env/front.png")
         
-        self.exclamationSound = pygame.mixer.Sound("jeu/assets/sounds/exclamation.wav")
+        self.exclamationSound = pygame.mixer.Sound("game/assets/sounds/exclamation.wav")
         
         # Le joueur
         self.joueur = Joueur("poulpy")
@@ -34,10 +34,10 @@ class Jeu:
         self.hauteur = info.current_h - 50
         
         font_size = 16
-        self.font = pygame.font.Font("jeu/assets/font/BPdots.otf", font_size)
+        self.font = pygame.font.Font("game/assets/font/BPdots.otf", font_size)
         self.font.set_bold(True)
         
-        self.font_btn = "jeu/assets/font/Minecraft.ttf"
+        self.font_btn = "game/assets/font/Minecraft.ttf"
         self.font_size_btn = 30
         self.color_pressed = (255,255,255)
         self.color = (155,139,221)
@@ -154,7 +154,7 @@ class Jeu:
         pygame.display.set_caption("Esi-SHOOT")
         screen = pygame.display.set_mode((self.largeur, self.hauteur), pygame.RESIZABLE)
         # Chargement et redimensionnement de l'image d'arrière-plan
-        ecran_img = pygame.image.load("jeu/assets/gui/ecran_chargement.png")
+        ecran_img = pygame.image.load("game/assets/gui/ecran_chargement.png")
         ecran_img= pygame.transform.scale(ecran_img, (self.largeur, self.hauteur))
 
         # Chargement et redimensionnement de toutes les images de boutons et du logo
@@ -163,11 +163,11 @@ class Jeu:
         credits_btn  = Bouton(self.largeur//2,self.hauteur//2 + 60,"Credits",self.font_btn,self.font_size_btn,self.color)
         class_btn    = Bouton(self.largeur//2,self.hauteur//2 + 120,"Classements",self.font_btn,self.font_size_btn,self.color)
 
-        #logos        = pygame.image.load("jeu/assets/gui/logos.png")
+        #logos        = pygame.image.load("game/assets/gui/logos.png")
         #logos        = pygame.transform.scale(logos, (self.largeur, hauteur))
         
         back = (98, 53, 138)
-        music = pygame.mixer.Sound("jeu/assets/sounds/luv.wav")
+        music = pygame.mixer.Sound("game/assets/sounds/luv.wav")
         
         running = True
         while running:

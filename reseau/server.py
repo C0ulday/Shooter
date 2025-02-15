@@ -1,6 +1,6 @@
 import socket
 import pickle
-import jeu
+from game import jeu  
 
 
 class server:
@@ -34,8 +34,8 @@ def server():
                 received_object = pickle.loads(data)  # Désérialisation
                 
                 # Vérification du type
-                if isinstance(received_object, Jeu):
-                    print(f"Objet reçu : Nom = {received_object.name}, Âge = {received_object.age}")
+                if isinstance(received_object, jeu.Jeu):
+                    print(f"Objet reçu !")
                 else:
                     print("Erreur : l'objet reçu n'est pas une instance de Jeu.")
 
