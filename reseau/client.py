@@ -40,44 +40,52 @@ class Client:
         except socket.error as e:
             print(f"Erreur socket : {e}")
 
+        except KeyboardInterrupt:
+            print("Arrêt du programme...")
+
         finally:
             self.client_socket.close()
             GPIO.cleanup() 
+            print("Nettoyage terminé.")
 
     def sendMessage(self, message):
         self.client_socket.sendall(message.encode("utf-8"))
         print(f"Message envoyé: {message}")
 
     def receiveData(self):
-        # receive the size of the object that we should receive (4 bytes)
-        size_data = self.client_socket.recv(4)
-        if not size_data:
-            return "error"
-
-        expected_size = struct.unpack("I", size_data)[0]  # "I" format means unsigned integer
-        data = b""
-        
-        # loop to receive all data
-        while len(data) < expected_size:
-            packet = self.client_socket.recv(4096)
-            if not packet:
-                break
-            data += packet
-
         try:
-            game = pkl.loads(data)  # Désérialisation
-            hit = False
-            if isinstance(game, jeu.Jeu):
-                print("Using method 2 to determine if it's a hit or not...")
-                # TODO : traitement d'image mode 2, changement de valeur de hit
-            else:
-                print("Using method 1 to determine if it's a hit or not...")
-                # TODO : traitement d'image mode 1, changement de valeur de hit
-            return "hit" if hit else "miss"
-        
-        except Exception as e:
-            print(f"Erreur de désérialisation : {e}")
-            return "error"  # Default return
+            size_data = self.client_socket.recv(4)
+            if not size_data:
+                print("Erreur: Aucune donnée reçue pour la taille.")
+                return "error"
+
+            expected_size = struct.unpack("I", size_data)[0]
+            data = b""
+
+            while len(data) < expected_size:
+                packet = self.client_socket.recv(4096)
+                if not packet:
+                    print("Connexion interrompue.")
+                    return "error"
+                data += packet
+
+            try:
+                game = pkl.loads(data)
+                hit = False
+                if isinstance(game, jeu.Jeu):
+                    print("Using method 2 to determine if it's a hit or not...")
+                else:
+                    print("Using method 1 to determine if it's a hit or not...")
+
+                return "hit" if hit else "miss"
+
+            except Exception as e:
+                print(f"Erreur de désérialisation : {e}")
+                return "error"
+
+        except socket.error as e:
+            print(f"Erreur de socket : {e}")
+            return "error"
         
         
 if __name__ == "__main__":
