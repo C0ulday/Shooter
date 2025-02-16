@@ -32,11 +32,11 @@ class Monstre(pygame.sprite.Sprite):
             self.death_images = []
             # Images d'animation de vol
             for i in range(1, 5):
-                image_path = f"jeu/assets/mode1/sprites/aigle/fly{i}.png"
+                image_path = f"game/assets/mode1/sprites/aigle/fly{i}.png"
                 self.images.append(pygame.image.load(image_path))
             # Images d'animation de mort
             for i in range(1, 7):
-                image_path = f"jeu/assets/mode1/sprites/death/death{i}.png"
+                image_path = f"game/assets/mode1/sprites/death/death{i}.png"
                 self.death_images.append(pygame.image.load(image_path))
                 
         elif monster_type == "frog":
@@ -44,11 +44,11 @@ class Monstre(pygame.sprite.Sprite):
             self.death_images = []
             # Images d'animation de saut (pour la grenouille)
             for i in range(1, 7):
-                image_path = f"jeu/assets/mode1/sprites/frog/jump{i}.png"
+                image_path = f"game/assets/mode1/sprites/frog/jump{i}.png"
                 self.images.append(pygame.image.load(image_path))
             # Images d'animation de mort (utilisation des mêmes images de mort)
             for i in range(1, 7):
-                image_path = f"jeu/assets/mode1/sprites/death/death{i}.png"
+                image_path = f"game/assets/mode1/sprites/death/death{i}.png"
                 self.death_images.append(pygame.image.load(image_path))
                 
         # Initialisation de l'image et du rectangle de position
