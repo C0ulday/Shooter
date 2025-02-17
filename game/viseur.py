@@ -36,9 +36,17 @@ class Viseur(pygame.sprite.Sprite):
             if not pygame.mouse.get_pressed()[0]:  # Quand la souris n'est plus cliquée
                 self.clicSouris = False  # Réinitialiser le clic
 
-    def detecteurTir(self, aigles):
-        for aigle in aigles:
-            if self.rect.colliderect(aigle.rect) and aigle.vivant:  # Vérifie la collision entre le viseur et l'aigle
-                aigle.vivant = False  
-                return True
-        return False
+    def detecteurTir(self, monstres):
+        
+        for monstre in monstres:
+            if monstre.monster_type == "gator":
+                if self.rect.colliderect(monstre.rect) and monstre.vivant :
+                    monstre.tir +=1
+                    if monstre.tir >=3:  # Vérifie la collision entre le viseur et du monstre
+                        monstre.vivant = False  
+                        return monstre
+            else:
+                if self.rect.colliderect(monstre.rect) and monstre.vivant:  # Vérifie la collision entre le viseur et du monstre
+                    monstre.vivant = False  
+                    return monstre
+        return None

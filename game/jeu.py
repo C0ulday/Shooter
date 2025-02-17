@@ -14,6 +14,7 @@ class Jeu:
         # Groupes de sprites pour les cibles
         self.aigles = pygame.sprite.Group()
         self.frogs   = pygame.sprite.Group()
+        self.gators = pygame.sprite.Group()
 
         # Chargement des images de l'environnement
         self.back = pygame.image.load("game/assets/mode1/env/back.png")
@@ -67,31 +68,55 @@ class Jeu:
         score = 0
         temps_passe = False  # Pour gérer l'activation de l'exclamation
         running = True
-        
+
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
 
+                
                 # Gestion du clic de souris pour tirer
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    if self.viseur.sprites()[0].detecteurTir(self.aigles):
+                    aigle = self.viseur.sprites()[0].detecteurTir(self.aigles)
+                    if (aigle != None):
                         score = self.joueur.setScore(50)
-                        print(f"Score: {score}")
+                        # Affichage des points dynamiquement
+                        points_message = {
+                            "text": "+50",
+                            "start_time": pygame.time.get_ticks(),
+                            "x": aigle.rect.x,
+                            "y": aigle.rect.y
+                        }
+                    gator = self.viseur.sprites()[0].detecteurTir(self.gators)
+                    if( gator != None):
+                        score = self.joueur.setScore(100)
+                        points_message = {
+                            "text": "+100",
+                            "start_time": pygame.time.get_ticks(),
+                            "x": gator.rect.x,
+                            "y": gator.rect.y
+                        }
+                    print(f"Score: {score}")
 
                 # Gestion de l'événement de spawn des monstres
                 if event.type == SPAWN_EVENT:
-                    x = self.largeur
-                    y = random.randint(0, self.hauteur - 50)
-                    self.spawnFrog(x, int(self.hauteur * 0.01), 5)
-                    # On spawn des aigles avec des vitesses différentes selon le temps restant
-                    if temps < 2500:
-                        self.spawnAigles(x, y, 20)
-                    elif temps < 1500:
-                        self.spawnAigles(x, y, 40)
-                    else:
-                        self.spawnAigles(x, y, 5)
+                    # Pour n'avoir qu'un seul sprite à la fois
+                    if len(self.aigles) <=0:
+                        x = self.largeur
+                        y = random.randint(0, self.hauteur - 60)
+                        self.spawnFrog(x, int(self.hauteur * 0.01), 5)
+                        # On spawn des aigles avec des vitesses différentes selon le temps restant
+                        if temps < 2500:
+                            self.spawnAigles(x, y, 20)
+                        elif temps < 1500:
+                            self.spawnAigles(x, y, 40)
+                        else:
+                            self.spawnAigles(x, y, 5)
+                    if len(self.gators) <=0:
+                        y = random.randint(0, self.hauteur - 60)
+                        print(f"Gator y : {x,y}")
+                        self.spawnGator(x,y,5)
 
             # Limite le nombre de frames par seconde
             clock.tick(fps)
@@ -108,11 +133,15 @@ class Jeu:
 
             # Affichage et mise à jour des sprites des aigles
             self.aigles.draw(self.game_surface)
-            self.aigles.update(True)
+            self.aigles.update(self.largeur,True)
+            self.gators.draw(self.game_surface)
+            self.gators.update(self.largeur,True)
 
             # Affichage et mise à jour des sprites des grenouilles
             self.frogs.draw(self.game_surface)
-            self.frogs.update()
+            self.frogs.update(self.largeur)
+            
+            
 
             # Mise à jour et affichage du viseur
             self.viseur.update()
@@ -121,7 +150,28 @@ class Jeu:
             # Affichage du score dans le coin supérieur gauche
             score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
             self.game_surface.blit(score_text, (10, 10))
+            
+            # Dessin des points si un message est actif
+            if hasattr(self, "points_message") and points_message is not None:
+                # Durée de vie en millisecondes (ici 2000 ms = 2 secondes)
+                duree = 2000
+                elapsed = pygame.time.get_ticks() - points_message["start_time"]
 
+                if elapsed < duree:
+                    # Calcul de l'alpha qui décroît linéairement de 255 à 0
+                    alpha = 255 - int(255 * elapsed / duree)
+
+                    # Création du texte et application de l'alpha
+                    points_surface = self.font.render(points_message["text"], True, (255, 255, 255))
+                    points_surface.set_alpha(alpha)
+                    
+                    x = self.largeur//2
+                    y = self.hauteur//2
+                    self.game_surface.blit(points_surface, x, y)
+                else:
+                    # Après 2 secondes, on n'affiche plus le message
+                    self.points_message = None
+            
             # Affichage du chronomètre dans le coin supérieur droit
             temps_sec = temps * 0.001
             if temps_sec <= 1:
@@ -229,3 +279,7 @@ class Jeu:
     def spawnFrog(self, x, y, speed):
         frog = Monstre("frog", x, y, speed)
         self.frogs.add(frog)
+    
+    def spawnGator(self, x, y, speed):
+        gator = Monstre("gator", x, y, speed)
+        self.gators.add(gator)

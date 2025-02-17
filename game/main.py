@@ -8,7 +8,7 @@ pygame.init()
 
 def menu():
     pygame.display.set_caption("Menu - M-Shooter")
-    background = pygame.image.load("game/assets/environnement/back.png")
+    #background = pygame.image.load("game/assets/environnement/back.png")
 
 # Exemple d'exécution du jeu
 if __name__ == "__main__":
@@ -17,4 +17,5 @@ if __name__ == "__main__":
     jeu.jouer()
     #men = mainMenu(jeu)
     #men.blitMainMenu()
+    #jeu.menu()
     pygame.quit()
