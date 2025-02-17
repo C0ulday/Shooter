@@ -1,8 +1,5 @@
 import pygame
 
-
-
-
 class Bouton:
     def __init__(self, x, y, text, font, font_size, color):
         self.x = x

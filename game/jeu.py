@@ -1,27 +1,4 @@
 import pygame, random
-<<<<<<< HEAD
-from monstre import *
-from joueur import Joueur
-from viseur import Viseur
-from bouton import *
-
-class Jeu:
-    def __init__(self):
-        # Création du groupe de sprites pour le viseur
-        self.viseur = pygame.sprite.Group()
-        self.ajouterViseur()  # On ajoute un viseur par défaut
-
-        # Groupes de sprites pour les cibles
-        self.aigles = pygame.sprite.Group()
-        self.frogs  = pygame.sprite.Group()
-
-        # Chargement des images de l'environnement
-        self.back   = pygame.image.load("game/assets/mode1/env/back.png")
-        self.clouds = pygame.image.load("game/assets/mode1/env/clouds.png")
-        self.decor  = pygame.image.load("game/assets/mode1/env/tiles.png")
-        self.rock   = pygame.image.load("game/assets/mode1/env/rock.png")
-        self.sol    = pygame.image.load("game/assets/mode1/env/front.png")
-=======
 from game.monstre import *
 from game.joueur import Joueur
 from game.viseur import Viseur
@@ -44,7 +21,6 @@ class Jeu:
         self.decor      = pygame.image.load("game/assets/mode1/env/tiles.png")
         self.rock       = pygame.image.load("game/assets/mode1/env/rock.png")
         self.sol        = pygame.image.load("game/assets/mode1/env/front.png")
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
         
         self.exclamationSound = pygame.mixer.Sound("game/assets/sounds/exclamation.wav")
         
@@ -52,10 +28,6 @@ class Jeu:
         self.joueur = Joueur("poulpy")
         
         # Matériels affichage
-<<<<<<< HEAD
-=======
-        
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
         info = pygame.display.Info()
         self.largeur = info.current_w
         self.hauteur = info.current_h - 50
@@ -66,7 +38,6 @@ class Jeu:
         
         self.font_btn = "game/assets/font/Minecraft.ttf"
         self.font_size_btn = 30
-<<<<<<< HEAD
         self.color_pressed = (255, 255, 255)
         self.color = (155, 139, 221)
 
@@ -87,32 +58,6 @@ class Jeu:
         decor      = pygame.transform.scale(self.decor, (self.largeur, self.hauteur))
 
         # Définition d'un événement personnalisé pour le spawn des monstres (toutes les 1.5 secondes)
-=======
-        self.color_pressed = (255,255,255)
-        self.color = (155,139,221)
-
-
-############################################################################################
-
-
-############################################################################################
-    def jouer(self):
-        
-        screen = pygame.display.set_mode((self.largeur, self.hauteur),pygame.RESIZABLE)
-        pygame.display.set_caption("Esi-SHOOT")
-
-        
-        screen = pygame.display.set_mode((self.largeur, self.hauteur),pygame.RESIZABLE)
-        
-        # Redimensionnement
-        background = pygame.transform.scale(self.back, (self.largeur, self.hauteur))
-        clouds     = pygame.transform.scale(self.clouds, (self.largeur, self.hauteur))
-        sol =  pygame.transform.scale(self.sol, (self.largeur, self.hauteur))
-        rock =  pygame.transform.scale(self.rock, (self.largeur, self.hauteur))
-        decor =  pygame.transform.scale(self.decor, (self.largeur, self.hauteur))
-
-        # Définition d'un événement personnalisé pour le spawn des monstres (toutes les 2 secondes)
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
         SPAWN_EVENT = pygame.USEREVENT + 1
         pygame.time.set_timer(SPAWN_EVENT, 1500)
 
@@ -120,16 +65,9 @@ class Jeu:
         fps = 120 
         temps = 3000
         score = 0
-<<<<<<< HEAD
         temps_passe = False  # Pour gérer l'activation de l'exclamation
         running = True
         
-=======
-        temps_passe = False # Pour gérer l'activation de l'exclamation
-        running = True
-        
-
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -146,11 +84,7 @@ class Jeu:
                 if event.type == SPAWN_EVENT:
                     x = self.largeur
                     y = random.randint(0, self.hauteur - 50)
-<<<<<<< HEAD
                     self.spawnFrog(x, int(self.hauteur * 0.01), 5)
-=======
-                    self.spawnFrog(x, self.hauteur * 0.01,5)
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
                     # On spawn des aigles avec des vitesses différentes selon le temps restant
                     if temps < 2500:
                         self.spawnAigles(x, y, 20)
@@ -161,7 +95,6 @@ class Jeu:
 
             # Limite le nombre de frames par seconde
             clock.tick(fps)
-<<<<<<< HEAD
 
             # Effacer la surface de jeu
             self.game_surface.fill((0, 0, 0))
@@ -179,26 +112,10 @@ class Jeu:
 
             # Affichage et mise à jour des sprites des grenouilles
             self.frogs.draw(self.game_surface)
-=======
-            # Affichage des éléments de l'environnement dans l'ordre souhaité
-            screen.blit(background, (0, 0))
-            screen.blit(clouds, (0, 0))
-            screen.blit(rock, (0, 0))
-            screen.blit(decor, (0, 0))
-            screen.blit(sol, (0, 0))
-
-            # Affichage et mise à jour des sprites des aigles
-            self.aigles.draw(screen)
-            self.aigles.update(True)
-
-            # Affichage et mise à jour des sprites des grenouilles
-            self.frogs.draw(screen)
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
             self.frogs.update()
 
             # Mise à jour et affichage du viseur
             self.viseur.update()
-<<<<<<< HEAD
             self.viseur.draw(self.game_surface)
 
             # Affichage du score dans le coin supérieur gauche
@@ -220,30 +137,6 @@ class Jeu:
 
             # Une fois le rendu terminé sur game_surface, on le blitte sur la display surface
             self.screen.blit(self.game_surface, (0, 0))
-=======
-            self.viseur.draw(screen)
-
-            # Affichage du score dans le coin supérieur gauche
-            score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
-            screen.blit(score_text, (10, 10))
-
-            temps_sec = temps * 0.001
-            
-            # Affichage du chronomètre dans le coin supérieur droit
-            temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
-            if (temps_sec <= 1):
-                temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
-                
-                if(temps_passe == False):
-                    self.exclamationSound.play()
-                    temps_passe = True
-                
-                
-            temps_rect = temps_text.get_rect(topright=(screen.get_width() - 10, 10))
-            screen.blit(temps_text, temps_rect)
-
-            # Mise à jour de l'affichage
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
             pygame.display.flip()
 
             # Décrémentation du temps de jeu
@@ -251,9 +144,6 @@ class Jeu:
                 running = False
             temps -= 1
             
-<<<<<<< HEAD
-    ############################################################################################
-=======
 ############################################################################################
 
     def menu(self):
@@ -324,14 +214,12 @@ class Jeu:
                 
         pygame.quit()
 ############################################################################################
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
     def ajouterViseur(self):
         # Ajoute le viseur au groupe de sprites
         viseur = Viseur()
         self.viseur.add(viseur)
 
     def spawnAigles(self, x, y, speed):
-<<<<<<< HEAD
         aigle = Monstre("aigle", x, y, speed)
         h = aigle.getHeight()  # Récupération de la hauteur de l'image de l'aigle
         # Ajustement pour éviter qu'une moitié de l'aigle ne spawn
@@ -340,13 +228,4 @@ class Jeu:
     
     def spawnFrog(self, x, y, speed):
         frog = Monstre("frog", x, y, speed)
-=======
-        aigle = Monstre("aigle",x, y, speed)
-        h = aigle.getHeight()  # Récupération de la hauteur de l'image de l'aigle
-        aigle = Monstre("aigle",x, y - h, speed) # Pour éviter qu'une moitié de l'aigle ne spawn
-        self.aigles.add(aigle)
-    
-    def spawnFrog(self,x,y,speed):
-        frog = Monstre("frog",x,y,speed)
->>>>>>> 21c25a0a24c2cc29bee30c41d641ce69a698ec1e
         self.frogs.add(frog)

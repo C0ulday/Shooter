@@ -1,6 +1,6 @@
 import pygame
-from jeu import Jeu
-from bouton import Bouton
+from game.jeu import Jeu
+from game.bouton import Bouton
 
 
 class menu():
