@@ -49,8 +49,7 @@ class Jeu:
         
         # Création d'une surface dédiée pour le jeu
         self.game_surface = pygame.Surface((self.largeur, self.hauteur))
-  
-    ############################################################################################
+    
     def updateEnvirnement(self, environment, score):
         # Effacer la surface de jeu
         self.game_surface.fill((0, 0, 0))
@@ -69,6 +68,29 @@ class Jeu:
         # Affichage du score dans le coin supérieur gauche
         score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
         self.game_surface.blit(score_text, (10, 10))
+
+    def ajouterViseur(self):
+        # Ajoute le viseur au groupe de sprites
+        viseur = Viseur()
+        self.viseur.add(viseur)
+
+    def spawnAigles(self, x, y, speed):
+        aigle = Monstre("aigle", x, y, speed)
+        h = aigle.getHeight()  # Récupération de la hauteur de l'image de l'aigle
+        # Ajustement pour éviter qu'une moitié de l'aigle ne spawn
+        aigle = Monstre("aigle", x, y - h, speed)
+        self.aigles.add(aigle)
+        self.monstres.add(*self.aigles)
+    
+    def spawnFrog(self, x, y, speed):
+        frog = Monstre("frog", x, y, speed)
+        self.frogs.add(frog)
+        self.monstres.add(*self.frogs)
+    
+    def spawnGator(self, x, y, speed):
+        gator = Monstre("gator", x, y, speed)
+        self.gators.add(gator)
+        self.monstres.add(*self.gators)
 
     def scoreMessage(self, monstre, score):
         if (monstre.monster_type == "aigle"):
@@ -126,6 +148,26 @@ class Jeu:
                 # Après 2 secondes, on n'affiche plus le message
                 pointsMessage = None
 
+    def spawnMonsters(self, temps):
+        # Pour n'avoir qu'un seul sprite à la fois
+        x = self.largeur
+        if len(self.aigles) <=0:
+            y = random.randint(0, self.hauteur - 60)
+            self.spawnFrog(x, int(self.hauteur * 0.01), 5)
+            # On spawn des aigles avec des vitesses différentes selon le temps restant
+            if temps < 2500:
+                self.spawnAigles(x, y, 20)
+            elif temps < 1500:
+                self.spawnAigles(x, y, 40)
+            else:
+                self.spawnAigles(x, y, 5)
+
+        if len(self.gators) <=0:
+            y = random.randint(0, self.hauteur - 60)
+            print(f"Gator y : {x,y}")
+            self.spawnGator(x,y,5)
+
+############################################################################################
     def jouer(self):
         # Redimensionnement des images pour correspondre à la surface de jeu
         background = pygame.transform.scale(self.back, (self.largeur, self.hauteur))
@@ -166,23 +208,7 @@ class Jeu:
 
                 # Gestion de l'événement de spawn des monstres
                 if event.type == SPAWN_EVENT:
-                    # Pour n'avoir qu'un seul sprite à la fois
-                    if len(self.aigles) <=0:
-                        x = self.largeur
-                        y = random.randint(0, self.hauteur - 60)
-                        self.spawnFrog(x, int(self.hauteur * 0.01), 5)
-                        # On spawn des aigles avec des vitesses différentes selon le temps restant
-                        if temps < 2500:
-                            self.spawnAigles(x, y, 20)
-                        elif temps < 1500:
-                            self.spawnAigles(x, y, 40)
-                        else:
-                            self.spawnAigles(x, y, 5)
-
-                    if len(self.gators) <=0:
-                        y = random.randint(0, self.hauteur - 60)
-                        print(f"Gator y : {x,y}")
-                        self.spawnGator(x,y,5)
+                    self.spawnMonsters(temps)
 
             self.updateEnvirnement(environment, score)
             self.afficheMessage(pointsMessage)
@@ -266,26 +292,3 @@ class Jeu:
                     running = False
                 
         pygame.quit()
-############################################################################################
-    def ajouterViseur(self):
-        # Ajoute le viseur au groupe de sprites
-        viseur = Viseur()
-        self.viseur.add(viseur)
-
-    def spawnAigles(self, x, y, speed):
-        aigle = Monstre("aigle", x, y, speed)
-        h = aigle.getHeight()  # Récupération de la hauteur de l'image de l'aigle
-        # Ajustement pour éviter qu'une moitié de l'aigle ne spawn
-        aigle = Monstre("aigle", x, y - h, speed)
-        self.aigles.add(aigle)
-        self.monstres.add(*self.aigles)
-    
-    def spawnFrog(self, x, y, speed):
-        frog = Monstre("frog", x, y, speed)
-        self.frogs.add(frog)
-        self.monstres.add(*self.frogs)
-    
-    def spawnGator(self, x, y, speed):
-        gator = Monstre("gator", x, y, speed)
-        self.gators.add(gator)
-        self.monstres.add(*self.gators)
