@@ -1,20 +1,20 @@
 import socket
 import time
 import struct
-import RPi.GPIO as GPIO 
+#import RPi.GPIO as GPIO 
 import pickle as pkl
 from game import jeu
 
 class Client:
-    def __init__(self, ip_adress='192.168.1.109', port=4000, pin=13, mode=1): # pin, ip adress et mode à changer
+    def __init__(self, ip_adress="192.168.1.109", port=4000, pin=13, mode=1): # pin, ip adress et mode à changer
         self.ip_adress = ip_adress
         self.port = port
         self.pin = pin
         self.mode = mode
 
         # Configuration du GPIO
-        GPIO.setmode(GPIO.BCM)  
-        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  
+        #GPIO.setmode(GPIO.BCM)  
+        #GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  
 
     def client(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -22,7 +22,7 @@ class Client:
             self.client_socket.connect((self.ip_adress, self.port))
             while True:
                 print("En attente d'un appui sur le bouton...")
-
+                '''
                 if GPIO.input(self.pin) == GPIO.HIGH:
                     print("Bouton pressé ! Envoi du message...")
                     message = "Send game"
@@ -36,7 +36,7 @@ class Client:
                     self.sendMessage(message) 
                     time.sleep(0.5)  # éviter les répétitions involontaires
                     break
-
+                '''
         except socket.error as e:
             print(f"Erreur socket : {e}")
 
@@ -45,7 +45,7 @@ class Client:
 
         finally:
             self.client_socket.close()
-            GPIO.cleanup() 
+            #GPIO.cleanup() 
             print("Nettoyage terminé.")
 
     def sendMessage(self, message):
