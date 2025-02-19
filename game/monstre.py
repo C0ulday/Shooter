@@ -77,9 +77,6 @@ class Monstre(pygame.sprite.Sprite):
             elif self.monster_type == "gator":
                 self.rect.x += self.speed
 
-
-
-
     def getHeight(self):
         return self.height
 

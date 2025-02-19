@@ -18,7 +18,7 @@ class Jeu:
         self.monstres = pygame.sprite.Group() # Contient tout les cibles
 
         # Chargement des images de l'environnement
-        self.back = pygame.image.load("game/assets/mode1/env/back.png")
+        self.back       = pygame.image.load("game/assets/mode1/env/back.png")
         self.clouds     = pygame.image.load("game/assets/mode1/env/clouds.png")
         self.decor      = pygame.image.load("game/assets/mode1/env/tiles.png")
         self.rock       = pygame.image.load("game/assets/mode1/env/rock.png")
@@ -38,9 +38,9 @@ class Jeu:
         self.font = pygame.font.Font("game/assets/font/BPdots.otf", font_size)
         self.font.set_bold(True)
         
-        self.font_btn = "game/assets/font/Minecraft.ttf"
-        self.font_size_btn = 30
-        self.color_pressed = (255, 255, 255)
+        self.fontBtn = "game/assets/font/Minecraft.ttf"
+        self.fontSizeBtn = 30
+        self.colorPressed = (255, 255, 255)
         self.color = (155, 139, 221)
 
         # La surface principale d'affichage (display surface)
@@ -48,26 +48,28 @@ class Jeu:
         pygame.display.set_caption("Esi-SHOOT")
         
         # Création d'une surface dédiée pour le jeu
-        self.game_surface = pygame.Surface((self.largeur, self.hauteur))
-    
+        self.gameSurface = pygame.Surface((self.largeur, self.hauteur))
+
+        pygame.mixer.init()
+
     def updateEnvirnement(self, environment, score):
         # Effacer la surface de jeu
-        self.game_surface.fill((0, 0, 0))
+        self.gameSurface.fill((0, 0, 0))
 
-        # Affichage des éléments de l'environnement dans l'ordre souhaité sur game_surface
+        # Affichage des éléments de l'environnement dans l'ordre souhaité sur gameSurface
         for env in environment:
-            self.game_surface.blit(env, (0, 0))
+            self.gameSurface.blit(env, (0, 0))
 
-        self.monstres.draw(self.game_surface)
+        self.monstres.draw(self.gameSurface)
         self.monstres.update(self.largeur,True)
 
         # Mise à jour et affichage du viseur
         self.viseur.update()
-        self.viseur.draw(self.game_surface)
+        self.viseur.draw(self.gameSurface)
 
         # Affichage du score dans le coin supérieur gauche
         score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
-        self.game_surface.blit(score_text, (10, 10))
+        self.gameSurface.blit(score_text, (10, 10))
 
     def ajouterViseur(self):
         # Ajoute le viseur au groupe de sprites
@@ -118,13 +120,15 @@ class Jeu:
             if temps_sec <= 1:
                 temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
                 if not temps_passe:
-                    self.exclamationSound.play()
+                    #self.exclamationSound.play()
+                    pygame.mixer.music.load("game/assets/sounds/exclamation.wav")
+                    pygame.mixer.music.play()
                     temps_passe = True
             else:
                 temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
                 
-            temps_rect = temps_text.get_rect(topright=(self.game_surface.get_width() - 10, 10))
-            self.game_surface.blit(temps_text, temps_rect)
+            temps_rect = temps_text.get_rect(topright=(self.gameSurface.get_width() - 10, 10))
+            self.gameSurface.blit(temps_text, temps_rect)
 
     def afficheMessage(self, pointsMessage):
         # Dessin des points si un message est actif
@@ -143,7 +147,7 @@ class Jeu:
                 
                 x = pointsMessage["x"]
                 y = pointsMessage["y"] - (elapsed/100)
-                self.game_surface.blit(points_surface, (x, y))
+                self.gameSurface.blit(points_surface, (x, y))
             else:
                 # Après 2 secondes, on n'affiche plus le message
                 pointsMessage = None
@@ -167,6 +171,15 @@ class Jeu:
             print(f"Gator y : {x,y}")
             self.spawnGator(x,y,5)
 
+    def playMusic(self,path):
+        pygame.mixer.music.load(path)  # Load the music file
+        pygame.mixer.music.set_volume(0.03)  # Set volume (0.0 to 1.0)
+        pygame.mixer.music.play(-1)  # Play in a loop (-1 means infinite)
+
+    def stopMusic(self):
+        pygame.mixer.music.fadeout(1000)
+        pygame.mixer.music.stop()
+
 ############################################################################################
     def jouer(self):
         # Redimensionnement des images pour correspondre à la surface de jeu
@@ -183,7 +196,7 @@ class Jeu:
 
         clock = pygame.time.Clock()
         fps = 60 
-        temps = 3000
+        temps = 1020
         score = 0
         temps_passe = False  # Pour gérer l'activation de l'exclamation
         running = True
@@ -193,7 +206,7 @@ class Jeu:
         while running:
             # Limite le nombre de frames par seconde
             clock.tick(fps)
-            
+            print(clock)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -214,8 +227,8 @@ class Jeu:
             self.afficheMessage(pointsMessage)
             self.affichageTemps(temps, temps_passe)
 
-            # Une fois le rendu terminé sur game_surface, on le blitte sur la display surface
-            self.screen.blit(self.game_surface, (0, 0))
+            # Une fois le rendu terminé sur gameSurface, on le blitte sur la display surface
+            self.screen.blit(self.gameSurface, (0, 0))
             pygame.display.flip()
 
             # Décrémentation du temps de jeu
@@ -234,61 +247,64 @@ class Jeu:
         ecran_img= pygame.transform.scale(ecran_img, (self.largeur, self.hauteur))
 
         # Chargement et redimensionnement de toutes les images de boutons et du logo
-        jouer_btn    = Bouton(self.largeur//2,self.hauteur//2 - 60 ,"Jouer",self.font_btn,self.font_size_btn,self.color)
-        param_btn    = Bouton(self.largeur//2,self.hauteur//2,"Parametres",self.font_btn,self.font_size_btn,self.color)
-        credits_btn  = Bouton(self.largeur//2,self.hauteur//2 + 60,"Credits",self.font_btn,self.font_size_btn,self.color)
-        class_btn    = Bouton(self.largeur//2,self.hauteur//2 + 120,"Classements",self.font_btn,self.font_size_btn,self.color)
+        jouer_btn    = Bouton(self.largeur//2,self.hauteur//2 - 60 ,"Jouer",self.fontBtn,self.fontSizeBtn,self.color)
+        param_btn    = Bouton(self.largeur//2,self.hauteur//2,"Parametres",self.fontBtn,self.fontSizeBtn,self.color)
+        credits_btn  = Bouton(self.largeur//2,self.hauteur//2 + 60,"Credits",self.fontBtn,self.fontSizeBtn,self.color)
+        class_btn    = Bouton(self.largeur//2,self.hauteur//2 + 120,"Classements",self.fontBtn,self.fontSizeBtn,self.color)
 
         #logos        = pygame.image.load("game/assets/gui/logos.png")
         #logos        = pygame.transform.scale(logos, (self.largeur, hauteur))
         
         back = (98, 53, 138)
-        music = pygame.mixer.Sound("game/assets/sounds/luv.wav")
-        
+        musicPath = "game/assets/sounds/luv.wav"
+        self.playMusic(musicPath)
         running = True
         while running:
             
-            pos_souris = pygame.mouse.get_pos()
+            posSouris = pygame.mouse.get_pos()
             #count_temps +=1
-            music.play()
             #screen.blit(ecran_img,(0,0))
             
             screen.fill(back)
             #screen.blit(logos,(0,0))
             
-            jouer_btn.update(screen,pos_souris,self.color_pressed,self.color)
-            class_btn.update(screen,pos_souris,self.color_pressed,self.color)
-            param_btn.update(screen,pos_souris,self.color_pressed,self.color)
-            credits_btn.update(screen,pos_souris,self.color_pressed,self.color)
+            jouer_btn.update(screen,posSouris,self.colorPressed,self.color)
+            class_btn.update(screen,posSouris,self.colorPressed,self.color)
+            param_btn.update(screen,posSouris,self.colorPressed,self.color)
+            credits_btn.update(screen,posSouris,self.colorPressed,self.color)
             
             pygame.display.flip()
             
             # Affichage des modes de jeu
             
-            if (jouer_btn.boutonHover(pos_souris) and pygame.mouse.get_pressed()[0]):
-                self.menu_jouer(screen,back)
-                
+            if (jouer_btn.boutonHover(posSouris) and pygame.mouse.get_pressed()[0]):
+                self.menuJouer(screen,back)  
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
-                
-                
+                    running = False      
+
         pygame.quit()
         
-    def menu_jouer(self,screen,back):
+    def menuJouer(self,screen,back):
         
-        retour_btn =  Bouton(self.largeur//2,self.hauteur//2,"Retour",self.font_btn,self.font_size_btn,self.color)
+        retourBtn =  Bouton(self.largeur//2,self.hauteur//2 + 60,"Retour",self.fontBtn,self.fontSizeBtn,self.color)
+        nextLevelBtn =  Bouton(self.largeur//2,self.hauteur//2,"Next level",self.fontBtn,self.fontSizeBtn,self.color)
+        btns = [retourBtn, nextLevelBtn]
         running = True
         while running:
-
-            pos_souris = pygame.mouse.get_pos()
+            posSouris = pygame.mouse.get_pos()
             screen.fill(back)
-            retour_btn.update(screen,pos_souris,self.color_pressed,self.color)
+            for btn in btns :
+                btn.update(screen,posSouris,self.colorPressed,self.color)
             pygame.display.flip()
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                
-        pygame.quit()
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if nextLevelBtn.boutonHover(posSouris):
+                        self.stopMusic()
+                        self.jouer()
+                    if retourBtn.boutonHover(posSouris):
+                        running = False
