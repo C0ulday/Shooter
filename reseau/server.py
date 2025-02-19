@@ -8,7 +8,7 @@ from game import jeu
 
 class server:
     def __init__(self):
-        self.Ip_adress = 'localhost'
+        self.Ip_adress = "192.168.1.109"
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,7 +17,6 @@ class server:
         print("Serveur en attente de connexion...")
         
     def server(self):
-        print(self.Ip_adress)
         try:
             # Start game in a separate thread
             gameThread = threading.Thread(target=self.runGame, daemon=True)
