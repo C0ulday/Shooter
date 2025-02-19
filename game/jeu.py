@@ -15,6 +15,7 @@ class Jeu:
         self.aigles = pygame.sprite.Group()
         self.frogs   = pygame.sprite.Group()
         self.gators = pygame.sprite.Group()
+        self.monstres = pygame.sprite.Group() # Contient tout les cibles
 
         # Chargement des images de l'environnement
         self.back = pygame.image.load("game/assets/mode1/env/back.png")
@@ -48,8 +49,47 @@ class Jeu:
         
         # Création d'une surface dédiée pour le jeu
         self.game_surface = pygame.Surface((self.largeur, self.hauteur))
-        
+  
     ############################################################################################
+    def updateEnvirnement(self, environment, score):
+        # Effacer la surface de jeu
+        self.game_surface.fill((0, 0, 0))
+
+        # Affichage des éléments de l'environnement dans l'ordre souhaité sur game_surface
+        for env in environment:
+            self.game_surface.blit(env, (0, 0))
+
+        self.monstres.draw(self.game_surface)
+        self.monstres.update(self.largeur,True)
+
+        # Mise à jour et affichage du viseur
+        self.viseur.update()
+        self.viseur.draw(self.game_surface)
+
+        # Affichage du score dans le coin supérieur gauche
+        score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
+        self.game_surface.blit(score_text, (10, 10))
+
+    def scoreMessage(self, monstre):
+        if (monstre.monster_type == "aigle"):
+            score = self.joueur.setScore(50)
+            # Affichage des points dynamiquement
+            pointsMessage = {
+                "text": "+50",
+                "start_time": pygame.time.get_ticks(),
+                "x": monstre.rect.x,
+                "y": monstre.rect.y
+            }
+        elif (monstre.monster_type == "gator"):
+            score = self.joueur.setScore(100)
+            pointsMessage = {
+                "text": "+100",
+                "start_time": pygame.time.get_ticks(),
+                "x": monstre.rect.x,
+                "y": monstre.rect.y
+            }
+        return pointsMessage
+    
     def jouer(self):
         # Redimensionnement des images pour correspondre à la surface de jeu
         background = pygame.transform.scale(self.back, (self.largeur, self.hauteur))
@@ -57,17 +97,19 @@ class Jeu:
         sol        = pygame.transform.scale(self.sol, (self.largeur, self.hauteur))
         rock       = pygame.transform.scale(self.rock, (self.largeur, self.hauteur))
         decor      = pygame.transform.scale(self.decor, (self.largeur, self.hauteur))
-
+        environment = [background, clouds, sol, rock, decor]
         # Définition d'un événement personnalisé pour le spawn des monstres (toutes les 1.5 secondes)
         SPAWN_EVENT = pygame.USEREVENT + 1
         pygame.time.set_timer(SPAWN_EVENT, 1500)
 
         clock = pygame.time.Clock()
-        fps = 120 
+        fps = 60 
         temps = 3000
         score = 0
         temps_passe = False  # Pour gérer l'activation de l'exclamation
         running = True
+
+        pointsMessage = None
 
         while running:
             for event in pygame.event.get():
@@ -75,29 +117,14 @@ class Jeu:
                     running = False
                     pygame.quit()
 
-                
                 # Gestion du clic de souris pour tirer
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    aigle = self.viseur.sprites()[0].detecteurTir(self.aigles)
-                    if (aigle != None):
-                        score = self.joueur.setScore(50)
-                        # Affichage des points dynamiquement
-                        points_message = {
-                            "text": "+50",
-                            "start_time": pygame.time.get_ticks(),
-                            "x": aigle.rect.x,
-                            "y": aigle.rect.y
-                        }
-                    gator = self.viseur.sprites()[0].detecteurTir(self.gators)
-                    if( gator != None):
-                        score = self.joueur.setScore(100)
-                        points_message = {
-                            "text": "+100",
-                            "start_time": pygame.time.get_ticks(),
-                            "x": gator.rect.x,
-                            "y": gator.rect.y
-                        }
-                    print(f"Score: {score}")
+                    monstre = self.viseur.sprites()[0].detecteurTir(self.monstres)
+                    print("Monstres :", self.monstres)
+                    if (monstre is not None):
+                        score = 0
+                        pointsMessage = self.scoreMessage(monstre)
+                        print(f"Score: {score}")
 
                 # Gestion de l'événement de spawn des monstres
                 if event.type == SPAWN_EVENT:
@@ -120,57 +147,28 @@ class Jeu:
 
             # Limite le nombre de frames par seconde
             clock.tick(fps)
-
-            # Effacer la surface de jeu
-            self.game_surface.fill((0, 0, 0))
-
-            # Affichage des éléments de l'environnement dans l'ordre souhaité sur game_surface
-            self.game_surface.blit(background, (0, 0))
-            self.game_surface.blit(clouds, (0, 0))
-            self.game_surface.blit(rock, (0, 0))
-            self.game_surface.blit(decor, (0, 0))
-            self.game_surface.blit(sol, (0, 0))
-
-            # Affichage et mise à jour des sprites des aigles
-            self.aigles.draw(self.game_surface)
-            self.aigles.update(self.largeur,True)
-            self.gators.draw(self.game_surface)
-            self.gators.update(self.largeur,True)
-
-            # Affichage et mise à jour des sprites des grenouilles
-            self.frogs.draw(self.game_surface)
-            self.frogs.update(self.largeur)
-            
-            
-
-            # Mise à jour et affichage du viseur
-            self.viseur.update()
-            self.viseur.draw(self.game_surface)
-
-            # Affichage du score dans le coin supérieur gauche
-            score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
-            self.game_surface.blit(score_text, (10, 10))
+            self.updateEnvirnement(environment, score)
             
             # Dessin des points si un message est actif
-            if hasattr(self, "points_message") and points_message is not None:
+            if pointsMessage is not None:
                 # Durée de vie en millisecondes (ici 2000 ms = 2 secondes)
                 duree = 2000
-                elapsed = pygame.time.get_ticks() - points_message["start_time"]
-
+                elapsed = pygame.time.get_ticks() - pointsMessage["start_time"]
+                print(elapsed)
                 if elapsed < duree:
                     # Calcul de l'alpha qui décroît linéairement de 255 à 0
                     alpha = 255 - int(255 * elapsed / duree)
 
                     # Création du texte et application de l'alpha
-                    points_surface = self.font.render(points_message["text"], True, (255, 255, 255))
+                    points_surface = self.font.render(pointsMessage["text"], True, (255, 255, 255))
                     points_surface.set_alpha(alpha)
                     
-                    x = self.largeur//2
-                    y = self.hauteur//2
-                    self.game_surface.blit(points_surface, x, y)
+                    x = pointsMessage["x"]
+                    y = pointsMessage["y"] - (elapsed/100)
+                    self.game_surface.blit(points_surface, (x, y))
                 else:
                     # Après 2 secondes, on n'affiche plus le message
-                    self.points_message = None
+                    pointsMessage = None
             
             # Affichage du chronomètre dans le coin supérieur droit
             temps_sec = temps * 0.001
@@ -275,11 +273,14 @@ class Jeu:
         # Ajustement pour éviter qu'une moitié de l'aigle ne spawn
         aigle = Monstre("aigle", x, y - h, speed)
         self.aigles.add(aigle)
+        self.monstres.add(*self.aigles)
     
     def spawnFrog(self, x, y, speed):
         frog = Monstre("frog", x, y, speed)
         self.frogs.add(frog)
+        self.monstres.add(*self.frogs)
     
     def spawnGator(self, x, y, speed):
         gator = Monstre("gator", x, y, speed)
         self.gators.add(gator)
+        self.monstres.add(*self.gators)
