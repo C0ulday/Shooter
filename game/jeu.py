@@ -70,7 +70,7 @@ class Jeu:
         score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
         self.game_surface.blit(score_text, (10, 10))
 
-    def scoreMessage(self, monstre):
+    def scoreMessage(self, monstre, score):
         if (monstre.monster_type == "aigle"):
             score = self.joueur.setScore(50)
             # Affichage des points dynamiquement
@@ -88,8 +88,44 @@ class Jeu:
                 "x": monstre.rect.x,
                 "y": monstre.rect.y
             }
-        return pointsMessage
+        return pointsMessage, score
     
+    def affichageTemps(self, temps, temps_passe):
+        # Affichage du chronomètre dans le coin supérieur droit
+            temps_sec = temps * 0.001
+            if temps_sec <= 1:
+                temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
+                if not temps_passe:
+                    self.exclamationSound.play()
+                    temps_passe = True
+            else:
+                temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
+                
+            temps_rect = temps_text.get_rect(topright=(self.game_surface.get_width() - 10, 10))
+            self.game_surface.blit(temps_text, temps_rect)
+
+    def afficheMessage(self, pointsMessage):
+        # Dessin des points si un message est actif
+        if pointsMessage is not None:
+            # Durée de vie en millisecondes (ici 2000 ms = 2 secondes)
+            duree = 2000
+            elapsed = pygame.time.get_ticks() - pointsMessage["start_time"]
+            print(elapsed)
+            if elapsed < duree:
+                # Calcul de l'alpha qui décroît linéairement de 255 à 0
+                alpha = 255 - int(255 * elapsed / duree)
+
+                # Création du texte et application de l'alpha
+                points_surface = self.font.render(pointsMessage["text"], True, (255, 255, 255))
+                points_surface.set_alpha(alpha)
+                
+                x = pointsMessage["x"]
+                y = pointsMessage["y"] - (elapsed/100)
+                self.game_surface.blit(points_surface, (x, y))
+            else:
+                # Après 2 secondes, on n'affiche plus le message
+                pointsMessage = None
+
     def jouer(self):
         # Redimensionnement des images pour correspondre à la surface de jeu
         background = pygame.transform.scale(self.back, (self.largeur, self.hauteur))
@@ -98,6 +134,7 @@ class Jeu:
         rock       = pygame.transform.scale(self.rock, (self.largeur, self.hauteur))
         decor      = pygame.transform.scale(self.decor, (self.largeur, self.hauteur))
         environment = [background, clouds, sol, rock, decor]
+
         # Définition d'un événement personnalisé pour le spawn des monstres (toutes les 1.5 secondes)
         SPAWN_EVENT = pygame.USEREVENT + 1
         pygame.time.set_timer(SPAWN_EVENT, 1500)
@@ -112,6 +149,9 @@ class Jeu:
         pointsMessage = None
 
         while running:
+            # Limite le nombre de frames par seconde
+            clock.tick(fps)
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -120,10 +160,8 @@ class Jeu:
                 # Gestion du clic de souris pour tirer
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     monstre = self.viseur.sprites()[0].detecteurTir(self.monstres)
-                    print("Monstres :", self.monstres)
                     if (monstre is not None):
-                        score = 0
-                        pointsMessage = self.scoreMessage(monstre)
+                        pointsMessage,score = self.scoreMessage(monstre, score)
                         print(f"Score: {score}")
 
                 # Gestion de l'événement de spawn des monstres
@@ -140,48 +178,15 @@ class Jeu:
                             self.spawnAigles(x, y, 40)
                         else:
                             self.spawnAigles(x, y, 5)
+
                     if len(self.gators) <=0:
                         y = random.randint(0, self.hauteur - 60)
                         print(f"Gator y : {x,y}")
                         self.spawnGator(x,y,5)
 
-            # Limite le nombre de frames par seconde
-            clock.tick(fps)
             self.updateEnvirnement(environment, score)
-            
-            # Dessin des points si un message est actif
-            if pointsMessage is not None:
-                # Durée de vie en millisecondes (ici 2000 ms = 2 secondes)
-                duree = 2000
-                elapsed = pygame.time.get_ticks() - pointsMessage["start_time"]
-                print(elapsed)
-                if elapsed < duree:
-                    # Calcul de l'alpha qui décroît linéairement de 255 à 0
-                    alpha = 255 - int(255 * elapsed / duree)
-
-                    # Création du texte et application de l'alpha
-                    points_surface = self.font.render(pointsMessage["text"], True, (255, 255, 255))
-                    points_surface.set_alpha(alpha)
-                    
-                    x = pointsMessage["x"]
-                    y = pointsMessage["y"] - (elapsed/100)
-                    self.game_surface.blit(points_surface, (x, y))
-                else:
-                    # Après 2 secondes, on n'affiche plus le message
-                    pointsMessage = None
-            
-            # Affichage du chronomètre dans le coin supérieur droit
-            temps_sec = temps * 0.001
-            if temps_sec <= 1:
-                temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
-                if not temps_passe:
-                    self.exclamationSound.play()
-                    temps_passe = True
-            else:
-                temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
-                
-            temps_rect = temps_text.get_rect(topright=(self.game_surface.get_width() - 10, 10))
-            self.game_surface.blit(temps_text, temps_rect)
+            self.afficheMessage(pointsMessage)
+            self.affichageTemps(temps, temps_passe)
 
             # Une fois le rendu terminé sur game_surface, on le blitte sur la display surface
             self.screen.blit(self.game_surface, (0, 0))
