@@ -83,7 +83,7 @@ class server:
     def runGame(self):
         pygame.init()
         self.game = jeu.Jeu()
-        self.game.jouer()
+        self.game.menu()
 
     def sendData(self, connexion, data):
         game = pkl.dumps(data)

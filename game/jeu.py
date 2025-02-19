@@ -284,7 +284,6 @@ class Jeu:
         pygame.quit()
         
     def menuJouer(self,screen,back):
-        
         retourBtn =  Bouton(self.largeur//2,self.hauteur//2 + 60,"Retour",self.fontBtn,self.fontSizeBtn,self.color)
         nextLevelBtn =  Bouton(self.largeur//2,self.hauteur//2,"Next level",self.fontBtn,self.fontSizeBtn,self.color)
         btns = [retourBtn, nextLevelBtn]
