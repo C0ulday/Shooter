@@ -17,6 +17,7 @@ class server:
         print("Serveur en attente de connexion...")
         
     def server(self):
+        print(self.Ip_adress)
         try:
             # Start game in a separate thread
             gameThread = threading.Thread(target=self.runGame, daemon=True)

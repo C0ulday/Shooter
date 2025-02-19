@@ -203,7 +203,6 @@ class Jeu:
         while running:
             # Limite le nombre de frames par seconde
             clock.tick(fps)
-            print(clock)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
