@@ -121,8 +121,6 @@ class Jeu:
                 temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
                 if not temps_passe:
                     #self.exclamationSound.play()
-                    pygame.mixer.music.load("game/assets/sounds/exclamation.wav")
-                    pygame.mixer.music.play()
                     temps_passe = True
             else:
                 temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
@@ -177,7 +175,6 @@ class Jeu:
         pygame.mixer.music.play(-1)  # Play in a loop (-1 means infinite)
 
     def stopMusic(self):
-        pygame.mixer.music.fadeout(1000)
         pygame.mixer.music.stop()
 
 ############################################################################################
