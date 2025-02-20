@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu du Jeu</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <h1>Bienvenue sur le Jeu</h1>
+    <button onclick="startGame()">Jouer</button>
+
+    <script>
+        var socket = io.connect("http://0.0.0.0:5000"); // iL faut le changer avec la vrai adresse ip
+
+        function startGame() {
+            socket.emit("start_game");
+        }
+    </script>
+</body>
+</html>

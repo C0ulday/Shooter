@@ -4,11 +4,16 @@ import struct
 import threading
 import pickle as pkl
 from game import jeu  
+from flask import Flask, render_template
+from flask_socketio import SocketIO
 
+# Initialisation du serveur Flask
+app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 class server:
     def __init__(self):
-        self.Ip_adress = "localhost"
+        self.Ip_adress = "localhost"   # iL faut le changer avec la vrai adresse ip
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,7 +22,12 @@ class server:
         print("Serveur en attente de connexion...")
         
     def server(self):
+
         try:
+            # Démarrer le serveur Flask/Web dans un thread
+            flaskThread = threading.Thread(target=self.runFlask, daemon=True)
+            flaskThread.start()
+
             # Start game in a separate thread
             gameThread = threading.Thread(target=self.runGame, daemon=True)
             gameThread.start()
@@ -80,6 +90,10 @@ class server:
             print("Fermeture des connexions...")
             connexion.close()
 
+    def runFlask(self):
+        """ Lance le serveur Flask avec WebSockets. """
+        socketio.run(app, host=self.Ip_adress, port=5000, debug=False, use_reloader=False)
+
     def runGame(self):
         pygame.init()
         self.game = jeu.Jeu()
@@ -92,7 +106,10 @@ class server:
         connexion.sendall(size_prefix + game)  
         print(f"Envoi du jeu au client...")
 
-
+    @app.route("/")
+    def home():
+        return render_template("app.html")
+    
 if __name__ == "__main__":
     serveur = server()
     serveur.server()

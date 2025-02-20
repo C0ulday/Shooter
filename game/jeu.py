@@ -134,7 +134,6 @@ class Jeu:
             # Durée de vie en millisecondes (ici 2000 ms = 2 secondes)
             duree = 2000
             elapsed = pygame.time.get_ticks() - pointsMessage["start_time"]
-            print(elapsed)
             if elapsed < duree:
                 # Calcul de l'alpha qui décroît linéairement de 255 à 0
                 alpha = 255 - int(255 * elapsed / duree)
@@ -166,7 +165,6 @@ class Jeu:
 
         if len(self.gators) <=0:
             y = random.randint(0, self.hauteur - 60)
-            print(f"Gator y : {x,y}")
             self.spawnGator(x,y,5)
 
     def playMusic(self,path):
@@ -243,11 +241,11 @@ class Jeu:
         ecran_img= pygame.transform.scale(ecran_img, (self.largeur, self.hauteur))
 
         # Chargement et redimensionnement de toutes les images de boutons et du logo
-        jouer_btn    = Bouton(self.largeur//2,self.hauteur//2 - 60 ,"Jouer",self.fontBtn,self.fontSizeBtn,self.color)
-        param_btn    = Bouton(self.largeur//2,self.hauteur//2,"Parametres",self.fontBtn,self.fontSizeBtn,self.color)
-        credits_btn  = Bouton(self.largeur//2,self.hauteur//2 + 60,"Credits",self.fontBtn,self.fontSizeBtn,self.color)
-        class_btn    = Bouton(self.largeur//2,self.hauteur//2 + 120,"Classements",self.fontBtn,self.fontSizeBtn,self.color)
-
+        jouerBttn    = Bouton(self.largeur//2,self.hauteur//2 - 60 ,"Jouer",self.fontBtn,self.fontSizeBtn,self.color)
+        paramBtn    = Bouton(self.largeur//2,self.hauteur//2,"Parametres",self.fontBtn,self.fontSizeBtn,self.color)
+        creditsBtn  = Bouton(self.largeur//2,self.hauteur//2 + 60,"Credits",self.fontBtn,self.fontSizeBtn,self.color)
+        classBtn    = Bouton(self.largeur//2,self.hauteur//2 + 120,"Classements",self.fontBtn,self.fontSizeBtn,self.color)
+        btns = [jouerBttn, paramBtn, creditsBtn, classBtn]
         #logos        = pygame.image.load("game/assets/gui/logos.png")
         #logos        = pygame.transform.scale(logos, (self.largeur, hauteur))
         
@@ -263,17 +261,14 @@ class Jeu:
             
             screen.fill(back)
             #screen.blit(logos,(0,0))
-            
-            jouer_btn.update(screen,posSouris,self.colorPressed,self.color)
-            class_btn.update(screen,posSouris,self.colorPressed,self.color)
-            param_btn.update(screen,posSouris,self.colorPressed,self.color)
-            credits_btn.update(screen,posSouris,self.colorPressed,self.color)
+            for btn in btns :
+                btn.update(screen,posSouris,self.colorPressed,self.color)
             
             pygame.display.flip()
             
             # Affichage des modes de jeu
             
-            if (jouer_btn.boutonHover(posSouris) and pygame.mouse.get_pressed()[0]):
+            if (btns[0].boutonHover(posSouris) and pygame.mouse.get_pressed()[0]):
                 self.menuJouer(screen,back)  
             
             for event in pygame.event.get():
