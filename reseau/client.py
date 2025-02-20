@@ -6,7 +6,7 @@ import pickle as pkl
 from game import jeu
 
 class Client:
-    def __init__(self, ip_adress="192.168.1.109", port=4000, pin=13, mode=1): # pin, ip adress et mode à changer
+    def __init__(self, ip_adress="localhost", port=4000, pin=13, mode=1): # pin, ip adress et mode à changer
         self.ip_adress = ip_adress
         self.port = port
         self.pin = pin

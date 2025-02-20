@@ -8,7 +8,7 @@ from game import jeu
 
 class server:
     def __init__(self):
-        self.Ip_adress = "192.168.1.109"
+        self.Ip_adress = "localhost"
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
