@@ -233,12 +233,11 @@ class Jeu:
 ############################################################################################
 
     def menu(self):
-        
-        pygame.display.set_caption("Esi-SHOOT")
-        screen = pygame.display.set_mode((self.largeur, self.hauteur), pygame.RESIZABLE)
         # Chargement et redimensionnement de l'image d'arrière-plan
         ecran_img = pygame.image.load("game/assets/gui/ecran_chargement.png")
-        ecran_img= pygame.transform.scale(ecran_img, (self.largeur, self.hauteur))
+        ecran_img = pygame.transform.scale(ecran_img, (self.largeur, self.hauteur))
+        logos     = pygame.image.load("game/assets/gui/logos.png")
+        logos     = pygame.transform.scale(logos, (self.largeur, self.hauteur))
 
         # Chargement et redimensionnement de toutes les images de boutons et du logo
         jouerBttn    = Bouton(self.largeur//2,self.hauteur//2 - 60 ,"Jouer",self.fontBtn,self.fontSizeBtn,self.color)
@@ -246,47 +245,47 @@ class Jeu:
         creditsBtn  = Bouton(self.largeur//2,self.hauteur//2 + 60,"Credits",self.fontBtn,self.fontSizeBtn,self.color)
         classBtn    = Bouton(self.largeur//2,self.hauteur//2 + 120,"Classements",self.fontBtn,self.fontSizeBtn,self.color)
         btns = [jouerBttn, paramBtn, creditsBtn, classBtn]
-        #logos        = pygame.image.load("game/assets/gui/logos.png")
-        #logos        = pygame.transform.scale(logos, (self.largeur, hauteur))
         
         back = (98, 53, 138)
         musicPath = "game/assets/sounds/luv.wav"
-        self.playMusic(musicPath)
         running = True
+        self.screen.blit(ecran_img, (0, 0))  # Affiche l'écran de chargement en plein écran
+        pygame.display.flip()  # Rafraîchit l'affichage
+        pygame.time.wait(3000)  # Pause de 3 secondes avant le menu
+        self.playMusic(musicPath)
         while running:
             
             posSouris = pygame.mouse.get_pos()
             #count_temps +=1
-            #screen.blit(ecran_img,(0,0))
             
-            screen.fill(back)
-            #screen.blit(logos,(0,0))
+            self.screen.fill(back)
+            self.screen.blit(logos, (self.largeur // 2 - logos.get_width() // 2, 50))  
             for btn in btns :
-                btn.update(screen,posSouris,self.colorPressed,self.color)
+                btn.update(self.screen,posSouris,self.colorPressed,self.color)
             
             pygame.display.flip()
             
-            # Affichage des modes de jeu
-            
-            if (btns[0].boutonHover(posSouris) and pygame.mouse.get_pressed()[0]):
-                self.menuJouer(screen,back)  
-            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False      
+                    running = False
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if btns[0].boutonHover(posSouris):
+                        self.menuJouer(back) 
+
 
         pygame.quit()
         
-    def menuJouer(self,screen,back):
+    def menuJouer(self,back):
         retourBtn =  Bouton(self.largeur//2,self.hauteur//2 + 60,"Retour",self.fontBtn,self.fontSizeBtn,self.color)
         nextLevelBtn =  Bouton(self.largeur//2,self.hauteur//2,"Next level",self.fontBtn,self.fontSizeBtn,self.color)
         btns = [retourBtn, nextLevelBtn]
         running = True
         while running:
             posSouris = pygame.mouse.get_pos()
-            screen.fill(back)
+            self.screen.fill(back)
             for btn in btns :
-                btn.update(screen,posSouris,self.colorPressed,self.color)
+                btn.update(self.screen,posSouris,self.colorPressed,self.color)
             pygame.display.flip()
             
             for event in pygame.event.get():
