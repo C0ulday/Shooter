@@ -23,7 +23,7 @@ class Jeu:
         self.decor      = pygame.image.load("game/assets/mode1/env/tiles.png")
         self.rock       = pygame.image.load("game/assets/mode1/env/rock.png")
         self.sol        = pygame.image.load("game/assets/mode1/env/front.png")
-        
+
         self.exclamationSound = pygame.mixer.Sound("game/assets/sounds/exclamation.wav")
         
         # Le joueur
@@ -49,6 +49,12 @@ class Jeu:
         
         # Création d'une surface dédiée pour le jeu
         self.gameSurface = pygame.Surface((self.largeur, self.hauteur))
+
+        # Chargement du menu
+        self.loadingImge = pygame.image.load("game/assets/gui/ecran_chargement.png")
+        self.loadingImge = pygame.transform.scale(self.loadingImge, (self.largeur, self.hauteur))
+        self.logos      = pygame.image.load("game/assets/gui/logos.png")
+        self.logos      = pygame.transform.scale(self.logos, (self.largeur, self.hauteur))
 
         pygame.mixer.init()
 
@@ -116,17 +122,17 @@ class Jeu:
     
     def affichageTemps(self, temps, temps_passe):
         # Affichage du chronomètre dans le coin supérieur droit
-            temps_sec = temps * 0.001
-            if temps_sec <= 1:
-                temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
-                if not temps_passe:
-                    #self.exclamationSound.play()
-                    temps_passe = True
-            else:
-                temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
-                
-            temps_rect = temps_text.get_rect(topright=(self.gameSurface.get_width() - 10, 10))
-            self.gameSurface.blit(temps_text, temps_rect)
+        temps_sec = temps * 0.001
+        if temps_sec <= 1:
+            temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
+            if not temps_passe:
+                #self.exclamationSound.play()
+                temps_passe = True
+        else:
+            temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
+            
+        temps_rect = temps_text.get_rect(topright=(self.gameSurface.get_width() - 10, 10))
+        self.gameSurface.blit(temps_text, temps_rect)
 
     def afficheMessage(self, pointsMessage):
         # Dessin des points si un message est actif
@@ -175,6 +181,11 @@ class Jeu:
     def stopMusic(self):
         pygame.mixer.music.stop()
 
+    def showLoading(self):
+        self.screen.blit(self.loadingImge, (0, 0)) 
+        pygame.display.flip()  
+        pygame.time.wait(1000)
+
 ############################################################################################
     def jouer(self):
         # Redimensionnement des images pour correspondre à la surface de jeu
@@ -191,11 +202,11 @@ class Jeu:
 
         clock = pygame.time.Clock()
         fps = 60 
-        temps = 1020
+        temps = 5000 
         score = 0
         temps_passe = False  # Pour gérer l'activation de l'exclamation
         running = True
-
+        endingTime = temps + pygame.time.get_ticks()
         pointsMessage = None
 
         while running:
@@ -219,26 +230,20 @@ class Jeu:
 
             self.updateEnvirnement(environment, score)
             self.afficheMessage(pointsMessage)
-            self.affichageTemps(temps, temps_passe)
+            self.affichageTemps(endingTime - pygame.time.get_ticks(), temps_passe)
 
             # Une fois le rendu terminé sur gameSurface, on le blitte sur la display surface
             self.screen.blit(self.gameSurface, (0, 0))
             pygame.display.flip()
-
+            
             # Décrémentation du temps de jeu
-            if temps <= 0:
+            if pygame.time.get_ticks() >= endingTime:
                 running = False
-            temps -= 1
+            
             
 ############################################################################################
 
     def menu(self):
-        # Chargement et redimensionnement de l'image d'arrière-plan
-        ecran_img = pygame.image.load("game/assets/gui/ecran_chargement.png")
-        ecran_img = pygame.transform.scale(ecran_img, (self.largeur, self.hauteur))
-        logos     = pygame.image.load("game/assets/gui/logos.png")
-        logos     = pygame.transform.scale(logos, (self.largeur, self.hauteur))
-
         # Chargement et redimensionnement de toutes les images de boutons et du logo
         jouerBttn    = Bouton(self.largeur//2,self.hauteur//2 - 60 ,"Jouer",self.fontBtn,self.fontSizeBtn,self.color)
         paramBtn    = Bouton(self.largeur//2,self.hauteur//2,"Parametres",self.fontBtn,self.fontSizeBtn,self.color)
@@ -249,17 +254,15 @@ class Jeu:
         back = (98, 53, 138)
         musicPath = "game/assets/sounds/luv.wav"
         running = True
-        self.screen.blit(ecran_img, (0, 0))  
-        pygame.display.flip()  
-        pygame.time.wait(1000)  
+        self.showLoading()  
         self.playMusic(musicPath)
+
         while running:
-            
             posSouris = pygame.mouse.get_pos()
             #count_temps +=1
             
             self.screen.fill(back)
-            self.screen.blit(logos, (self.largeur // 2 - logos.get_width() // 2, 50))  
+            self.screen.blit(self.logos, (0, -30))  
             for btn in btns :
                 btn.update(self.screen,posSouris,self.colorPressed,self.color)
             
@@ -284,6 +287,7 @@ class Jeu:
         while running:
             posSouris = pygame.mouse.get_pos()
             self.screen.fill(back)
+            self.screen.blit(self.logos, (0, -30))
             for btn in btns :
                 btn.update(self.screen,posSouris,self.colorPressed,self.color)
             pygame.display.flip()
@@ -291,9 +295,11 @@ class Jeu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     if nextLevelBtn.boutonHover(posSouris):
+                        self.showLoading()
                         self.stopMusic()
                         self.jouer()
+                        
                     if retourBtn.boutonHover(posSouris):
                         running = False
