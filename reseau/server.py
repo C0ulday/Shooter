@@ -91,8 +91,12 @@ class server:
             connexion.close()
 
     def runFlask(self):
-        """ Lance le serveur Flask avec WebSockets. """
+        #Lance le serveur Flask 
         socketio.run(app, host=self.Ip_adress, port=5000, debug=False, use_reloader=False)
+        self.handleWebpage()
+
+    def handleWebpage(self):
+        return
 
     def runGame(self):
         pygame.init()
@@ -105,7 +109,7 @@ class server:
         size_prefix = struct.pack("I", len(game)) 
         connexion.sendall(size_prefix + game)  
         print(f"Envoi du jeu au client...")
-
+    
     @app.route("/")
     def home():
         return render_template("app.html")

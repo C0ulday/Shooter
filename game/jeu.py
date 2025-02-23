@@ -255,7 +255,7 @@ class Jeu:
         musicPath = "game/assets/sounds/luv.wav"
         running = True
         self.showLoading()  
-        self.playMusic(musicPath)
+        #self.playMusic(musicPath)
 
         while running:
             posSouris = pygame.mouse.get_pos()
