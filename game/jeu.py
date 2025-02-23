@@ -249,9 +249,9 @@ class Jeu:
         back = (98, 53, 138)
         musicPath = "game/assets/sounds/luv.wav"
         running = True
-        self.screen.blit(ecran_img, (0, 0))  # Affiche l'écran de chargement en plein écran
-        pygame.display.flip()  # Rafraîchit l'affichage
-        pygame.time.wait(3000)  # Pause de 3 secondes avant le menu
+        self.screen.blit(ecran_img, (0, 0))  
+        pygame.display.flip()  
+        pygame.time.wait(1000)  
         self.playMusic(musicPath)
         while running:
             
