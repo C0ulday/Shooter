@@ -13,7 +13,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 class server:
     def __init__(self):
-        self.Ip_adress = "localhost"   # iL faut le changer avec la vrai adresse ip
+        self.Ip_adress = "192.168.212.66"   # iL faut le changer avec la vrai adresse ip
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -93,11 +93,8 @@ class server:
     def runFlask(self):
         #Lance le serveur Flask 
         socketio.run(app, host=self.Ip_adress, port=5000, debug=False, use_reloader=False)
-        self.handleWebpage()
-
-    def handleWebpage(self):
-        return
-
+        #self.handleWebpage()
+        
     def runGame(self):
         pygame.init()
         self.game = jeu.Jeu()
@@ -114,6 +111,12 @@ class server:
     def home():
         return render_template("app.html")
     
+    @socketio.on("startGame")  
+    def handle_startGame():
+        print("Le jeu a été lancé !")
+        #socketio.emit("gameStarted", {"message": "Le jeu commence !"})  
+
+        
 if __name__ == "__main__":
     serveur = server()
     serveur.server()
