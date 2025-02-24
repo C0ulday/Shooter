@@ -1,5 +1,5 @@
 // Connexion WebSocket avec le serveur Flask
-const socket = io("http://192.168.212.66:5000"); // Change avec la vraie adresse IP
+const socket = io("http://localhost:5000"); // Change avec la vraie adresse IP
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Script chargé !");

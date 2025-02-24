@@ -4,6 +4,7 @@ import struct
 import threading
 import pickle as pkl
 from game import jeu  
+from game import menu
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 
@@ -13,7 +14,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 class server:
     def __init__(self):
-        self.Ip_adress = "192.168.212.66"   # iL faut le changer avec la vrai adresse ip
+        self.Ip_adress = "localhost"   # iL faut le changer avec la vrai adresse ip
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -98,7 +99,8 @@ class server:
     def runGame(self):
         pygame.init()
         self.game = jeu.Jeu()
-        self.game.menu()
+        self.menu = menu.Menu(self.game)
+        self.menu.launchMenu()
 
     def sendData(self, connexion, data):
         game = pkl.dumps(data)
