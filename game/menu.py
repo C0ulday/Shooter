@@ -75,9 +75,13 @@ class Menu:
         pygame.quit()
 
     def menuJouer(self, back):
+        
+        reflexBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2, "Reflex Mode", self.fontBtn, self.fontSizeBtn, self.color)
+        chillBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 - 60, "Chill Mode", self.fontBtn, self.fontSizeBtn, self.color)
         retourBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 + 60, "Retour", self.fontBtn, self.fontSizeBtn, self.color)
-        nextLevelBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2, "Next level", self.fontBtn, self.fontSizeBtn, self.color)
-        buttons = [retourBtn, nextLevelBtn]
+        
+        buttons = [retourBtn, chillBtn, reflexBtn]
+        
         running = True
         while running:
             posSouris = pygame.mouse.get_pos()
@@ -91,7 +95,7 @@ class Menu:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if nextLevelBtn.boutonHover(posSouris):
+                    if chillBtn.boutonHover(posSouris):
                         self.showLoading()
                         self.stopMusic()
                         self.jeu.jouer()

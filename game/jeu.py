@@ -32,7 +32,7 @@ class Jeu:
         # Matériels affichage
         info = pygame.display.Info()
         self.largeur = info.current_w
-        self.hauteur = info.current_h - 50
+        self.hauteur = info.current_h - 10
         
         font_size = 16
         self.font = pygame.font.Font("game/assets/font/BPdots.otf", font_size)
@@ -112,12 +112,12 @@ class Jeu:
         # Affichage du chronomètre dans le coin supérieur droit
         temps_sec = temps * 0.001
         if temps_sec <= 1:
-            temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 0, 0))
+            temps_text = self.font.render(f"Temps: {temps_sec:.1f} s", True, (255, 0, 0))
             if not temps_passe:
-                #self.exclamationSound.play()
+                self.exclamationSound.play()
                 temps_passe = True
         else:
-            temps_text = self.font.render(f"Temps: {temps_sec:.3f} s", True, (255, 255, 255))
+            temps_text = self.font.render(f"Temps: {temps_sec:.1f} s", True, (255, 255, 255))
             
         temps_rect = temps_text.get_rect(topright=(self.gameSurface.get_width() - 10, 10))
         self.gameSurface.blit(temps_text, temps_rect)
@@ -147,7 +147,7 @@ class Jeu:
         # Pour n'avoir qu'un seul sprite à la fois
         x = self.largeur
         if len(self.aigles) <=0:
-            y = random.randint(0, self.hauteur - 60)
+            y = random.randint(0, self.hauteur - 120)
             self.spawnFrog(x, int(self.hauteur * 0.01), 5)
             # On spawn des aigles avec des vitesses différentes selon le temps restant
             if temps < 2500:
@@ -158,7 +158,7 @@ class Jeu:
                 self.spawnAigles(x, y, 5)
 
         if len(self.gators) <=0:
-            y = random.randint(0, self.hauteur - 60)
+            y = random.randint(0, self.hauteur - 120)
             self.spawnGator(x,y,5)
 
 ############################################################################################
@@ -177,7 +177,7 @@ class Jeu:
 
         clock = pygame.time.Clock()
         fps = 60 
-        temps = 5000 
+        temps = 30000 # 30 secondes 
         score = 0
         temps_passe = False  # Pour gérer l'activation de l'exclamation
         running = True
