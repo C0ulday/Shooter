@@ -14,8 +14,6 @@ def menu():
 if __name__ == "__main__":
     pygame.init()
     jeu = Jeu()
-    #jeu.jouer()
-    #men = mainMenu(jeu)
-    #men.blitMainMenu()
-    jeu.menu()
+    menu = Menu(jeu)
+    menu.launchMenu()
     pygame.quit()
