@@ -38,27 +38,15 @@ class Jeu:
         self.font = pygame.font.Font("game/assets/font/BPdots.otf", font_size)
         self.font.set_bold(True)
         
-        self.fontBtn = "game/assets/font/Minecraft.ttf"
-        self.fontSizeBtn = 30
-        self.colorPressed = (255, 255, 255)
-        self.color = (155, 139, 221)
-
-        # La surface principale d'affichage (display surface)
-        self.screen = pygame.display.set_mode((self.largeur, self.hauteur), pygame.RESIZABLE)
-        pygame.display.set_caption("Esi-SHOOT")
-        
         # Création d'une surface dédiée pour le jeu
         self.gameSurface = pygame.Surface((self.largeur, self.hauteur))
+        self.screen = pygame.display.set_mode((self.largeur, self.hauteur), pygame.RESIZABLE)
 
-        # Chargement du menu
-        self.loadingImge = pygame.image.load("game/assets/gui/ecran_chargement.png")
-        self.loadingImge = pygame.transform.scale(self.loadingImge, (self.largeur, self.hauteur))
-        self.logos      = pygame.image.load("game/assets/gui/logos.png")
-        self.logos      = pygame.transform.scale(self.logos, (self.largeur, self.hauteur))
+
 
         pygame.mixer.init()
 
-    def updateEnvirnement(self, environment, score):
+    def updateEnvironement(self, environment, score):
         # Effacer la surface de jeu
         self.gameSurface.fill((0, 0, 0))
 
@@ -173,19 +161,6 @@ class Jeu:
             y = random.randint(0, self.hauteur - 60)
             self.spawnGator(x,y,5)
 
-    def playMusic(self,path):
-        pygame.mixer.music.load(path)  # Load the music file
-        pygame.mixer.music.set_volume(0.03)  # Set volume (0.0 to 1.0)
-        pygame.mixer.music.play(-1)  # Play in a loop (-1 means infinite)
-
-    def stopMusic(self):
-        pygame.mixer.music.stop()
-
-    def showLoading(self):
-        self.screen.blit(self.loadingImge, (0, 0)) 
-        pygame.display.flip()  
-        pygame.time.wait(1000)
-
 ############################################################################################
     def jouer(self):
         # Redimensionnement des images pour correspondre à la surface de jeu
@@ -228,7 +203,7 @@ class Jeu:
                 if event.type == SPAWN_EVENT:
                     self.spawnMonsters(temps)
 
-            self.updateEnvirnement(environment, score)
+            self.updateEnvironement(environment, score)
             self.afficheMessage(pointsMessage)
             self.affichageTemps(endingTime - pygame.time.get_ticks(), temps_passe)
 
@@ -241,65 +216,4 @@ class Jeu:
                 running = False
             
             
-############################################################################################
 
-    def menu(self):
-        # Chargement et redimensionnement de toutes les images de boutons et du logo
-        jouerBttn    = Bouton(self.largeur//2,self.hauteur//2 - 60 ,"Jouer",self.fontBtn,self.fontSizeBtn,self.color)
-        paramBtn    = Bouton(self.largeur//2,self.hauteur//2,"Parametres",self.fontBtn,self.fontSizeBtn,self.color)
-        creditsBtn  = Bouton(self.largeur//2,self.hauteur//2 + 60,"Credits",self.fontBtn,self.fontSizeBtn,self.color)
-        classBtn    = Bouton(self.largeur//2,self.hauteur//2 + 120,"Classements",self.fontBtn,self.fontSizeBtn,self.color)
-        btns = [jouerBttn, paramBtn, creditsBtn, classBtn]
-        
-        back = (98, 53, 138)
-        musicPath = "game/assets/sounds/luv.wav"
-        running = True
-        self.showLoading()  
-        #self.playMusic(musicPath)
-
-        while running:
-            posSouris = pygame.mouse.get_pos()
-            #count_temps +=1
-            
-            self.screen.fill(back)
-            self.screen.blit(self.logos, (0, -30))  
-            for btn in btns :
-                btn.update(self.screen,posSouris,self.colorPressed,self.color)
-            
-            pygame.display.flip()
-            
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if btns[0].boutonHover(posSouris):
-                        self.menuJouer(back) 
-
-
-        pygame.quit()
-        
-    def menuJouer(self,back):
-        retourBtn =  Bouton(self.largeur//2,self.hauteur//2 + 60,"Retour",self.fontBtn,self.fontSizeBtn,self.color)
-        nextLevelBtn =  Bouton(self.largeur//2,self.hauteur//2,"Next level",self.fontBtn,self.fontSizeBtn,self.color)
-        btns = [retourBtn, nextLevelBtn]
-        running = True
-        while running:
-            posSouris = pygame.mouse.get_pos()
-            self.screen.fill(back)
-            self.screen.blit(self.logos, (0, -30))
-            for btn in btns :
-                btn.update(self.screen,posSouris,self.colorPressed,self.color)
-            pygame.display.flip()
-            
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if nextLevelBtn.boutonHover(posSouris):
-                        self.showLoading()
-                        self.stopMusic()
-                        self.jouer()
-                        
-                    if retourBtn.boutonHover(posSouris):
-                        running = False
