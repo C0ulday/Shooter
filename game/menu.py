@@ -30,6 +30,8 @@ class Menu:
         # Initialisation de la police pour les boutons
         self.fontBtn = "game/assets/font/Minecraft.ttf"
         self.fontSizeBtn = 30
+        
+        self.runLaunchMenu = True
 
     def playMusic(self, path):
         pygame.mixer.music.load(path)  # Charge le fichier musical
@@ -53,7 +55,6 @@ class Menu:
         buttons = [jouerBtn, paramBtn, creditsBtn, classBtn]
 
         self.showLoading()
-        # self.playMusic(self.musicPath)  # Décommentez si vous souhaitez jouer la musique
 
         running = True
         while running:
@@ -65,16 +66,17 @@ class Menu:
 
             pygame.display.flip()
 
+            if not self.runLaunchMenu:
+                break  
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if buttons[0].boutonHover(posSouris):
-                        self.menuJouer(self.back_color)
+                        self.menuJouer()     
 
-        pygame.quit()
-
-    def menuJouer(self, back):
+    def menuJouer(self):
         
         reflexBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2, "Reflex Mode", self.fontBtn, self.fontSizeBtn, self.color)
         chillBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 - 60, "Chill Mode", self.fontBtn, self.fontSizeBtn, self.color)
@@ -85,7 +87,7 @@ class Menu:
         running = True
         while running:
             posSouris = pygame.mouse.get_pos()
-            self.screen.fill(back)
+            self.screen.fill(self.back_color)
             self.screen.blit(self.logos, (0, -30))
             for btn in buttons:
                 btn.update(self.screen, posSouris, self.colorPressed, self.color)

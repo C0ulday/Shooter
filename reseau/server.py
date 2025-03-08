@@ -12,24 +12,26 @@ from flask_socketio import SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-class server:
+class Server:
     def __init__(self):
-        self.Ip_adress = "localhost"   # iL faut le changer avec la vrai adresse ip
+        self.Ip_adress = "localhost"  # À changer avec la vraie adresse IP
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serverSocket.bind((self.Ip_adress, self.Port))
-        self.serverSocket.listen(5)  # Connections multiples (spectateurs) 
-        print("Serveur en attente de connexion...")
+        self.serverSocket.listen(5)  # Connexions multiples (spectateurs)
+        self.game = None
+        self.menu = None  
         
-    def server(self):
+        print("Serveur en attente de connexion...")
 
+    def start(self):
         try:
             # Démarrer le serveur Flask/Web dans un thread
             flaskThread = threading.Thread(target=self.runFlask, daemon=True)
             flaskThread.start()
 
-            # Start game in a separate thread
+            # Démarrer le jeu dans un autre thread
             gameThread = threading.Thread(target=self.runGame, daemon=True)
             gameThread.start()
 
@@ -39,14 +41,11 @@ class server:
                 print(f"Connexion établie avec : {adresse}")
                 self.clients += 1
 
-                # Handle client
-                if (self.clients == 0):
-                    clientThread = threading.Thread(target=self.handleClient, args=(connexion, adresse), daemon=True)
+                if self.clients == 1:
+                    clientThread = threading.Thread(target=self.handleClient, args=(connexion,), daemon=True)
                     clientThread.start()
-
-                # Handle spectators
-                elif (self.clients > 0):
-                    spectatorThread = threading.Thread(target=self.handleSpectator, args=(connexion, adresse), daemon=True)
+                else:
+                    spectatorThread = threading.Thread(target=self.handleSpectator, args=(connexion,), daemon=True)
                     spectatorThread.start()
 
         except socket.error as e:
@@ -54,71 +53,71 @@ class server:
 
         finally:
             print("Fermeture des connexions...")
-            connexion.close()
-            self.serverSocket.close() 
+            self.serverSocket.close()
 
-    def handleClient(self,connexion,adresse):
+    def handleClient(self, connexion):
         try:
             while True:
                 data = connexion.recv(1024).decode("utf-8")
-                if (data == "Send game"):
+                if data == "Send game":
                     self.sendData(connexion, self.game)
-
-                elif (data == "miss"):
+                elif data == "miss":
                     print("Shot missed the target ...")
-                    #TODO
-
-                elif (data == "hit"):
+                elif data == "hit":
                     print("Shot hit the target ...")
-                    #TODO
 
         except socket.error as e:
             print(f"Erreur socket : {e}")
 
         finally:
-            print("Fermeture de la connexion...")
+            print("Fermeture de la connexion client...")
             connexion.close()
 
-    def handleSpectator(self,connexion,adresse):
+    def handleSpectator(self, connexion):
         try:
-            #TODO
-            print("")
+            print("Connexion d'un spectateur...")
 
         except socket.error as e:
             print(f"Erreur socket : {e}")
 
         finally:
-            print("Fermeture des connexions...")
+            print("Fermeture de la connexion spectateur...")
             connexion.close()
 
     def runFlask(self):
-        #Lance le serveur Flask 
+        @socketio.on("startGame")
+        def handle_startGame():
+            print("Le jeu a été lancé !")
+            if self.menu:
+                self.menu.runLaunchMenu = False
+            #socketio.emit("gameStarted", {"message": "Le jeu commence !"})
+
         socketio.run(app, host=self.Ip_adress, port=5000, debug=False, use_reloader=False)
-        #self.handleWebpage()
-        
+
     def runGame(self):
         pygame.init()
         self.game = jeu.Jeu()
         self.menu = menu.Menu(self.game)
-        self.menu.launchMenu()
+        running = True
+        while running:
+            if self.menu.runLaunchMenu:
+                self.menu.launchMenu()
+    
+            else :
+                self.menu.menuJouer()
 
     def sendData(self, connexion, data):
         game = pkl.dumps(data)
-        # Send size + actual data
         size_prefix = struct.pack("I", len(game)) 
         connexion.sendall(size_prefix + game)  
         print(f"Envoi du jeu au client...")
-    
-    @app.route("/")
-    def home():
-        return render_template("app.html")
-    
-    @socketio.on("startGame")  
-    def handle_startGame():
-        print("Le jeu a été lancé !")
-        #socketio.emit("gameStarted", {"message": "Le jeu commence !"})  
 
-        
+# Route Flask pour la page web
+@app.route("/")
+def home():
+    return render_template("app.html")
+
+# Lancer le serveur
 if __name__ == "__main__":
-    serveur = server()
-    serveur.server()
+    serveur = Server()
+    serveur.start()
