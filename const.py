@@ -1,0 +1,7 @@
+# Constantes
+LARGEUR, HAUTEUR = 800, 600
+BLANC = (255, 255, 255)
+ROUGE = (255, 0, 0)
+NOIR = (0, 0, 0)
+FPS = 60
+
