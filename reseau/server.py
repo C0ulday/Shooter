@@ -31,9 +31,9 @@ class Server:
             flaskThread = threading.Thread(target=self.runFlask, daemon=True)
             flaskThread.start()
 
-            # Démarrer le jeu dans un autre thread
-            gameThread = threading.Thread(target=self.runGame, daemon=True)
-            gameThread.start()
+            # Démarrer le jeu dans thread principal
+            self.runGame()
+
 
             while True:
                 # Accepte une connexion entrante
@@ -92,7 +92,8 @@ class Server:
                 self.menu.runLaunchMenu = False
             #socketio.emit("gameStarted", {"message": "Le jeu commence !"})
 
-        socketio.run(app, host=self.Ip_adress, port=5000, debug=False, use_reloader=False)
+        socketio.run(app, host=self.Ip_adress, port=8000, debug=False, use_reloader=False)
+
 
     def runGame(self):
         pygame.init()
@@ -115,9 +116,40 @@ class Server:
 # Route Flask pour la page web
 @app.route("/")
 def home():
+    print("Route '/' appelée")
     return render_template("app.html")
 
 # Lancer le serveur
 if __name__ == "__main__":
     serveur = Server()
-    serveur.start()
+
+    # Lancer Flask dans un thread secondaire
+    flaskThread = threading.Thread(target=serveur.runFlask, daemon=True)
+    flaskThread.start()
+
+    # Lancer la boucle réseau dans un thread secondaire
+    def handle_connections():
+        try:
+            while True:
+                connexion, adresse = serveur.serverSocket.accept()
+                print(f"Connexion établie avec : {adresse}")
+                serveur.clients += 1
+
+                if serveur.clients == 1:
+                    clientThread = threading.Thread(target=serveur.handleClient, args=(connexion,), daemon=True)
+                    clientThread.start()
+                else:
+                    spectatorThread = threading.Thread(target=serveur.handleSpectator, args=(connexion,), daemon=True)
+                    spectatorThread.start()
+        except socket.error as e:
+            print(f"Erreur socket : {e}")
+        finally:
+            print("Fermeture des connexions réseau...")
+            serveur.serverSocket.close()
+
+    connectionThread = threading.Thread(target=handle_connections, daemon=True)
+    connectionThread.start()
+
+    # Lancer le jeu dans le thread principal
+    serveur.runGame()
+
