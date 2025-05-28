@@ -32,7 +32,7 @@ class Server:
             flaskThread.start()
 
             # Démarrer le jeu dans thread principal
-            self.runGame()
+            #self.runGame()
 
 
             while True:
@@ -94,7 +94,6 @@ class Server:
 
         socketio.run(app, host=self.Ip_adress, port=8000, debug=False, use_reloader=False)
 
-
     def runGame(self):
         pygame.init()
         self.game = jeu.Jeu()
@@ -116,7 +115,6 @@ class Server:
 # Route Flask pour la page web
 @app.route("/")
 def home():
-    print("Route '/' appelée")
     return render_template("app.html")
 
 # Lancer le serveur
