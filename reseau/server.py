@@ -20,8 +20,8 @@ class Server:
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serverSocket.bind((self.Ip_adress, self.Port))
         self.serverSocket.listen(5)  # Connexions multiples (spectateurs)
-        self.game = None
-        self.menu = None  
+        self.game = jeu.Jeu()  # Instance du jeu
+        self.menu = menu.Menu(self.game)  # Instance du menu  
         
         print("Serveur en attente de connexion...")
 
@@ -90,21 +90,45 @@ class Server:
             print("Le jeu a été lancé !")
             if self.menu:
                 self.menu.runLaunchMenu = False
-            #socketio.emit("gameStarted", {"message": "Le jeu commence !"})
+            else :
+                print("Le menu n'est pas initialisé.")
+        @socketio.on("startMode1")
+        def handle_startMode1():
+            print("Mode Chill lancé !")
+            if self.menu:
+                self.menu.runMode1 = True
+            else :
+                print("Le menu n'est pas initialisé.")
+        @socketio.on("returnToMenu")
+        def handle_returnToMenu():
+            print("Retour au menu principal !")
+            if self.menu:
+                self.menu.returnToMenu = True
+            else :
+                print("Le menu n'est pas initialisé.")
 
         socketio.run(app, host=self.Ip_adress, port=8000, debug=False, use_reloader=False)
 
     def runGame(self):
-        pygame.init()
-        self.game = jeu.Jeu()
-        self.menu = menu.Menu(self.game)
         running = True
+        clock = pygame.time.Clock()
         while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
             if self.menu.runLaunchMenu:
                 self.menu.launchMenu()
-    
-            else :
+            if self.menu.runMode1:
+                print("coucou")
+                self.menu.jeu.jouer()
+            if self.menu.returnToMenu:
+                self.menu.runLaunchMenu = True
+                self.menu.runMode1 = False
+                self.menu.returnToMenu = False
+            else:
                 self.menu.menuJouer()
+            clock.tick(60)  # limite à 60 FPS
+
 
     def sendData(self, connexion, data):
         game = pkl.dumps(data)
