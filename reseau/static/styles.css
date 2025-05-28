@@ -1,53 +1,67 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #181429, #978ec4); 
-    color: white;
-    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-image: url("/static/ecran_chargement.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Segoe UI', sans-serif;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0;
 }
-.gameOptions{
-    display: none;
-}
+
 .menu-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    padding: 20px;
-    gap: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 30px;
-    border-radius: 10px;
-    backdrop-filter: blur(10px); 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 1px black;
 }
 
 h1 {
-    font-size: 2.5rem;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
-button {
-    padding: 20px 30px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-    background: #28a745;
+.button-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.button-container button {
+    position: absolute;
+    padding: 10px 20px;
     border: none;
-    border-radius: 100px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 10px;
+    font-size: 16px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background: #218838;
-    transform: scale(1.05); 
+.button-container button:hover {
+    background-color: #b92987;
 }
 
-button:active {
-    transform: scale(0.95);
+/* Positionner les boutons autour du cercle */
+#playButton       { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#leaderboardButton { top: 15%; left: 50%; transform: translateX(-50%); }
+#quitButton        { bottom: 15%; left: 50%; transform: translateX(-50%); }
+#mode1Button       { top: 50%; left: 50%; transform: translate(-50%, -50%);}
+#mode2Button       { top: 15%; left: 50%; transform: translateX(-50%);}
+#returnButton      { bottom: 15%; left: 50%; transform: translateX(-50%);}
+
+/* Cacher les options de jeu au départ */
+.gameOptions {
+    display: none;
 }
