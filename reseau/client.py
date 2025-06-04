@@ -1,9 +1,11 @@
 import socket
-import time
-import struct
+import os
+import sys
 import RPi.GPIO as GPIO 
 import pickle as pkl
 from game import jeu
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../StandTir')))
+from Feature_matching.Feature_matching import captureAnalyse
 
 class Client:
     def __init__(self, ip_adress="localhost", port=4000, pin=13): # pin, ip adress et mode à changer
@@ -19,6 +21,7 @@ class Client:
     
     def button_pressed(self, channel):
         print("Bouton pressé !")
+        captureAnalyse()
         
     def client(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
