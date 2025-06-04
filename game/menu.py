@@ -32,6 +32,9 @@ class Menu:
         self.fontSizeBtn = 30
         
         self.runLaunchMenu = True
+        self.runMode1 = False
+        self.runMode2 = False
+        self.returnToMenu = False
 
     def playMusic(self, path):
         pygame.mixer.music.load(path)  # Charge le fichier musical
@@ -96,8 +99,13 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                # Pour la télécommande
+                if self.runMode1:
+                    self.jeu.jouer()
+                    self.runMode1 = False
+                ####
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if chillBtn.boutonHover(posSouris):
+                    if chillBtn.boutonHover(posSouris) :
                         self.showLoading()
                         self.stopMusic()
                         self.jeu.jouer()
