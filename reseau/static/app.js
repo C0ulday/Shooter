@@ -20,6 +20,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("mode1Button").addEventListener("click", () => { 
         socket.emit("startMode1");
+        // on cache les boutons du menu
+        document.querySelectorAll(".gameOptions").forEach(btn => {
+            btn.style.display = "none";
+        });
+        // on affiche les boutons de jeu
+        document.querySelectorAll(".playOptions").forEach(btn => {
+            btn.style.display = "inline-block";
+        });
     });
     document.getElementById("mode2Button").addEventListener("click", () => { 
         socket.emit("startMode2");
