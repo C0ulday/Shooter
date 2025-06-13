@@ -163,16 +163,18 @@ class Jeu:
             self.spawnGator(x,y,5)
             
     def drawPause(self):
-        # Création d'une surface semi-transparente pour le fond de la pause
+        # Création d'une surface semi-transparente
         pause_surface = pygame.Surface((self.largeur, self.hauteur), pygame.SRCALPHA)
-        pause_surface.fill((0, 0, 0, 150))
-        # Création du texte de pause
+        pause_surface.fill((0, 0, 0, 2))
+
+        # Texte "PAUSE"
         pause_text = self.font.render("PAUSE", True, (255, 255, 255))
         pause_rect = pause_text.get_rect(center=(self.largeur // 2, self.hauteur // 2))
-        # Affichage de la surface de pause et du texte
-        self.gameSurface.blit(pause_surface, (0, 0))
-        self.gameSurface.blit(pause_text, pause_rect)
-        self.screen.blit(self.gameSurface, (0, 0))
+
+        # Affichage
+        self.gameSurface.blit(pause_surface, (0, 0))  # Applique le fond transparent
+        self.gameSurface.blit(pause_text, pause_rect)  # Affiche le texte au centre
+
         
 
 ############################################################################################
@@ -230,16 +232,16 @@ class Jeu:
                 self.updateEnvironement(environment, score)
                 self.afficheMessage(pointsMessage)
                 self.affichageTemps(endingTime - pygame.time.get_ticks(), temps_passe)
-
-                # Une fois le rendu terminé sur gameSurface, on le blitte sur la display surface
-                self.screen.blit(self.gameSurface, (0, 0))
-                pygame.display.flip()
                 
                 # Décrémentation du temps de jeu
                 if pygame.time.get_ticks() >= endingTime:
                     running = False
             else:
                 self.drawPause()    
+            
+            # Une fois le rendu terminé sur gameSurface, on le blitte sur la display surface
+            self.screen.blit(self.gameSurface, (0, 0))
+            pygame.display.flip()
             
             
 
