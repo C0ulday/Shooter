@@ -43,8 +43,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("returnButton").addEventListener("click", () => { 
 
+        socket.emit("returnToMenu");
+        
         // on cache les options du jeu
         document.querySelectorAll(".gameOptions").forEach(btn => {
+            btn.style.display = "none";
+        });
+        document.querySelectorAll(".playOptions").forEach(btn => {
             btn.style.display = "none";
         });
 
@@ -52,8 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".menuOptions").forEach(btn => {
                 btn.style.display = "inline-block";
         });
-        
-        socket.emit("returnToMenu");
 
     });
 

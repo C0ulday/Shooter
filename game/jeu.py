@@ -236,6 +236,7 @@ class Jeu:
                 # Décrémentation du temps de jeu
                 if pygame.time.get_ticks() >= endingTime:
                     running = False
+                
             else:
                 self.drawPause()    
             
