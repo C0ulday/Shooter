@@ -33,6 +33,14 @@ document.addEventListener("DOMContentLoaded", function () {
         socket.emit("startMode2");
     });
 
+    document.getElementById("pauseButton").addEventListener("click", () => { 
+        socket.emit("pauseGame");
+    });
+
+    document.getElementById("reprendreButton").addEventListener("click", () => { 
+        socket.emit("reprendreGame");
+    });
+
     document.getElementById("returnButton").addEventListener("click", () => { 
 
         // on cache les options du jeu

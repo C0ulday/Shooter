@@ -62,8 +62,8 @@ h1 {
 #returnButton      { bottom: 15%; left: 50%; transform: translateX(-50%);}
 
 /* Positionner les boutons autour du cercle */
-#playMode1     { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-#playMode2 { top: 15%; left: 50%; transform: translateX(-50%); }
+#pauseButton     { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+#reprendreButton { top: 15%; left: 50%; transform: translateX(-50%); }
 #returnButton      { bottom: 15%; left: 50%; transform: translateX(-50%);}
 
 

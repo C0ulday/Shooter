@@ -106,6 +106,21 @@ class Server:
                 self.menu.returnToMenu = True
             else :
                 print("Le menu n'est pas initialisé.")
+        @socketio.on("pauseGame")
+        def handle_pauseGame():
+            print("Jeu en pause !")
+            if self.menu:
+                self.menu.jeu.pause = True
+            else :
+                print("Le menu n'est pas initialisé.")
+        
+        @socketio.on("reprendreGame")
+        def handle_reprendreGame():
+            print("Jeu reprend !")
+            if self.menu:
+                self.menu.jeu.pause = False
+            else :
+                print("Le menu n'est pas initialisé.")
 
         socketio.run(app, host=self.Ip_adress, port=8000, debug=False, use_reloader=False)
 
