@@ -74,7 +74,7 @@ class Menu:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    pygame.quit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if buttons[0].boutonHover(posSouris):
                         self.menuJouer()     
@@ -98,7 +98,7 @@ class Menu:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    pygame.quit()
                 # Pour la télécommande
                 if self.runMode1:
                     self.jeu.jouer()
