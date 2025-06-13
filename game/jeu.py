@@ -28,6 +28,7 @@ class Jeu:
         
         # Le joueur
         self.joueur = Joueur("poulpy")
+        self.pause = False
         
         # Matériels affichage
         info = pygame.display.Info()
@@ -160,6 +161,19 @@ class Jeu:
         if len(self.gators) <=0:
             y = random.randint(0, self.hauteur - 120)
             self.spawnGator(x,y,5)
+            
+    def drawPause(self):
+        # Création d'une surface semi-transparente pour le fond de la pause
+        pause_surface = pygame.Surface((self.largeur, self.hauteur), pygame.SRCALPHA)
+        pause_surface.fill((0, 0, 0, 150))
+        # Création du texte de pause
+        pause_text = self.font.render("PAUSE", True, (255, 255, 255))
+        pause_rect = pause_text.get_rect(center=(self.largeur // 2, self.hauteur // 2))
+        # Affichage de la surface de pause et du texte
+        self.gameSurface.blit(pause_surface, (0, 0))
+        self.gameSurface.blit(pause_text, pause_rect)
+        self.screen.blit(self.gameSurface, (0, 0))
+        
 
 ############################################################################################
     def jouer(self):
@@ -188,6 +202,8 @@ class Jeu:
             # Limite le nombre de frames par seconde
             clock.tick(fps)
             for event in pygame.event.get():
+                
+                # Gestion de la fermeture de la fenêtre
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
@@ -198,22 +214,32 @@ class Jeu:
                     if (monstre is not None):
                         pointsMessage,score = self.scoreMessage(monstre, score)
                         print(f"Score: {score}")
+                
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    if  not self.pause:
+                        print("pause")
+                        self.pause = True             
+                    else:
+                        self.pause = False
 
                 # Gestion de l'événement de spawn des monstres
                 if event.type == SPAWN_EVENT:
                     self.spawnMonsters(temps)
 
-            self.updateEnvironement(environment, score)
-            self.afficheMessage(pointsMessage)
-            self.affichageTemps(endingTime - pygame.time.get_ticks(), temps_passe)
+            if not self.pause:
+                self.updateEnvironement(environment, score)
+                self.afficheMessage(pointsMessage)
+                self.affichageTemps(endingTime - pygame.time.get_ticks(), temps_passe)
 
-            # Une fois le rendu terminé sur gameSurface, on le blitte sur la display surface
-            self.screen.blit(self.gameSurface, (0, 0))
-            pygame.display.flip()
-            
-            # Décrémentation du temps de jeu
-            if pygame.time.get_ticks() >= endingTime:
-                running = False
+                # Une fois le rendu terminé sur gameSurface, on le blitte sur la display surface
+                self.screen.blit(self.gameSurface, (0, 0))
+                pygame.display.flip()
+                
+                # Décrémentation du temps de jeu
+                if pygame.time.get_ticks() >= endingTime:
+                    running = False
+            else:
+                self.drawPause()    
             
             
 
