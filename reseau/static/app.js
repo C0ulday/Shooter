@@ -26,7 +26,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("returnButton").addEventListener("click", () => { 
+
+        // on cache les options du jeu
+        document.querySelectorAll(".gameOptions").forEach(btn => {
+            btn.style.display = "none";
+        });
+
+        // on affiche les boutons du menu
+        document.querySelectorAll(".menuOptions").forEach(btn => {
+                btn.style.display = "inline-block";
+        });
+        
         socket.emit("returnToMenu");
+
     });
 
     document.getElementById("settingsButton").addEventListener("click", () => console.log("parametres"));

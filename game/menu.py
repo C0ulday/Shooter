@@ -104,6 +104,12 @@ class Menu:
                     self.jeu.jouer()
                     self.runMode1 = False
                 ####
+                elif self.returnToMenu:
+                    running = False
+                    self.runLaunchMenu = True
+                    self.runMode1 = False
+                    self.returnToMenu = False
+
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if chillBtn.boutonHover(posSouris) :
                         self.showLoading()
