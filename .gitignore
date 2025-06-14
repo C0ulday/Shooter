@@ -1,2 +1,5 @@
 __pycache__
-game/__pycache__
+flask_session
+*/__pycache__
+.env
+

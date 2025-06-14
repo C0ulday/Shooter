@@ -29,7 +29,7 @@ class Jeu:
         # Le joueur
         self.joueur = Joueur("poulpy")
         self.pause = False
-        
+
         # Matériels affichage
         info = pygame.display.Info()
         self.largeur = info.current_w
@@ -243,6 +243,7 @@ class Jeu:
             # Une fois le rendu terminé sur gameSurface, on le blitte sur la display surface
             self.screen.blit(self.gameSurface, (0, 0))
             pygame.display.flip()
+        return score
             
             
 

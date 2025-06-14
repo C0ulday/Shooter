@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de bord</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_admin.css') }}">
+    <script defer src="{{ url_for('static', filename='profile.js') }}"></script>
+    <style>
+        body {
+            background-color: blue;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .profile-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenue, {{ user_name }} !</h1>
+
+    <!-- Conteneur du profil -->
+    <div class="profile-container">
+        <h2>Votre Profil</h2>
+        {% if avatar_url %}
+            <img src="{{ avatar_url }}" alt="Avatar" class="profile-avatar">
+        {% else %}
+            <p>Aucun avatar défini</p>
+        {% endif %}
+        
+        {% if bio %}
+            <p><strong>Description :</strong> {{ bio }}</p>
+        {% else %}
+            <p>Aucune description ajoutée</p>
+        {% endif %}
+    </div>
+
+    <br><br>
+    <a href="{{ url_for('logout') }}" style="color: white; font-weight: bold;">Déconnexion</a>
+</body>
+</html>
+
+<h2>Liste des Profils</h2>
+<table border="1">
+    <tr>
+        <th>Nom</th>
+        <th>Bio</th>
+        <th>Avatar</th>
+        <th>Action</th>
+    </tr>
+    {% for profile in profiles %}
+    <tr>
+        <td>{{ profile.name }}</td>
+        <td>{{ profile.bio }}</td>
+        <td><img src="{{ profile.avatar_url }}" width="50"></td>
+        <td>
+            <form action="{{ url_for('delete_user', user_id=profile.id) }}" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                    ❌ Supprimer
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+

@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import socket
 import pygame
 import struct
@@ -5,14 +10,20 @@ import threading
 import pickle as pkl
 from game import jeu  
 from game import menu
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_socketio import SocketIO
+from flask_session import Session
+from database.init_db import initialize_database
+from database.db_config import get_db_connection
+import bcrypt
+from database.models.user import User
 
 # Initialisation du serveur Flask
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 class Server:
+    currentUser = -1 
     def __init__(self):
         self.Ip_adress = "localhost"  # À changer avec la vraie adresse IP
         self.Port = 4000
@@ -22,7 +33,6 @@ class Server:
         self.serverSocket.listen(5)  # Connexions multiples (spectateurs)
         self.game = jeu.Jeu()  # Instance du jeu
         self.menu = menu.Menu(self.game)  # Instance du menu  
-        
         print("Serveur en attente de connexion...")
 
     def start(self):
@@ -33,7 +43,6 @@ class Server:
 
             # Démarrer le jeu dans thread principal
             #self.runGame()
-
 
             while True:
                 # Accepte une connexion entrante
@@ -95,6 +104,7 @@ class Server:
         @socketio.on("startMode1")
         def handle_startMode1():
             print("Mode Chill lancé !")
+            print(serveur.currentUser)
             if self.menu:
                 self.menu.runMode1 = True
             else :
@@ -106,25 +116,11 @@ class Server:
                 self.menu.returnToMenu = True
             else :
                 print("Le menu n'est pas initialisé.")
-        @socketio.on("pauseGame")
-        def handle_pauseGame():
-            print("Jeu en pause !")
-            if self.menu:
-                self.menu.jeu.pause = True
-            else :
-                print("Le menu n'est pas initialisé.")
-        
-        @socketio.on("reprendreGame")
-        def handle_reprendreGame():
-            print("Jeu reprend !")
-            if self.menu:
-                self.menu.jeu.pause = False
-            else :
-                print("Le menu n'est pas initialisé.")
 
         socketio.run(app, host=self.Ip_adress, port=8000, debug=False, use_reloader=False)
 
     def runGame(self):
+        print(serveur.currentUser)
         running = True
         clock = pygame.time.Clock()
         while running:
@@ -132,6 +128,7 @@ class Server:
                 if event.type == pygame.QUIT:
                     running = False
             if self.menu.runLaunchMenu:
+                print("runLaunchMenu SERVER")
                 self.menu.launchMenu()
             if self.menu.runMode1:
                 print("coucou")
@@ -141,6 +138,7 @@ class Server:
                 self.menu.runMode1 = False
                 self.menu.returnToMenu = False
             else:
+                print("menu Joeurr SERVER")
                 self.menu.menuJouer()
             clock.tick(60)  # limite à 60 FPS
 
@@ -152,9 +150,153 @@ class Server:
         print(f"Envoi du jeu au client...")
 
 # Route Flask pour la page web
-@app.route("/")
+# @app.route("/")
+# def home():
+#     return render_template("app.html")
+
+
+#----------------------------------
+
+
+# Page d'accueil
+@app.route("/", methods=["GET"])
 def home():
-    return render_template("app.html")
+    return render_template("home.html")
+
+# Inscription (Signup)
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        name = request.form["name"]
+        email = request.form["email"]
+        password = request.form["password"]
+        bio = request.form.get("bio", "Aucune description")
+        avatar_url = request.form.get("avatar_url", "static/images/default-avatar.png")
+
+        if not User.register(name, email, password, bio, avatar_url):
+            flash("Cet email est déjà utilisé !", "danger")
+            return redirect(url_for("signup"))
+
+        flash("Inscription réussie ! Connectez-vous.", "success")
+        return redirect(url_for("login"))
+
+    return render_template("signup.html")
+
+# Connexion (Login)
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if user and bcrypt.checkpw(password.encode(), user["password_hash"].encode()):
+            session["user_id"] = user["id"]
+            session["name"] = user["name"]
+            session["role"] = user["role"]
+            flash("Connexion réussie.", "success")
+            if user["role"] == "admin":
+                return redirect(url_for("dashboard"))
+            else:
+                serveur.currentUser = user["id"]
+                return redirect(url_for("jeuView"))
+        else:
+            flash("Email ou mot de passe incorrect.", "danger")
+            return redirect(url_for("login"))
+
+    return render_template("login.html")
+
+# Dashboard : affichage des profils (admin uniquement)
+@app.route("/dashboard")
+def dashboard():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    if session.get("role") != "admin":
+        flash("Accès réservé aux administrateurs.", "danger")
+        return redirect(url_for("home"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT bio, avatar_url FROM profiles WHERE user_id = %s", (session["user_id"],))
+    profile = cursor.fetchone()
+
+    cursor.execute("""
+        SELECT users.id, users.name, profiles.bio, profiles.avatar_url 
+        FROM users 
+        JOIN profiles ON users.id = profiles.user_id
+    """)
+    profiles = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "dashboard.html",
+        user_name=session["name"],
+        bio=profile["bio"] if profile else "Aucune description ajoutée",
+        avatar_url=profile["avatar_url"] if profile else "static/images/default-avatar.png",
+        profiles=profiles
+    )
+
+# Vue "Jeu" (exemple de vue accessible à tous les utilisateurs connectés)
+@app.route("/jeu")
+def jeuView():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT bio, avatar_url FROM profiles WHERE user_id = %s", (session["user_id"],))
+    profile = cursor.fetchone()
+
+    cursor.execute("""
+        SELECT users.id, users.name, profiles.bio, profiles.avatar_url 
+        FROM users 
+        JOIN profiles ON users.id = profiles.user_id
+    """)
+    profiles = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "app.html",
+        user_name=session["name"],
+        bio=profile["bio"] if profile else "Aucune description ajoutée",
+        avatar_url=profile["avatar_url"] if profile else "static/images/default-avatar.png",
+        profiles=profiles
+    )
+
+# Suppression d’un utilisateur (admin uniquement)
+@app.route("/delete_user/<int:user_id>", methods=["POST"])
+def delete_user(user_id):
+    if "user_id" not in session:
+        flash("Vous devez être connecté pour supprimer un utilisateur.", "danger")
+        return redirect(url_for("login"))
+
+    if session.get("role") != "admin":
+        flash("Accès refusé : seuls les administrateurs peuvent supprimer des utilisateurs.", "danger")
+        return redirect(url_for("dashboard"))
+
+    User.delete_user(user_id)
+    flash("Utilisateur supprimé avec succès.", "success")
+    return redirect(url_for("dashboard"))
+
+# Déconnexion
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
+
 
 # Lancer le serveur
 if __name__ == "__main__":
@@ -163,6 +305,15 @@ if __name__ == "__main__":
     # Lancer Flask dans un thread secondaire
     flaskThread = threading.Thread(target=serveur.runFlask, daemon=True)
     flaskThread.start()
+
+    
+    # Configuration de la session
+    app.secret_key = "supersecretkey"
+    app.config["SESSION_TYPE"] = "filesystem"
+    Session(app)
+
+    # Initialisation automatique de la base de données
+    initialize_database()
 
     # Lancer la boucle réseau dans un thread secondaire
     def handle_connections():

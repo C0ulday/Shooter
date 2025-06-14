@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Utilisateurs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_admin.css') }}">
+    <script defer src="{{ url_for('static', filename='scripts.js') }}"></script>
+</head>
+<body>
+    <h1>Gestion des Utilisateurs</h1>
+
+    <!-- Ajouter un utilisateur -->
+    <h2>Ajouter un utilisateur</h2>
+    <input type="text" id="name" placeholder="Nom">
+    <input type="email" id="email" placeholder="Email">
+    <button onclick="addUser()">Ajouter</button>
+
+    <!-- Modifier un utilisateur -->
+    <div id="edit-form" style="display: none;">
+        <h2>Modifier un utilisateur</h2>
+        <input type="hidden" id="edit-id">
+        <input type="text" id="edit-name" placeholder="Nom">
+        <input type="email" id="edit-email" placeholder="Email">
+        <button onclick="updateUser()">Mettre à jour</button>
+    </div>
+
+    <!-- Tableau des utilisateurs -->
+    <h2>Liste des utilisateurs</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="user-list"></tbody>
+    </table>
+</body>
+</html>

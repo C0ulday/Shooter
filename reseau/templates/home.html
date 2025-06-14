@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_admin.css') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a0dad, #9b59b6); /* Dégradé violet */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        /* 🔹 Header contenant les boutons en haut à droite */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .header a {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: white;
+            color: #6a0dad;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        .header a:hover {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        /* 🔹 Conteneur principal */
+        .container {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        /* 🔹 Image du logo */
+        .logo {
+            width: 400px;  /* Augmenté */
+            height: auto;
+            border-radius: 20px;
+        }
+
+        /* 🔹 Tableau des profils */
+        .profile-table {
+            width: 60%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .profile-table th, .profile-table td {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .profile-table th {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ Header avec les boutons de connexion -->
+    <div class="header">
+        <a href="{{ url_for('login') }}">Se connecter</a>
+        <a href="{{ url_for('signup') }}">Créer un compte</a>
+    </div>
+
+    <!-- ✅ Conteneur principal -->
+    <div class="container">
+        <h2>Bienvenue</h2>
+        <img src="{{ url_for('static', filename='image/logo2.png') }}" alt="Poulpe" class="logo">
+        
+        <!-- ✅ Tableau affichant les profils -->
+        <h3>Liste des Profils</h3>
+        <table class="profile-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Avatar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for profile in profiles %}
+                <tr>
+                    <td>{{ profile.id }}</td>
+                    <td>{{ profile.name }}</td>
+                    <td>{{ profile.email }}</td>
+                    <td>
+                        {% if profile.avatar_url %}
+                            <img src="{{ profile.avatar_url }}" alt="Avatar" style="width:50px; height:50px; border-radius:50%;">
+                        {% else %}
+                            <p>Pas d'avatar</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

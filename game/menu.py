@@ -8,6 +8,7 @@ class Menu:
         self.jeu = jeu
         self.back_color = (98, 53, 138)
         self.run_display = True
+        self.gameScore = 0
 
         # Initialisation de l'écran principal
         self.screen = jeu.screen
@@ -101,8 +102,10 @@ class Menu:
                     pygame.quit()
                 # Pour la télécommande
                 if self.runMode1:
-                    self.jeu.jouer()
+                    self.gameScore = 0
+                    self.gameScore = self.jeu.jouer()
                     self.runMode1 = False
+
                 ####
                 elif self.returnToMenu:
                     running = False
