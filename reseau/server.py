@@ -140,6 +140,21 @@ class Server:
             else:
                 print("menu Joeurr SERVER")
                 self.menu.menuJouer()
+                print("self.menu.gameScore %s", self.menu.gameScore)
+                print (serveur.currentUser)
+                conn = get_db_connection()
+                cursor = conn.cursor(dictionary=True)
+                cursor.execute("""
+                INSERT INTO scores (user_id, score)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE
+                score = IF(VALUES(score) > score, VALUES(score), score)
+                """, (serveur.currentUser, self.menu.gameScore))
+                conn.commit()
+                cursor.close()
+                conn.close()
+                
+                self.menu.launchMenu()
             clock.tick(60)  # limite à 60 FPS
 
 

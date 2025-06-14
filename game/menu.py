@@ -105,6 +105,7 @@ class Menu:
                     self.gameScore = 0
                     self.gameScore = self.jeu.jouer()
                     self.runMode1 = False
+                    running = False
 
                 ####
                 elif self.returnToMenu:
@@ -120,3 +121,4 @@ class Menu:
                         self.jeu.jouer()
                     elif retourBtn.boutonHover(posSouris):
                         running = False
+                        

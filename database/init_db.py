@@ -56,7 +56,7 @@ def create_tables():
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS scores (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
+                user_id INT NOT NULL UNIQUE,
                 score INT NOT NULL,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             )
