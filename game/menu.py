@@ -8,7 +8,6 @@ class Menu:
         self.jeu = jeu
         self.back_color = (98, 53, 138)
         self.run_display = True
-        self.gameScore = 0
 
         # Initialisation de l'écran principal
         self.screen = jeu.screen
@@ -58,27 +57,20 @@ class Menu:
         classBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 + 120, "Classements", self.fontBtn, self.fontSizeBtn, self.color)
         buttons = [jouerBtn, paramBtn, creditsBtn, classBtn]
 
-        self.showLoading()
+        posSouris = pygame.mouse.get_pos()
+        self.screen.fill(self.back_color)
+        self.screen.blit(self.logos, (0, -30))
+        for btn in buttons:
+            btn.update(self.screen, posSouris, self.colorPressed, self.color)
 
-        running = True
-        while running:
-            posSouris = pygame.mouse.get_pos()
-            self.screen.fill(self.back_color)
-            self.screen.blit(self.logos, (0, -30))
-            for btn in buttons:
-                btn.update(self.screen, posSouris, self.colorPressed, self.color)
+        pygame.display.flip()
 
-            pygame.display.flip()
-
-            if not self.runLaunchMenu:
-                break  
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if buttons[0].boutonHover(posSouris):
-                        self.menuJouer()     
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if buttons[0].boutonHover(posSouris):
+                    self.menuJouer()     
 
     def menuJouer(self):
         
@@ -88,37 +80,24 @@ class Menu:
         
         buttons = [retourBtn, chillBtn, reflexBtn]
         
-        running = True
-        while running:
-            posSouris = pygame.mouse.get_pos()
-            self.screen.fill(self.back_color)
-            self.screen.blit(self.logos, (0, -30))
-            for btn in buttons:
-                btn.update(self.screen, posSouris, self.colorPressed, self.color)
-            pygame.display.flip()
+        posSouris = pygame.mouse.get_pos()
+        self.screen.fill(self.back_color)
+        self.screen.blit(self.logos, (0, -30))
+        for btn in buttons:
+            btn.update(self.screen, posSouris, self.colorPressed, self.color)
+        pygame.display.flip()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                # Pour la télécommande
-                if self.runMode1:
-                    self.gameScore = 0
-                    self.gameScore = self.jeu.jouer()
-                    self.runMode1 = False
-                    running = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
-                ####
-                elif self.returnToMenu:
-                    running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if chillBtn.boutonHover(posSouris) :
+                    self.showLoading()
+                    self.stopMusic()
+                    self.jeu.jouer()
                     self.runLaunchMenu = True
-                    self.runMode1 = False
+                elif retourBtn.boutonHover(posSouris):
                     self.returnToMenu = False
-
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if chillBtn.boutonHover(posSouris) :
-                        self.showLoading()
-                        self.stopMusic()
-                        self.jeu.jouer()
-                    elif retourBtn.boutonHover(posSouris):
-                        running = False
+                    self.runLaunchMenu = True 
                         

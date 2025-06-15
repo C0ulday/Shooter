@@ -1,9 +1,26 @@
 // Connexion WebSocket avec le serveur Flask
 const socket = io("http://localhost:8000");
 
+socket.on("returnToMenuButton", () => {
+    console.log("Serveur demande de revenir au menu");
+
+    // Cacher toutes les options de jeu
+    document.querySelectorAll(".playOptions").forEach(btn => {
+        btn.style.display = "none";
+    });
+    document.querySelectorAll(".gameOptions").forEach(btn => {
+        btn.style.display = "none";
+    });
+
+    // Réafficher les boutons du menu
+    document.querySelectorAll(".menuOptions").forEach(btn => {
+        btn.style.display = "inline-block";
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Script chargé !");
-
+    
     document.getElementById("playButton").addEventListener("click", () => { 
         socket.emit("startGame");
         
@@ -33,6 +50,18 @@ document.addEventListener("DOMContentLoaded", function () {
         socket.emit("startMode2");
     });
 
+    document.getElementById("returnButton").addEventListener("click", () => { 
+        
+        // on cache les options du jeu
+        document.querySelectorAll(".gameOptions").forEach(btn => {
+            btn.style.display = "none";
+        });
+        document.querySelectorAll(".menuOptions").forEach(btn => {
+            btn.style.display = "inline-block";
+        });
+        socket.emit("returnToMenu");
+    });
+
     document.getElementById("pauseButton").addEventListener("click", () => { 
         socket.emit("pauseGame");
     });
@@ -41,29 +70,11 @@ document.addEventListener("DOMContentLoaded", function () {
         socket.emit("reprendreGame");
     });
 
-    document.getElementById("returnButton").addEventListener("click", () => { 
-
-        socket.emit("returnToMenu");
-        
-        // on cache les options du jeu
-        document.querySelectorAll(".gameOptions").forEach(btn => {
-            btn.style.display = "none";
-        });
-        document.querySelectorAll(".playOptions").forEach(btn => {
-            btn.style.display = "none";
-        });
-
-        // on affiche les boutons du menu
-        document.querySelectorAll(".menuOptions").forEach(btn => {
-                btn.style.display = "inline-block";
-        });
-
-    });
-
     document.getElementById("settingsButton").addEventListener("click", () => console.log("parametres"));
     document.getElementById("leaderboardButton").addEventListener("click", () => console.log("classement"));
     
     document.getElementById("quitButton").addEventListener("click", () => {
+        socket.emit("quitGame");
         console.log("Fermeture du jeu");
         window.close();
     });

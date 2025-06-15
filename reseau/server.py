@@ -33,6 +33,8 @@ class Server:
         self.serverSocket.listen(5)  # Connexions multiples (spectateurs)
         self.game = jeu.Jeu()  # Instance du jeu
         self.menu = menu.Menu(self.game)  # Instance du menu  
+        self.running = True
+        self.gameScore = 0
         print("Serveur en attente de connexion...")
 
     def start(self):
@@ -94,6 +96,7 @@ class Server:
             connexion.close()
 
     def runFlask(self):
+
         @socketio.on("startGame")
         def handle_startGame():
             print("Le jeu a été lancé !")
@@ -101,6 +104,12 @@ class Server:
                 self.menu.runLaunchMenu = False
             else :
                 print("Le menu n'est pas initialisé.")
+                
+        @socketio.on("quitGame")
+        def handle_quitGame():
+            print("Quitter le jeu !")
+            self.running = False
+
         @socketio.on("startMode1")
         def handle_startMode1():
             print("Mode Chill lancé !")
@@ -109,11 +118,12 @@ class Server:
                 self.menu.runMode1 = True
             else :
                 print("Le menu n'est pas initialisé.")
+
         @socketio.on("returnToMenu")
         def handle_returnToMenu():
             print("Retour au menu principal !")
             if self.menu:
-                self.menu.returnToMenu = True
+                self.menu.runLaunchMenu = True
             else :
                 print("Le menu n'est pas initialisé.")
 
@@ -121,43 +131,36 @@ class Server:
 
     def runGame(self):
         print(serveur.currentUser)
-        running = True
-        clock = pygame.time.Clock()
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+        self.menu.showLoading()
+        while self.running:
             if self.menu.runLaunchMenu:
-                print("runLaunchMenu SERVER")
                 self.menu.launchMenu()
-            if self.menu.runMode1:
-                print("coucou")
-                self.menu.jeu.jouer()
-            if self.menu.returnToMenu:
-                self.menu.runLaunchMenu = True
-                self.menu.runMode1 = False
-                self.menu.returnToMenu = False
+
             else:
-                print("menu Joeurr SERVER")
                 self.menu.menuJouer()
-                print("self.menu.gameScore %s", self.menu.gameScore)
-                print (serveur.currentUser)
-                conn = get_db_connection()
-                cursor = conn.cursor(dictionary=True)
-                cursor.execute("""
-                INSERT INTO scores (user_id, score)
-                VALUES (%s, %s)
-                ON DUPLICATE KEY UPDATE
-                score = IF(VALUES(score) > score, VALUES(score), score)
-                """, (serveur.currentUser, self.menu.gameScore))
-                conn.commit()
-                cursor.close()
-                conn.close()
-                
-                self.menu.launchMenu()
-            clock.tick(60)  # limite à 60 FPS
+                if self.menu.runMode1:
+                    self.gameScore = self.menu.jeu.jouer()
+                    print("self.menu.gameScore %s", self.gameScore)
+                    self.menu.runMode1 = False
+                    self.gameScore = 0
+                    print (serveur.currentUser)
+                    self.addScore_database(self.gameScore)
+                    socketio.emit("returnToMenuButton")
+                    self.menu.runLaunchMenu = True
 
-
+    def addScore_database(self, score):
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+        INSERT INTO scores (user_id, score)
+        VALUES (%s, %s)
+        ON DUPLICATE KEY UPDATE
+        score = IF(VALUES(score) > score, VALUES(score), score)
+        """, (serveur.currentUser, score))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
     def sendData(self, connexion, data):
         game = pkl.dumps(data)
         size_prefix = struct.pack("I", len(game)) 
