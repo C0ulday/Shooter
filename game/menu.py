@@ -35,6 +35,8 @@ class Menu:
         self.runMode1 = False
         self.runMode2 = False
         self.returnToMenu = False
+        self.classementMenu = False
+
 
     def playMusic(self, path):
         pygame.mixer.music.load(path)  # Charge le fichier musical
@@ -70,7 +72,15 @@ class Menu:
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if buttons[0].boutonHover(posSouris):
-                    self.menuJouer()     
+                    self.menuJouer() 
+
+    def shwoClassement(self, classement):
+        retourBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 + 60, "Retour", self.fontBtn, self.fontSizeBtn, self.color)
+        self.screen.fill(self.back_color)
+        self.screen.blit(self.logos, (0, -30))
+        posSouris = pygame.mouse.get_pos()
+        retourBtn.update(self.screen, posSouris, self.colorPressed, self.color)
+        pygame.display.flip()
 
     def menuJouer(self):
         
@@ -80,9 +90,10 @@ class Menu:
         
         buttons = [retourBtn, chillBtn, reflexBtn]
         
-        posSouris = pygame.mouse.get_pos()
         self.screen.fill(self.back_color)
         self.screen.blit(self.logos, (0, -30))
+        posSouris = pygame.mouse.get_pos()
+
         for btn in buttons:
             btn.update(self.screen, posSouris, self.colorPressed, self.color)
         pygame.display.flip()

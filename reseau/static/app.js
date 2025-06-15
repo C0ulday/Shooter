@@ -69,15 +69,24 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("reprendreButton").addEventListener("click", () => { 
         socket.emit("reprendreGame");
     });
+    
+    document.getElementById("leaderboardButton").addEventListener("click", () => { 
+        console.log("classement");
+        socket.emit("getleaderboard");
+        document.querySelectorAll(".menuOptions").forEach(btn => {
+            btn.style.display = "none";
+        });
+        document.getElementById("returnButton").style.display = "inline-block";
 
-    document.getElementById("settingsButton").addEventListener("click", () => console.log("parametres"));
-    document.getElementById("leaderboardButton").addEventListener("click", () => console.log("classement"));
+    });
     
     document.getElementById("quitButton").addEventListener("click", () => {
         socket.emit("quitGame");
         console.log("Fermeture du jeu");
         window.close();
     });
+    
+    document.getElementById("settingsButton").addEventListener("click", () => console.log("parametres"));
 
     // Gestion de la connexion WebSocket
     socket.on("connect", () => console.log("Connecté au serveur Flask WebSocket !"));

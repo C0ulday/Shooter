@@ -35,6 +35,7 @@ class Server:
         self.menu = menu.Menu(self.game)  # Instance du menu  
         self.running = True
         self.gameScore = 0
+        self.leaderboard = None
         print("Serveur en attente de connexion...")
 
     def start(self):
@@ -127,6 +128,37 @@ class Server:
             else :
                 print("Le menu n'est pas initialisé.")
 
+
+        @socketio.on("getleaderboard")
+        def handle_getleaderboard():
+            print("Classement !")
+   
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT users.name, scores.score, profiles.bio, profiles.avatar_url
+                FROM scores
+                JOIN users ON users.id = scores.user_id
+                JOIN profiles ON profiles.user_id = users.id
+                ORDER BY scores.score DESC
+                LIMIT 10
+            """)
+            self.leaderboard = cursor.fetchall()
+            print(self.leaderboard)
+            cursor.close()
+            conn.close()
+
+            self.menu.classementMenu = True
+
+        @socketio.on("returnFromClassement")
+        def handle_returnFromClassement():
+            print("Retour au menu principal !")
+            if self.menu:
+                self.menu.classementMenu = False
+            else :
+                print("Le menu n'est pas initialisé.")
+
+
         socketio.run(app, host=self.Ip_adress, port=8000, debug=False, use_reloader=False)
 
     def runGame(self):
@@ -134,16 +166,17 @@ class Server:
         self.menu.showLoading()
         while self.running:
             if self.menu.runLaunchMenu:
-                self.menu.launchMenu()
+                if self.menu.classementMenu:
+                    self.menu.shwoClassement(self.leaderboard)
+                else :
+                    self.menu.launchMenu()
 
             else:
                 self.menu.menuJouer()
                 if self.menu.runMode1:
                     self.gameScore = self.menu.jeu.jouer()
-                    print("self.menu.gameScore %s", self.gameScore)
                     self.menu.runMode1 = False
                     self.gameScore = 0
-                    print (serveur.currentUser)
                     self.addScore_database(self.gameScore)
                     socketio.emit("returnToMenuButton")
                     self.menu.runLaunchMenu = True
