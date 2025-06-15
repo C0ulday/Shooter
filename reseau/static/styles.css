@@ -60,6 +60,7 @@ h1 {
 #mode1Button       { top: 50%; left: 50%; transform: translate(-50%, -50%);}
 #mode2Button       { top: 15%; left: 50%; transform: translateX(-50%);}
 #returnButton      { bottom: 15%; left: 50%; transform: translateX(-50%);}
+#returnClassement  { bottom: 15%; left: 50%; transform: translateX(-50%);}
 
 /* Positionner les boutons autour du cercle */
 #pauseButton     { top: 50%; left: 50%; transform: translate(-50%, -50%); }

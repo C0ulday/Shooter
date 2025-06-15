@@ -76,8 +76,18 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".menuOptions").forEach(btn => {
             btn.style.display = "none";
         });
-        document.getElementById("returnButton").style.display = "inline-block";
+        document.getElementById("returnClassement").style.display = "inline-block";
 
+    });
+
+    document.getElementById("returnClassement").addEventListener("click", () => { 
+        socket.emit("returnFromClassement");
+        document.querySelectorAll(".Classement").forEach(btn => {
+            btn.style.display = "none";
+        });
+        document.querySelectorAll(".menuOptions").forEach(btn => {
+            btn.style.display = "inline-block";
+        });
     });
     
     document.getElementById("quitButton").addEventListener("click", () => {

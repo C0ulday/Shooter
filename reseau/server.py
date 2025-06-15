@@ -167,7 +167,7 @@ class Server:
         while self.running:
             if self.menu.runLaunchMenu:
                 if self.menu.classementMenu:
-                    self.menu.shwoClassement(self.leaderboard)
+                    self.menu.showClassement(self.leaderboard)
                 else :
                     self.menu.launchMenu()
 
