@@ -2,7 +2,7 @@ import socket
 import os
 import sys
 import RPi.GPIO as GPIO 
-
+import time
 #sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../StandTir')))
 #from Feature_matching.Feature_matching import captureAnalyse
 
@@ -17,10 +17,19 @@ class Client:
         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  
 
         GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_pressed, bouncetime=300)
-        while True:
-            continue
+
+        try:
+            while True:
+                time.sleep(0.1)
+
+        except KeyboardInterrupt:
+            print("Arrêt du client")
+            
+        finally:
+            GPIO.cleanup()
+
     
-    def button_pressed(self):
+    def button_pressed(self, channel):
         print("Bouton pressed !")
         #captureAnalyse()
         
