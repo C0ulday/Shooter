@@ -2,8 +2,7 @@ import socket
 import os
 import sys
 import RPi.GPIO as GPIO 
-import pickle as pkl
-from game import jeu
+
 #sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../StandTir')))
 #from Feature_matching.Feature_matching import captureAnalyse
 
