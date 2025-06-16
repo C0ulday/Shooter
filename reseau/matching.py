@@ -9,15 +9,15 @@ class Matching:
         self.resultat = False
         self.color1_bgr = (29, 94, 100)
         self.color2_bgr = (29, 94, 100)
-        self.self.hsv1 = self.convert_bgr_to_hsv(self.color1_bgr)
-        self.self.hsv2 = self.convert_bgr_to_hsv(self.color2_bgr)
+        self.hsv1 = self.convert_bgr_to_hsv(self.color1_bgr)
+        self.hsv2 = self.convert_bgr_to_hsv(self.color2_bgr)
 
         self.reference_image = cv2.imread("./pato.png")
         if self.reference_image is None:
             print("Error: Could not load reference image.")
             sys.exit(1)
 
-        self.reference_masked = self.detect_colors(self.reference_image, self.self.hsv1, self.self.hsv2)
+        self.reference_masked = self.detect_colors(self.reference_image, self.hsv1, self.hsv2)
         cv2.imwrite("reference_masked_binary.png", self.reference_masked)
 
         self.contours_reference, _ = cv2.findContours(self.reference_masked, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
