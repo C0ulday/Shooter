@@ -191,7 +191,6 @@ class Server:
 
 #----------------------------------
 
-
 # Page d'accueil
 @app.route("/", methods=["GET"])
 def home():
@@ -200,7 +199,7 @@ def home():
 
     cursor.execute("""
         SELECT 
-            users.id, users.name, users.email, profiles.avatar_url
+            users.id, users.name, users.role, profiles.avatar_url, profiles.bio
         FROM users
         LEFT JOIN profiles ON users.id = profiles.user_id
     """)
@@ -253,7 +252,7 @@ def login():
             session["user_id"] = user["id"]
             session["name"] = user["name"]
             session["role"] = user["role"]
-            flash("Connexion réussie.", "success")
+
             if user["role"] == "admin":
                 return redirect(url_for("dashboard"))
             else:
@@ -282,6 +281,7 @@ def dashboard():
         JOIN profiles ON users.id = profiles.user_id
     """)
     profile = profile[0] if profile else None
+
     return render_template(
         "dashboard.html",
         user_name=session["name"],

@@ -96,18 +96,15 @@
         <table class="profile-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Email</th>
                     <th>Avatar</th>
+                    <th>Nom</th>
+                    <th>ROLE</th>
+                    <th>BIO</th>
                 </tr>
             </thead>
             <tbody>
                 {% for profile in profiles %}
                 <tr>
-                    <td>{{ profile.id }}</td>
-                    <td>{{ profile.name }}</td>
-                    <td>{{ profile.email }}</td>
                     <td>
                         {% if profile.avatar_url %}
                             <img src="{{ profile.avatar_url }}" alt="Avatar" style="width:50px; height:50px; border-radius:50%;">
@@ -115,6 +112,10 @@
                             <p>Pas d'avatar</p>
                         {% endif %}
                     </td>
+                    <td>{{ profile.name }}</td>
+                    <td>{{ profile.role }}</td>
+                    <td>{{ profile.bio }}</td>
+
                 </tr>
                 {% endfor %}
             </tbody>
