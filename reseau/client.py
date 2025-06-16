@@ -17,6 +17,8 @@ class Client:
         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  
 
         GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_pressed, bouncetime=300)
+        while True:
+            continue
     
     def button_pressed(self):
         print("Bouton pressed !")
