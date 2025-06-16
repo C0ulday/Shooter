@@ -18,7 +18,7 @@
             color: white;
         }
 
-        /* 🔹 Header contenant les boutons en haut à droite */
+        /* Header contenant les boutons en haut à droite */
         .header {
             width: 100%;
             display: flex;
@@ -45,20 +45,20 @@
             color: white;
         }
 
-        /* 🔹 Conteneur principal */
+        /* Conteneur principal */
         .container {
             text-align: center;
             margin-top: 100px;
         }
 
-        /* 🔹 Image du logo */
+        /* Image du logo */
         .logo {
             width: 400px;  /* Augmenté */
             height: auto;
             border-radius: 20px;
         }
 
-        /* 🔹 Tableau des profils */
+        /* Tableau des profils */
         .profile-table {
             width: 60%;
             margin-top: 30px;
@@ -80,18 +80,18 @@
 </head>
 <body>
 
-    <!-- ✅ Header avec les boutons de connexion -->
+    <!--  Header avec les boutons de connexion -->
     <div class="header">
         <a href="{{ url_for('login') }}">Se connecter</a>
         <a href="{{ url_for('signup') }}">Créer un compte</a>
     </div>
 
-    <!-- ✅ Conteneur principal -->
+    <!--  Conteneur principal -->
     <div class="container">
         <h2>Bienvenue</h2>
         <img src="{{ url_for('static', filename='image/logo2.png') }}" alt="Poulpe" class="logo">
         
-        <!-- ✅ Tableau affichant les profils -->
+        <!--  Tableau affichant les profils -->
         <h3>Liste des Profils</h3>
         <table class="profile-table">
             <thead>

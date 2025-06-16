@@ -61,9 +61,6 @@ class User:
         conn.close()
         return True  # Inscription réussie
 
-
-
-
     @staticmethod
     def delete_user(user_id):
         """Supprimer un utilisateur"""

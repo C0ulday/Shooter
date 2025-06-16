@@ -2,7 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
+import requests
 import socket
 import pygame
 import struct
@@ -131,22 +131,16 @@ class Server:
         @socketio.on("getleaderboard")
         def handle_getleaderboard():
             print("Classement !")
-   
-            conn = get_db_connection()
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute("""
-                SELECT users.name, scores.score, profiles.bio, profiles.avatar_url
+
+            self.leaderboard = sql_select(""" SELECT users.name, scores.score, profiles.bio, profiles.avatar_url
                 FROM scores
                 JOIN users ON users.id = scores.user_id
                 JOIN profiles ON profiles.user_id = users.id
                 ORDER BY scores.score DESC
                 LIMIT 10
             """)
-            self.leaderboard = cursor.fetchall()
-            print(self.leaderboard)
-            cursor.close()
-            conn.close()
 
+            print(self.leaderboard)
             self.menu.classementMenu = True
 
         @socketio.on("returnFromClassement")
@@ -175,23 +169,14 @@ class Server:
                 if self.menu.runMode1:
                     self.game.jouer()
                     self.menu.runMode1 = False
-                    self.addScore_database(self.game.joueur.score)
+                    sql_execute(command=""" INSERT INTO scores (user_id, score)
+                    VALUES (%s, %s)
+                    ON DUPLICATE KEY UPDATE
+                    score = IF(VALUES(score) > score, VALUES(score), score)
+                    """, params=(serveur.currentUser, (self.game.joueur.score)))
                     socketio.emit("returnToMenuButton")
                     self.menu.runLaunchMenu = True
 
-    def addScore_database(self, score):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("""
-        INSERT INTO scores (user_id, score)
-        VALUES (%s, %s)
-        ON DUPLICATE KEY UPDATE
-        score = IF(VALUES(score) > score, VALUES(score), score)
-        """, (serveur.currentUser, score))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
     def sendData(self, connexion, data):
         game = pkl.dumps(data)
         size_prefix = struct.pack("I", len(game)) 
@@ -210,7 +195,21 @@ class Server:
 # Page d'accueil
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("home.html")
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT 
+            users.id, users.name, users.email, profiles.avatar_url
+        FROM users
+        LEFT JOIN profiles ON users.id = profiles.user_id
+    """)
+    profiles = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+    return render_template("home.html", profiles=profiles)
+
 
 # Inscription (Signup)
 @app.route("/signup", methods=["GET", "POST"])
@@ -221,6 +220,11 @@ def signup():
         password = request.form["password"]
         bio = request.form.get("bio", "Aucune description")
         avatar_url = request.form.get("avatar_url", "static/images/default-avatar.png")
+        
+        if not verif_url(url= avatar_url):
+            flash("L'image n'est pas correct !", "danger")
+            return redirect(url_for("signup"))
+
 
         if not User.register(name, email, password, bio, avatar_url):
             flash("Cet email est déjà utilisé !", "danger")
@@ -271,22 +275,13 @@ def dashboard():
         flash("Accès réservé aux administrateurs.", "danger")
         return redirect(url_for("home"))
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("SELECT bio, avatar_url FROM profiles WHERE user_id = %s", (session["user_id"],))
-    profile = cursor.fetchone()
-
-    cursor.execute("""
-        SELECT users.id, users.name, profiles.bio, profiles.avatar_url 
+    profile = sql_select(command= "SELECT bio, avatar_url FROM profiles WHERE user_id = %s", params=(session["user_id"],))
+    
+    profiles = sql_select(command= """ SELECT users.id, users.name, profiles.bio, profiles.avatar_url 
         FROM users 
         JOIN profiles ON users.id = profiles.user_id
     """)
-    profiles = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
+    profile = profile[0] if profile else None
     return render_template(
         "dashboard.html",
         user_name=session["name"],
@@ -301,21 +296,13 @@ def jeuView():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("SELECT bio, avatar_url FROM profiles WHERE user_id = %s", (session["user_id"],))
-    profile = cursor.fetchone()
-
-    cursor.execute("""
-        SELECT users.id, users.name, profiles.bio, profiles.avatar_url 
+    profile = sql_select("SELECT bio, avatar_url FROM profiles WHERE user_id = %s", params=(session["user_id"],))
+    print(profile)
+    profiles = sql_select("""SELECT users.id, users.name, profiles.bio, profiles.avatar_url 
         FROM users 
         JOIN profiles ON users.id = profiles.user_id
     """)
-    profiles = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
+    profile = profile[0] if profile else None
 
     return render_template(
         "app.html",
@@ -346,6 +333,59 @@ def logout():
     session.clear()
     return redirect(url_for("home"))
 
+def sql_execute(command, params = None):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        if params:
+            cursor.execute(command, params)
+        else:
+            cursor.execute(command)
+        
+        conn.commit()
+       
+    finally:
+        cursor.close()
+        conn.close()
+
+def sql_select(command, params=None):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    if params:
+        cursor.execute(command, params)
+    else:
+        cursor.execute(command)
+
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
+def verif_url(url):
+
+    try:
+        if url == "": return True
+        response = requests.head(url, allow_redirects=True, timeout=5)
+        content_type = response.headers.get("Content-Type", "")
+
+        formats_acceptes = [
+            "image/png",
+            "image/jpeg",
+            "image/webp",
+            "image/gif"
+        ]
+
+        if content_type in formats_acceptes:
+            print(f"Image acceptée : {url} ({content_type})")
+            return True
+        else:
+            print(f" Type non accepté : {content_type}")
+            return False
+
+    except requests.RequestException as e:
+        print(f"Erreur réseau : {e}")
+        return False
 
 # Lancer le serveur
 if __name__ == "__main__":
