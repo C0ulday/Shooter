@@ -11,7 +11,6 @@ class Joueur(pygame.sprite.Sprite):
 
     def setScore(self,points):
         self.score = self.score + points
-        return self.score
     
     def getScore(self):
         return self.score

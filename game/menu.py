@@ -3,25 +3,29 @@ from game.jeu import Jeu
 from game.bouton import Bouton
 
 class Menu:
-    def __init__(self, jeu):
-        
-        self.jeu = jeu
+    def __init__(self):
+    
         self.back_color = (98, 53, 138)
         self.run_display = True
-
+        
+        # Matériels affichage
+        info = pygame.display.Info()
+        self.largeur = info.current_w
+        self.hauteur = info.current_h - 10
+        
         # Initialisation de l'écran principal
-        self.screen = jeu.screen
+        self.screen = pygame.display.set_mode((self.largeur, self.hauteur), pygame.RESIZABLE)
         pygame.display.set_caption("Esi-SHOOT")
 
         # Surface optionnelle pour le menu (si vous souhaitez dessiner séparément)
-        self.menu_surface = pygame.Surface((jeu.largeur, jeu.hauteur))
+        self.menu_surface = pygame.Surface((self.largeur, self.hauteur))
 
         # Chemin vers la musique et chargement des images
         self.musicPath = "game/assets/sounds/luv.wav"
         self.loadingImage = pygame.image.load("game/assets/gui/ecran_chargement.png")
-        self.loadingImage = pygame.transform.scale(self.loadingImage, (jeu.largeur, jeu.hauteur))
+        self.loadingImage = pygame.transform.scale(self.loadingImage, (self.largeur, self.hauteur))
         self.logos = pygame.image.load("game/assets/gui/logos.png")
-        self.logos = pygame.transform.scale(self.logos, (jeu.largeur, jeu.hauteur))
+        self.logos = pygame.transform.scale(self.logos, (self.largeur, self.hauteur))
 
         # Couleurs utilisées pour les boutons
         self.colorPressed = (255, 255, 255)
@@ -53,10 +57,10 @@ class Menu:
 
     def launchMenu(self):
         # Création et positionnement des boutons du menu principal
-        jouerBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 - 60, "Jouer", self.fontBtn, self.fontSizeBtn, self.color)
-        paramBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2, "Parametres", self.fontBtn, self.fontSizeBtn, self.color)
-        creditsBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 + 60, "Credits", self.fontBtn, self.fontSizeBtn, self.color)
-        classBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 + 120, "Classements", self.fontBtn, self.fontSizeBtn, self.color)
+        jouerBtn = Bouton(self.largeur // 2, self.hauteur // 2 - 60, "Jouer", self.fontBtn, self.fontSizeBtn, self.color)
+        paramBtn = Bouton(self.largeur // 2, self.hauteur // 2, "Parametres", self.fontBtn, self.fontSizeBtn, self.color)
+        creditsBtn = Bouton(self.largeur // 2, self.hauteur // 2 + 60, "Credits", self.fontBtn, self.fontSizeBtn, self.color)
+        classBtn = Bouton(self.largeur // 2, self.hauteur // 2 + 120, "Classements", self.fontBtn, self.fontSizeBtn, self.color)
         buttons = [jouerBtn, paramBtn, creditsBtn, classBtn]
 
         posSouris = pygame.mouse.get_pos()
@@ -83,8 +87,8 @@ class Menu:
 
         # Titre
         titre = title_font.render("Classement Top 10", True, (255, 255, 0))
-        self.screen.blit(titre, (self.jeu.largeur // 2 - titre.get_width() // 2, 40))
-        x = self.jeu.largeur // 2
+        self.screen.blit(titre, (self.largeur // 2 - titre.get_width() // 2, 40))
+        x = self.largeur // 2
         # En-têtes
         headers = ["Nom", "Score", "Bio"]
         x_positions = [x - 500, x-300 , x + 100]
@@ -106,7 +110,7 @@ class Menu:
             y += 40
 
         # Bouton retour
-        retourBtn = Bouton(self.jeu.largeur // 2, y + 60, "Retour", self.fontBtn, self.fontSizeBtn, self.color)
+        retourBtn = Bouton(self.largeur // 2, y + 60, "Retour", self.fontBtn, self.fontSizeBtn, self.color)
         posSouris = pygame.mouse.get_pos()
         retourBtn.update(self.screen, posSouris, self.colorPressed, self.color)
 
@@ -115,9 +119,9 @@ class Menu:
 
     def menuJouer(self):
         
-        reflexBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2, "Reflex Mode", self.fontBtn, self.fontSizeBtn, self.color)
-        chillBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 - 60, "Chill Mode", self.fontBtn, self.fontSizeBtn, self.color)
-        retourBtn = Bouton(self.jeu.largeur // 2, self.jeu.hauteur // 2 + 60, "Retour", self.fontBtn, self.fontSizeBtn, self.color)
+        reflexBtn = Bouton(self.largeur // 2, self.hauteur // 2, "Reflex Mode", self.fontBtn, self.fontSizeBtn, self.color)
+        chillBtn = Bouton(self.largeur // 2, self.hauteur // 2 - 60, "Chill Mode", self.fontBtn, self.fontSizeBtn, self.color)
+        retourBtn = Bouton(self.largeur // 2, self.hauteur // 2 + 60, "Retour", self.fontBtn, self.fontSizeBtn, self.color)
         
         buttons = [retourBtn, chillBtn, reflexBtn]
         
@@ -137,7 +141,7 @@ class Menu:
                 if chillBtn.boutonHover(posSouris) :
                     self.showLoading()
                     self.stopMusic()
-                    self.jeu.jouer()
+                    Jeu.jouer()
                     self.runLaunchMenu = True
                 elif retourBtn.boutonHover(posSouris):
                     self.returnToMenu = False

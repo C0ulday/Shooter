@@ -32,9 +32,8 @@ class Server:
         self.serverSocket.bind((self.Ip_adress, self.Port))
         self.serverSocket.listen(5)  # Connexions multiples (spectateurs)
         self.game = jeu.Jeu()  # Instance du jeu
-        self.menu = menu.Menu(self.game)  # Instance du menu  
+        self.menu = menu.Menu()  # Instance du menu 
         self.running = True
-        self.gameScore = 0
         self.leaderboard = None
         print("Serveur en attente de connexion...")
 
@@ -174,10 +173,9 @@ class Server:
             else:
                 self.menu.menuJouer()
                 if self.menu.runMode1:
-                    self.gameScore = self.menu.jeu.jouer()
+                    self.game.jouer()
                     self.menu.runMode1 = False
-                    self.gameScore = 0
-                    self.addScore_database(self.gameScore)
+                    self.addScore_database(self.game.joueur.score)
                     socketio.emit("returnToMenuButton")
                     self.menu.runLaunchMenu = True
 

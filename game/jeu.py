@@ -43,11 +43,9 @@ class Jeu:
         self.gameSurface = pygame.Surface((self.largeur, self.hauteur))
         self.screen = pygame.display.set_mode((self.largeur, self.hauteur), pygame.RESIZABLE)
 
-
-
         pygame.mixer.init()
 
-    def updateEnvironement(self, environment, score):
+    def updateEnvironement(self, environment):
         # Effacer la surface de jeu
         self.gameSurface.fill((0, 0, 0))
 
@@ -63,7 +61,7 @@ class Jeu:
         self.viseur.draw(self.gameSurface)
 
         # Affichage du score dans le coin supérieur gauche
-        score_text = self.font.render(f"Score: {score}", True, (255, 255, 255))
+        score_text = self.font.render(f"Score: {self.joueur.score}", True, (255, 255, 255))
         self.gameSurface.blit(score_text, (10, 10))
 
     def ajouterViseur(self):
@@ -89,9 +87,9 @@ class Jeu:
         self.gators.add(gator)
         self.monstres.add(*self.gators)
 
-    def scoreMessage(self, monstre, score):
+    def scoreMessage(self, monstre):
         if (monstre.monster_type == "aigle"):
-            score = self.joueur.setScore(50)
+            self.joueur.setScore(50)
             # Affichage des points dynamiquement
             pointsMessage = {
                 "text": "+50",
@@ -100,14 +98,14 @@ class Jeu:
                 "y": monstre.rect.y
             }
         elif (monstre.monster_type == "gator"):
-            score = self.joueur.setScore(100)
+            self.joueur.setScore(100)
             pointsMessage = {
                 "text": "+100",
                 "start_time": pygame.time.get_ticks(),
                 "x": monstre.rect.x,
                 "y": monstre.rect.y
             }
-        return pointsMessage, score
+        return pointsMessage
     
     def affichageTemps(self, temps, temps_passe):
         # Affichage du chronomètre dans le coin supérieur droit
@@ -179,6 +177,7 @@ class Jeu:
 
 ############################################################################################
     def jouer(self):
+        
         # Redimensionnement des images pour correspondre à la surface de jeu
         background = pygame.transform.scale(self.back, (self.largeur, self.hauteur))
         clouds     = pygame.transform.scale(self.clouds, (self.largeur, self.hauteur))
@@ -194,12 +193,18 @@ class Jeu:
         clock = pygame.time.Clock()
         fps = 60 
         temps = 30000 # 30 secondes 
-        score = 0
+        self.joueur.score = 0
         temps_passe = False  # Pour gérer l'activation de l'exclamation
         running = True
         endingTime = temps + pygame.time.get_ticks()
         pointsMessage = None
 
+        self.aigles = pygame.sprite.Group()
+        self.frogs   = pygame.sprite.Group()
+        self.gators = pygame.sprite.Group()
+        self.monstres = pygame.sprite.Group()
+        self.spawnMonsters(temps)
+        
         while running:
             # Limite le nombre de frames par seconde
             clock.tick(fps)
@@ -214,8 +219,8 @@ class Jeu:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     monstre = self.viseur.sprites()[0].detecteurTir(self.monstres)
                     if (monstre is not None):
-                        pointsMessage,score = self.scoreMessage(monstre, score)
-                        print(f"Score: {score}")
+                        pointsMessage = self.scoreMessage(monstre)
+                        print(f"Score: {self.joueur.score}")
                 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     if  not self.pause:
@@ -229,7 +234,7 @@ class Jeu:
                     self.spawnMonsters(temps)
 
             if not self.pause:
-                self.updateEnvironement(environment, score)
+                self.updateEnvironement(environment)
                 self.afficheMessage(pointsMessage)
                 self.affichageTemps(endingTime - pygame.time.get_ticks(), temps_passe)
                 
@@ -243,7 +248,6 @@ class Jeu:
             # Une fois le rendu terminé sur gameSurface, on le blitte sur la display surface
             self.screen.blit(self.gameSurface, (0, 0))
             pygame.display.flip()
-        return score
             
             
 
