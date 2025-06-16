@@ -4,8 +4,8 @@ import sys
 import RPi.GPIO as GPIO 
 import pickle as pkl
 from game import jeu
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../StandTir')))
-from Feature_matching.Feature_matching import captureAnalyse
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../StandTir')))
+#from Feature_matching.Feature_matching import captureAnalyse
 
 class Client:
     def __init__(self, ip_adress="localhost", port=4000, pin=13): # pin, ip adress et mode à changer
@@ -17,10 +17,10 @@ class Client:
         GPIO.setmode(GPIO.BCM)  
         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  
 
-        GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.bouton_pressed, bouncetime=300)
+        GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_pressed, bouncetime=300)
     
-    def button_pressed(self, channel):
-        print("Bouton pressé !")
+    def button_pressed(self):
+        print("Bouton pressed !")
         #captureAnalyse()
         
     def client(self):
