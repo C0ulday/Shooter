@@ -169,7 +169,6 @@ class Server:
                 if self.menu.runMode1:
                     self.game.jouer()
                     self.menu.runMode1 = False
-                    # self.addScore_database(self.game.joueur.score)
                     sql_execute(command=""" INSERT INTO scores (user_id, score)
                     VALUES (%s, %s)
                     ON DUPLICATE KEY UPDATE
@@ -178,19 +177,6 @@ class Server:
                     socketio.emit("returnToMenuButton")
                     self.menu.runLaunchMenu = True
 
-    def addScore_database(self, score):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("""
-        INSERT INTO scores (user_id, score)
-        VALUES (%s, %s)
-        ON DUPLICATE KEY UPDATE
-        score = IF(VALUES(score) > score, VALUES(score), score)
-        """, (serveur.currentUser, score))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
     def sendData(self, connexion, data):
         game = pkl.dumps(data)
         size_prefix = struct.pack("I", len(game)) 
@@ -347,10 +333,6 @@ def logout():
     session.clear()
     return redirect(url_for("home"))
 
-
-
-
-
 def sql_execute(command, params = None):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -380,8 +362,6 @@ def sql_select(command, params=None):
     conn.close()
     return result
 
-
-
 def verif_url(url):
 
     try:
@@ -406,9 +386,6 @@ def verif_url(url):
     except requests.RequestException as e:
         print(f"Erreur réseau : {e}")
         return False
-
-
-
 
 # Lancer le serveur
 if __name__ == "__main__":

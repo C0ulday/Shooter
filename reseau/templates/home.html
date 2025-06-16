@@ -80,18 +80,18 @@
 </head>
 <body>
 
-    <!-- ✅ Header avec les boutons de connexion -->
+    <!--  Header avec les boutons de connexion -->
     <div class="header">
         <a href="{{ url_for('login') }}">Se connecter</a>
         <a href="{{ url_for('signup') }}">Créer un compte</a>
     </div>
 
-    <!-- ✅ Conteneur principal -->
+    <!--  Conteneur principal -->
     <div class="container">
         <h2>Bienvenue</h2>
         <img src="{{ url_for('static', filename='image/logo2.png') }}" alt="Poulpe" class="logo">
         
-        <!-- ✅ Tableau affichant les profils -->
+        <!--  Tableau affichant les profils -->
         <h3>Liste des Profils</h3>
         <table class="profile-table">
             <thead>
