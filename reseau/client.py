@@ -21,7 +21,7 @@ class Client:
     
     def button_pressed(self, channel):
         print("Bouton pressé !")
-        captureAnalyse()
+        #captureAnalyse()
         
     def client(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -81,4 +81,4 @@ class Client:
         
 if __name__ == "__main__":
     client = Client()  
-    client.client()
+    #client.client()
