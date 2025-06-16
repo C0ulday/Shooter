@@ -3,7 +3,6 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import bcrypt
 from database.models.user import User
-
 from database.db_config import get_db_connection
 import mysql.connector
 
@@ -70,23 +69,20 @@ def initialize_database():
     """Initialise la base de données et crée les tables."""
     create_database()
     create_tables()
-    # time.sleep(1)
     name = "Admin"
     email = "admin@example.com"
     password = "admin123"
-    password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
     existing_admin = cursor.fetchone()
-
+    
     if existing_admin:
         print("Admin déjà existant, aucune action nécessaire.")
     else:
-        User.add_user(name, email, password_hash, role="admin")
+        #User.add_user(name, email, password_hash, role="admin")
+        User.register(name =name , email= email , password=password, bio="Admin du site", avatar_url="https://criticalhits.com.br/wp-content/uploads/2021/05/Madara_Rinnegan-1.png",role ="admin")
         print("Admin créé avec succès.")
-
-  
 
 if __name__ == "__main__":
     initialize_database()
