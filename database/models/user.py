@@ -64,22 +64,22 @@ class User:
 
 
 
-        @staticmethod
-        def delete_user(user_id):
-            """Supprimer un utilisateur"""
-            conn = get_db_connection()
-            cursor = conn.cursor()
+    @staticmethod
+    def delete_user(user_id):
+        """Supprimer un utilisateur"""
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-            try: 
-                cursor.execute("DELETE FROM profiles WHERE user_id = %s", (user_id,))
-                cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
-                conn.commit()
-                print(f"✅ Utilisateur {user_id} supprimé avec succès.")
-            except Exception as e:
-                print(f"Erreur lors de la suppression de l'utilisateur {user_id}: {e}")
-            finally:
-                cursor.close()
-                conn.close()
+        try: 
+            cursor.execute("DELETE FROM profiles WHERE user_id = %s", (user_id,))
+            cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+            conn.commit()
+            print(f"Utilisateur {user_id} supprimé avec succès.")
+        except Exception as e:
+            print(f"Erreur lors de la suppression de l'utilisateur {user_id}: {e}")
+        finally:
+            cursor.close()
+            conn.close()
 
     
             

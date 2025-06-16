@@ -79,9 +79,10 @@ class Menu:
                     self.menuJouer() 
 
     def showClassement(self, classement):
+
         self.screen.fill(self.back_color)
         self.screen.blit(self.logos, (0, -30))
-
+        
         title_font = pygame.font.SysFont("Arial", 36)
         font = pygame.font.SysFont("Arial", 24)
 
@@ -89,9 +90,11 @@ class Menu:
         titre = title_font.render("Classement Top 10", True, (255, 255, 0))
         self.screen.blit(titre, (self.largeur // 2 - titre.get_width() // 2, 40))
         x = self.largeur // 2
+        
         # En-têtes
         headers = ["Nom", "Score", "Bio"]
         x_positions = [x - 500, x-300 , x + 100]
+        
         for i, head in enumerate(headers):
             header_text = font.render(head, True, (0, 200, 255))
             self.screen.blit(header_text, (x_positions[i], 100))
@@ -108,14 +111,16 @@ class Menu:
             self.screen.blit(bio, (x_positions[2], y))
 
             y += 40
-
         # Bouton retour
         retourBtn = Bouton(self.largeur // 2, y + 60, "Retour", self.fontBtn, self.fontSizeBtn, self.color)
+        
         posSouris = pygame.mouse.get_pos()
         retourBtn.update(self.screen, posSouris, self.colorPressed, self.color)
 
         pygame.display.flip()
-
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
 
     def menuJouer(self):
         
