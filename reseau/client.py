@@ -3,11 +3,9 @@ import os
 import sys
 import RPi.GPIO as GPIO 
 import time
-#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../StandTir')))
-#from Feature_matching.Feature_matching import captureAnalyse
 
 class Client:
-    def __init__(self, ip_adress="localhost", port=4000, pin=13): # pin, ip adress et mode à changer
+    def __init__(self, ip_adress="localhost", port=4000, pin=13):  # pin, ip adress et mode à changer
         self.ip_adress = ip_adress
         self.port = port
         self.pin = pin
@@ -16,6 +14,7 @@ class Client:
         GPIO.setmode(GPIO.BCM)  
         GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  
 
+        # Ajout d'un événement sur le bouton
         GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_pressed, bouncetime=300)
 
         try:
@@ -28,11 +27,10 @@ class Client:
         finally:
             GPIO.cleanup()
 
-    
-    def button_pressed(self):
+    def button_pressed(self, channel):  # <-- Ajout du paramètre requis
         print("Bouton pressed !")
-        #captureAnalyse()
-        
+        # captureAnalyse()
+
     def client(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
@@ -53,42 +51,7 @@ class Client:
         self.client_socket.sendall(message.encode("utf-8"))
         print(f"Message envoyé: {message}")
 
-    # def receiveData(self):
-    #     try:
-    #         size_data = self.client_socket.recv(4)
-    #         if not size_data:
-    #             print("Erreur: Aucune donnée reçue pour la taille.")
-    #             return "error"
 
-    #         expected_size = struct.unpack("I", size_data)[0]
-    #         data = b""
-
-    #         while len(data) < expected_size:
-    #             packet = self.client_socket.recv(4096)
-    #             if not packet:
-    #                 print("Connexion interrompue.")
-    #                 return "error"
-    #             data += packet
-
-    #         try:
-    #             game = pkl.loads(data)
-    #             hit = False
-    #             if isinstance(game, jeu.Jeu):
-    #                 print("Using method 2 to determine if it's a hit or not...")
-    #             else:
-    #                 print("Using method 1 to determine if it's a hit or not...")
-
-    #             return "hit" if hit else "miss"
-
-    #         except Exception as e:
-    #             print(f"Erreur de désérialisation : {e}")
-    #             return "error"
-
-    #     except socket.error as e:
-    #         print(f"Erreur de socket : {e}")
-    #         return "error"
-
-        
 if __name__ == "__main__":
     client = Client()  
-    #client.client()
+    # client.client()
