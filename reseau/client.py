@@ -3,9 +3,11 @@ import os
 import sys
 import RPi.GPIO as GPIO 
 import time
+from matching import Matching
 
 class Client:
-    def __init__(self, ip_adress="localhost", port=4000, pin=13):  # pin, ip adress et mode à changer
+    def __init__(self, ip_adress="localhost", port=4000, pin=13): 
+        self.cam = Matching()
         self.ip_adress = ip_adress
         self.port = port
         self.pin = pin
@@ -27,9 +29,10 @@ class Client:
         finally:
             GPIO.cleanup()
 
-    def button_pressed(self, channel):  # <-- Ajout du paramètre requis
+    def button_pressed(self, channel): 
         print("Bouton pressed !")
-        # captureAnalyse()
+        self.cam.matching_check()
+        print(f'Resultat de l analyse est {self.cam.resultat}')
 
     def client(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -54,4 +57,3 @@ class Client:
 
 if __name__ == "__main__":
     client = Client()  
-    # client.client()
