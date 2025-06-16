@@ -24,12 +24,12 @@ class Client:
 
         except KeyboardInterrupt:
             print("Arrêt du client")
-            
+
         finally:
             GPIO.cleanup()
 
     
-    def button_pressed(self, channel):
+    def button_pressed(self):
         print("Bouton pressed !")
         #captureAnalyse()
         
