@@ -41,9 +41,9 @@ class Matching:
 
         self.picam2.start()
         time.sleep(2)  # Laisse le temps à l’AWB et AE de se stabiliser
-        self.self.frame_rgb = self.picam2.capture_array()
+        self.frame_rgb = self.picam2.capture_array()
         # self.frame_rgb = cv2.cvtColor(self.frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
-        cv2.imshow("Original Image", self.self.frame_rgb)
+        cv2.imshow("Original Image", self.frame_rgb)
         # -----------------------------------------------------
 
     def convert_bgr_to_hsv(self, bgr_color):
