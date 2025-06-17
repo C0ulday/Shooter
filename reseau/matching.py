@@ -41,6 +41,9 @@ class Matching:
 
         self.picam2.start()
         time.sleep(2)  # Laisse le temps à l’AWB et AE de se stabiliser
+        self.self.frame_rgb = self.picam2.capture_array()
+        # self.frame_rgb = cv2.cvtColor(self.frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
+        cv2.imshow("Original Image", self.self.frame_rgb)
         # -----------------------------------------------------
 
     def convert_bgr_to_hsv(self, bgr_color):
@@ -80,19 +83,17 @@ class Matching:
         return shape_match_score < threshold
 
     def matching_check(self):
-        frame_rgb = self.picam2.capture_array()
-        # frame_rgb = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
-        cv2.imshow("Original Image", frame_rgb)
+        
 
         print("Processing captured image...")
-        combined_mask = self.detect_colors(frame_rgb, self.hsv1, self.hsv2)  # Corrigé
+        combined_mask = self.detect_colors(self.frame_rgb, self.hsv1, self.hsv2)  # Corrigé
         contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if contours:
             largest_contour = max(contours, key=cv2.contourArea)
             center = self.get_contour_center(largest_contour)
             if center:
                 print(f"Largest Contour Center: {center}")
-            frame_with_contour = frame_rgb.copy()
+            frame_with_contour = self.frame_rgb.copy()
             cv2.drawContours(frame_with_contour, [largest_contour], -1, (0, 255, 0), 3)
             height = min(frame_with_contour.shape[0], self.reference_image_copy.shape[0])
             frame_resized = cv2.resize(frame_with_contour, (int(frame_with_contour.shape[1] * height / frame_with_contour.shape[0]), height))
