@@ -21,15 +21,15 @@ class Client:
         # Ajout d'un événement sur le bouton
         GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_pressed, bouncetime=300)
 
-        try:
-            while True:
-                time.sleep(0.1)
+        # try:
+        #     while True:
+        #         time.sleep(0.1)
 
-        except KeyboardInterrupt:
-            print("Arrêt du client")
+        # except KeyboardInterrupt:
+        #     print("Arrêt du client")
 
-        finally:
-            GPIO.cleanup()
+        # finally:
+        #     GPIO.cleanup()
 
     def button_pressed(self, channel): 
         print("Bouton pressed !")
@@ -46,7 +46,7 @@ class Client:
             self.client_socket.connect((self.ip_adress, self.port))
             print("En attente d'un appui sur le bouton...")
             while True:
-                pass
+                time.sleep(0.1)
 
         except socket.error as e:
             print(f"Erreur socket : {e}")
