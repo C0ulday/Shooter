@@ -35,9 +35,9 @@ class Client:
 
     def button_pressed(self, channel): 
         print("Bouton pressed !")
-        result = self.cam.matching_check()
+        self.cam.matching_check()
         print(f'Resultat de l analyse est {self.cam.resultat}')
-        if (result):
+        if (self.cam.resultat):
             print("hit")
             self.sendMessage("hit")
         else:
