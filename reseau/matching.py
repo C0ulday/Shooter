@@ -128,8 +128,10 @@ class Matching:
             if match_result:
                 print("Contours Match: ✅ YES")
                 if self.is_contour_centered(largest_contour, self.frame_rgb.shape ,margin=40):
+                    print("Contour centered ✅")
                     self.resultat = True
                 else:
+                    print("Contour NOT centered ❌")
                     self.resultat = False
             else:
                 print("Contours Do Not Match: ❌ NO")
