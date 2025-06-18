@@ -21,6 +21,8 @@ class Client:
         # Ajout d'un événement sur le bouton
         GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_pressed, bouncetime=300)
 
+        self.client()
+        
         # try:
         #     while True:
         #         time.sleep(0.1)
