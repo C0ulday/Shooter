@@ -41,10 +41,7 @@ class Matching:
 
         self.picam2.start()
         time.sleep(2)  # Laisse le temps à l’AWB et AE de se stabiliser
-        self.frame_rgb = self.picam2.capture_array()
-        # self.frame_rgb = cv2.cvtColor(self.frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
-        cv2.imshow("Original Image", self.frame_rgb)
-        # -----------------------------------------------------
+        
 
     def convert_bgr_to_hsv(self, bgr_color):
         color_bgr = np.uint8([[bgr_color]])
@@ -84,7 +81,10 @@ class Matching:
 
     def matching_check(self):
         
-
+        self.frame_rgb = self.picam2.capture_array()
+        # self.frame_rgb = cv2.cvtColor(self.frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
+        # cv2.imshow("Original Image", self.frame_rgb)
+        # -----------------------------------------------------
         print("Processing captured image...")
         combined_mask = self.detect_colors(self.frame_rgb, self.hsv1, self.hsv2)  # Corrigé
         contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -99,7 +99,7 @@ class Matching:
             frame_resized = cv2.resize(frame_with_contour, (int(frame_with_contour.shape[1] * height / frame_with_contour.shape[0]), height))
             reference_resized = cv2.resize(self.reference_image_copy, (int(self.reference_image_copy.shape[1] * height / self.reference_image_copy.shape[0]), height))
             comparison_image = np.hstack((frame_resized, reference_resized))
-            cv2.imshow("Captured vs Reference", comparison_image)
+            # cv2.imshow("Captured vs Reference", comparison_image)
             match_result = self.compare_contours(largest_contour, threshold=0.5)  # Corrigé (1 seul argument de forme)
             if match_result:
                 print("Contours Match: ✅ YES")
