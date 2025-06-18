@@ -18,16 +18,24 @@ class Monstre(pygame.sprite.Sprite):
             for i in range(1, 5):
                 image_path = f"game/assets/mode1/sprites/aigle/fly{i}.png"
                 self.images.append(pygame.image.load(image_path))
+
         elif monster_type == "frog":
             self.direction = 1
             for i in range(1, 7):
                 image_path = f"game/assets/mode1/sprites/frog/jump{i}.png"
                 self.images.append(pygame.image.load(image_path))
+
         elif monster_type == "gator":
             self.tir = 0
             self.direction = -1
             for i in range(1, 5):
                 image_path = f"game/assets/mode1/sprites/gator/gator{i}.png"
+                self.images.append(pygame.image.load(image_path))
+
+        elif monster_type == "pato":
+            self.direction = -1
+            image_path = f"game/assets/mode1/sprites/pato.png"
+            for i in range(1, 5):
                 self.images.append(pygame.image.load(image_path))
 
         for i in range(1, 7):
@@ -42,10 +50,11 @@ class Monstre(pygame.sprite.Sprite):
         
     def updateAnimation(self):
         self.animation_count += 1
-
+        
         if self.vivant:
             index = (self.animation_count // 5) % len(self.images)
             self.image = self.images[index]
+                
         else:
             if not self.has_died:
                 self.has_died = True
@@ -61,7 +70,7 @@ class Monstre(pygame.sprite.Sprite):
         return self.height
 
     def update(self, largeur, *args):
-        if self.monster_type == "aigle" or self.monster_type == "gator":
+        if self.monster_type == "aigle" or self.monster_type == "gator" or self.monster_type == "pato":
             isVolDroit = args[0] if args else True
             self.updateAnimation()
             if self.vivant:  # Se déplacer uniquement si vivant
@@ -72,6 +81,7 @@ class Monstre(pygame.sprite.Sprite):
                     self.rect.y += random.randint(10, 20)
                 if self.rect.right <= 0 or self.rect.left >= largeur:
                     self.kill()
+
         elif self.monster_type == "frog":
             self.updateAnimation()
             if self.vivant:  # Se déplacer uniquement si vivant
