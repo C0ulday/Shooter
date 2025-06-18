@@ -80,7 +80,7 @@ class Matching:
         return shape_match_score < threshold
 
     def matching_check(self):
-        
+        self.resultat = False
         self.frame_rgb = self.picam2.capture_array()
         # self.frame_rgb = cv2.cvtColor(self.frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
         # cv2.imshow("Original Image", self.frame_rgb)
