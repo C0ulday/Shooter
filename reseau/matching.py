@@ -79,6 +79,30 @@ class Matching:
         print(f"Shape Match Score: {shape_match_score}")
         return shape_match_score < threshold
 
+    def is_contour_centered(contour, frame_shape, margin=30):
+        """
+        Vérifie si le centre de la boîte englobante du contour est dans la zone centrale de l'image.
+
+        :param contour: Le contour détecté (numpy array)
+        :param frame_shape: La forme de l'image (hauteur, largeur, canaux)
+        :param margin: Tolérance (en pixels) autour du centre de l'image
+        :return: True si centré, False sinon
+        """
+        # Centre de la boîte englobante
+        x, y, w, h = cv2.boundingRect(contour)
+        center_box = (x + w // 2, y + h // 2)
+
+        # Centre de l'image
+        height, width = frame_shape[:2]
+        center_image = (width // 2, height // 2)
+
+        # Écarts en x et y
+        dx = abs(center_box[0] - center_image[0])
+        dy = abs(center_box[1] - center_image[1])
+
+        # Résultat
+        return dx <= margin and dy <= margin
+
     def matching_check(self):
         self.resultat = False
         self.frame_rgb = self.picam2.capture_array()
@@ -95,15 +119,18 @@ class Matching:
                 print(f"Largest Contour Center: {center}")
             frame_with_contour = self.frame_rgb.copy()
             cv2.drawContours(frame_with_contour, [largest_contour], -1, (0, 255, 0), 3)
-            height = min(frame_with_contour.shape[0], self.reference_image_copy.shape[0])
-            frame_resized = cv2.resize(frame_with_contour, (int(frame_with_contour.shape[1] * height / frame_with_contour.shape[0]), height))
-            reference_resized = cv2.resize(self.reference_image_copy, (int(self.reference_image_copy.shape[1] * height / self.reference_image_copy.shape[0]), height))
-            comparison_image = np.hstack((frame_resized, reference_resized))
+            # height = min(frame_with_contour.shape[0], self.reference_image_copy.shape[0])
+            # frame_resized = cv2.resize(frame_with_contour, (int(frame_with_contour.shape[1] * height / frame_with_contour.shape[0]), height))
+            # reference_resized = cv2.resize(self.reference_image_copy, (int(self.reference_image_copy.shape[1] * height / self.reference_image_copy.shape[0]), height))
+            # comparison_image = np.hstack((frame_resized, reference_resized))
             # cv2.imshow("Captured vs Reference", comparison_image)
             match_result = self.compare_contours(largest_contour, threshold=0.5)  # Corrigé (1 seul argument de forme)
             if match_result:
                 print("Contours Match: ✅ YES")
-                self.resultat = True
+                if self.is_contour_centered(largest_contour, self.frame_rgb.shape ,margin=40):
+                    self.resultat = True
+                else:
+                    self.resultat = False
             else:
                 print("Contours Do Not Match: ❌ NO")
                 self.resultat = False
