@@ -41,10 +41,7 @@ class Matching:
 
         self.picam2.start()
         time.sleep(2)  # Laisse le temps à l’AWB et AE de se stabiliser
-        self.frame_rgb = self.picam2.capture_array()
-        # self.frame_rgb = cv2.cvtColor(self.frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
-        cv2.imshow("Original Image", self.frame_rgb)
-        # -----------------------------------------------------
+        
 
     def convert_bgr_to_hsv(self, bgr_color):
         color_bgr = np.uint8([[bgr_color]])
@@ -82,9 +79,30 @@ class Matching:
         print(f"Shape Match Score: {shape_match_score}")
         return shape_match_score < threshold
 
-    def matching_check(self):
-        
+    def is_contour_centered(self, contour, frame_shape, margin=100):
+        if not isinstance(contour, np.ndarray):
+            raise ValueError("Le contour fourni n'est pas un tableau numpy valide.")
 
+        if contour.ndim != 3 or contour.shape[1:] != (1, 2):
+            raise ValueError(f"Format de contour invalide: shape {contour.shape}")
+
+        x, y, w, h = cv2.boundingRect(contour)
+        center_box = (x + w // 2, y + h // 2)
+
+        height, width = frame_shape[:2]
+        center_image = (width // 2, height // 2)
+
+        dx = abs(center_box[0] - center_image[0])
+        dy = abs(center_box[1] - center_image[1])
+
+        return dx <= margin and dy <= margin
+
+    def matching_check(self):
+        self.resultat = False
+        self.frame_rgb = self.picam2.capture_array()
+        # self.frame_rgb = cv2.cvtColor(self.frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
+        # cv2.imshow("Original Image", self.frame_rgb)
+        # -----------------------------------------------------
         print("Processing captured image...")
         combined_mask = self.detect_colors(self.frame_rgb, self.hsv1, self.hsv2)  # Corrigé
         contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -95,15 +113,20 @@ class Matching:
                 print(f"Largest Contour Center: {center}")
             frame_with_contour = self.frame_rgb.copy()
             cv2.drawContours(frame_with_contour, [largest_contour], -1, (0, 255, 0), 3)
-            height = min(frame_with_contour.shape[0], self.reference_image_copy.shape[0])
-            frame_resized = cv2.resize(frame_with_contour, (int(frame_with_contour.shape[1] * height / frame_with_contour.shape[0]), height))
-            reference_resized = cv2.resize(self.reference_image_copy, (int(self.reference_image_copy.shape[1] * height / self.reference_image_copy.shape[0]), height))
-            comparison_image = np.hstack((frame_resized, reference_resized))
-            cv2.imshow("Captured vs Reference", comparison_image)
+            # height = min(frame_with_contour.shape[0], self.reference_image_copy.shape[0])
+            # frame_resized = cv2.resize(frame_with_contour, (int(frame_with_contour.shape[1] * height / frame_with_contour.shape[0]), height))
+            # reference_resized = cv2.resize(self.reference_image_copy, (int(self.reference_image_copy.shape[1] * height / self.reference_image_copy.shape[0]), height))
+            # comparison_image = np.hstack((frame_resized, reference_resized))
+            # cv2.imshow("Captured vs Reference", comparison_image)
             match_result = self.compare_contours(largest_contour, threshold=0.5)  # Corrigé (1 seul argument de forme)
             if match_result:
                 print("Contours Match: ✅ YES")
-                self.resultat = True
+                if self.is_contour_centered(largest_contour, self.frame_rgb.shape):
+                    print("Contour centered ✅")
+                    self.resultat = True
+                else:
+                    print("Contour NOT centered ❌")
+                    self.resultat = False
             else:
                 print("Contours Do Not Match: ❌ NO")
                 self.resultat = False
