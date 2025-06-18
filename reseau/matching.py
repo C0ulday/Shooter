@@ -127,7 +127,7 @@ class Matching:
             match_result = self.compare_contours(largest_contour, threshold=0.5)  # Corrigé (1 seul argument de forme)
             if match_result:
                 print("Contours Match: ✅ YES")
-                if self.is_contour_centered(largest_contour, self.frame_rgb.shape ,margin=40):
+                if self.is_contour_centered(largest_contour, self.frame_rgb.shape):
                     print("Contour centered ✅")
                     self.resultat = True
                 else:
