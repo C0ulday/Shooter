@@ -17,6 +17,7 @@ from database.init_db import initialize_database
 from database.db_config import get_db_connection
 import bcrypt
 from database.models.user import User
+import json
 
 # Initialisation du serveur Flask
 app = Flask(__name__)
@@ -43,9 +44,6 @@ class Server:
             flaskThread = threading.Thread(target=self.runFlask, daemon=True)
             flaskThread.start()
 
-            # Démarrer le jeu dans thread principal
-            #self.runGame()
-
             while True:
                 # Accepte une connexion entrante
                 connexion, adresse = self.serverSocket.accept()
@@ -66,23 +64,26 @@ class Server:
             print("Fermeture des connexions...")
             self.serverSocket.close()
 
-    def handleClient(self, connexion):
+    def handleClient(self, conn):
         try:
             while True:
-                data = connexion.recv(1024).decode("utf-8")
-                if data == "Send game":
-                    self.sendData(connexion, self.game)
-                elif data == "miss":
-                    print("Shot missed the target ...")
-                elif data == "hit":
-                    print("Shot hit the target ...")
-
-        except socket.error as e:
-            print(f"Erreur socket : {e}")
-
+                data = conn.recv(1024)
+                if not data:
+                    break
+                try:
+                    message = json.loads(data.decode("utf-8"))
+                    if message.get("message") == "hit":
+                        print(" Reçu : HIT")
+                    elif message.get("message") == "miss":
+                        print("Reçu : MISS")
+                    else:
+                        print("Message inconnu :", message)
+                except json.JSONDecodeError:
+                    print("Format JSON invalide")
+        except ConnectionResetError:
+            print("Client déconnecté")
         finally:
-            print("Fermeture de la connexion client...")
-            connexion.close()
+            conn.close()
 
     def handleSpectator(self, connexion):
         try:
@@ -126,7 +127,6 @@ class Server:
                 self.menu.runLaunchMenu = True
             else :
                 print("Le menu n'est pas initialisé.")
-
 
         @socketio.on("getleaderboard")
         def handle_getleaderboard():
@@ -182,13 +182,7 @@ class Server:
         size_prefix = struct.pack("I", len(game)) 
         connexion.sendall(size_prefix + game)  
         print(f"Envoi du jeu au client...")
-
-# Route Flask pour la page web
-# @app.route("/")
-# def home():
-#     return render_template("app.html")
-
-
+        
 #----------------------------------
 
 # Page d'accueil
@@ -209,6 +203,15 @@ def home():
     conn.close()
     return render_template("home.html", profiles=profiles)
 
+@app.route("/bouton", methods=["POST"])
+def clientHandler():
+    if request.method == "POST":
+        data = request.get_json()
+        if (data['message'] == 'hit'):
+            print("Received Hit from client !!!!!!")
+            
+        elif (data['message'] == 'miss'):
+            print("Received Miss from client !!!!!!")
 
 # Inscription (Signup)
 @app.route("/signup", methods=["GET", "POST"])

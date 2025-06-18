@@ -4,6 +4,8 @@ import sys
 import RPi.GPIO as GPIO 
 import time
 from matching import Matching
+import requests
+import json
 
 class Client:
     def __init__(self, ip_adress="localhost", port=4000, pin=13): 
@@ -31,8 +33,12 @@ class Client:
 
     def button_pressed(self, channel): 
         print("Bouton pressed !")
-        self.cam.matching_check()
+        result = self.cam.matching_check()
         print(f'Resultat de l analyse est {self.cam.resultat}')
+        if (result):
+            self.sendMessage("hit")
+        else:
+            self.sendMessage("miss")
 
     def client(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,10 +55,20 @@ class Client:
             self.client_socket.close()
             GPIO.cleanup() 
             print("Nettoyage terminé.")
-
+            
     def sendMessage(self, message):
-        self.client_socket.sendall(message.encode("utf-8"))
-        print(f"Message envoyé: {message}")
+        payload = {"message": {message}} 
+        self.client_socket.sendall(json.dumps(payload).encode("utf-8"))
+
+    def sendHttpRequest(self, message):
+        url = f"http://{self.ip_adress}:{self.port}/bouton"
+        payload = {"message": message}
+        
+        try:
+            response = requests.post(url, json=payload)
+            print(f"Message HTTP envoyé: {message} (code {response.status_code})")
+        except requests.RequestException as e:
+            print(f"Erreur HTTP : {e}")
 
 
 if __name__ == "__main__":
