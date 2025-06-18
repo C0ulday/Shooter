@@ -8,7 +8,7 @@ import requests
 import json
 
 class Client:
-    def __init__(self, ip_adress="172.20.10.10", port=4000, pin=13): 
+    def __init__(self, ip_adress="172.20.10.1", port=4000, pin=13): 
         self.cam = Matching()
         self.ip_adress = ip_adress
         self.port = port
