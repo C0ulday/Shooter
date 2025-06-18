@@ -80,27 +80,21 @@ class Matching:
         return shape_match_score < threshold
 
     def is_contour_centered(contour, frame_shape, margin=30):
-        """
-        Vérifie si le centre de la boîte englobante du contour est dans la zone centrale de l'image.
+        if not isinstance(contour, np.ndarray):
+            raise ValueError("Le contour fourni n'est pas un tableau numpy valide.")
 
-        :param contour: Le contour détecté (numpy array)
-        :param frame_shape: La forme de l'image (hauteur, largeur, canaux)
-        :param margin: Tolérance (en pixels) autour du centre de l'image
-        :return: True si centré, False sinon
-        """
-        # Centre de la boîte englobante
+        if contour.ndim != 3 or contour.shape[1:] != (1, 2):
+            raise ValueError(f"Format de contour invalide: shape {contour.shape}")
+
         x, y, w, h = cv2.boundingRect(contour)
         center_box = (x + w // 2, y + h // 2)
 
-        # Centre de l'image
         height, width = frame_shape[:2]
         center_image = (width // 2, height // 2)
 
-        # Écarts en x et y
         dx = abs(center_box[0] - center_image[0])
         dy = abs(center_box[1] - center_image[1])
 
-        # Résultat
         return dx <= margin and dy <= margin
 
     def matching_check(self):
