@@ -38,8 +38,10 @@ class Client:
         result = self.cam.matching_check()
         print(f'Resultat de l analyse est {self.cam.resultat}')
         if (result):
+            print("hit")
             self.sendMessage("hit")
         else:
+            print("miss")
             self.sendMessage("miss")
 
     def client(self):

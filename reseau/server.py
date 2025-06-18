@@ -36,6 +36,7 @@ class Server:
         self.menu = menu.Menu()  # Instance du menu 
         self.running = True
         self.leaderboard = None
+
         print("Serveur en attente de connexion...")
 
     def start(self):
@@ -53,9 +54,9 @@ class Server:
                 if self.clients == 1:
                     clientThread = threading.Thread(target=self.handleClient, args=(connexion,), daemon=True)
                     clientThread.start()
-                else:
-                    spectatorThread = threading.Thread(target=self.handleSpectator, args=(connexion,), daemon=True)
-                    spectatorThread.start()
+                # else:
+                #     spectatorThread = threading.Thread(target=self.handleSpectator, args=(connexion,), daemon=True)
+                #     spectatorThread.start()
 
         except socket.error as e:
             print(f"Erreur socket : {e}")
@@ -66,24 +67,44 @@ class Server:
 
     def handleClient(self, conn):
         try:
+            buffer = ""
             while True:
                 data = conn.recv(1024)
                 if not data:
                     break
-                try:
-                    message = json.loads(data.decode("utf-8"))
-                    if message.get("message") == "hit":
-                        print(" Reçu : HIT")
-                    elif message.get("message") == "miss":
-                        print("Reçu : MISS")
-                    else:
-                        print("Message inconnu :", message)
-                except json.JSONDecodeError:
-                    print("Format JSON invalide")
+
+                # Accumule les données au cas où plusieurs messages sont reçus en une fois
+                buffer += data.decode("utf-8")
+
+                # Essaye de parser tous les messages JSON valides dans le buffer
+                while buffer:
+                    try:
+                        message, index = json.JSONDecoder().raw_decode(buffer)
+                        print(f"message : {message}")
+                        buffer = buffer[index:].lstrip()  # Nettoie le buffer de ce qui a été lu
+                        print(f"message : {message}")
+                        if message.get("message") == "hit":
+                            print("✅ Reçu : HIT")
+        
+                        elif message.get("message") == "miss":
+                            print("❌ Reçu : MISS")
+                        else:
+                            print("❓ Message inconnu :", message)
+
+                    except json.JSONDecodeError:
+                        # Message incomplet : attendre plus de données
+                        break
+
         except ConnectionResetError:
-            print("Client déconnecté")
+            print("⚠️ Client déconnecté brutalement")
+
+        except Exception as e:
+            print("❗ Erreur inattendue :", e)
+
         finally:
+            print("🔌 Connexion fermée")
             conn.close()
+
 
     def handleSpectator(self, connexion):
         try:
@@ -394,11 +415,6 @@ def verif_url(url):
 if __name__ == "__main__":
     serveur = Server()
 
-    # Lancer Flask dans un thread secondaire
-    flaskThread = threading.Thread(target=serveur.runFlask, daemon=True)
-    flaskThread.start()
-
-    
     # Configuration de la session
     app.secret_key = "supersecretkey"
     app.config["SESSION_TYPE"] = "filesystem"
@@ -406,6 +422,11 @@ if __name__ == "__main__":
 
     # Initialisation automatique de la base de données
     initialize_database()
+    
+    #serveur.start()
+    #Lancer Flask dans un thread secondaire
+    flaskThread = threading.Thread(target=serveur.runFlask, daemon=True)
+    flaskThread.start()
 
     # Lancer la boucle réseau dans un thread secondaire
     def handle_connections():
@@ -430,6 +451,6 @@ if __name__ == "__main__":
     connectionThread = threading.Thread(target=handle_connections, daemon=True)
     connectionThread.start()
 
-    # Lancer le jeu dans le thread principal
+    #Lancer le jeu dans le thread principal
     serveur.runGame()
 
