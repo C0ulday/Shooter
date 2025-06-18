@@ -79,7 +79,7 @@ class Matching:
         print(f"Shape Match Score: {shape_match_score}")
         return shape_match_score < threshold
 
-    def is_contour_centered(self, contour, frame_shape, margin=30):
+    def is_contour_centered(self, contour, frame_shape, margin=100):
         if not isinstance(contour, np.ndarray):
             raise ValueError("Le contour fourni n'est pas un tableau numpy valide.")
 
