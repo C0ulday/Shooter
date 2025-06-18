@@ -22,7 +22,7 @@ class Client:
         GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_pressed, bouncetime=300)
 
         self.client()
-        
+
         # try:
         #     while True:
         #         time.sleep(0.1)
@@ -59,7 +59,7 @@ class Client:
             print("Nettoyage terminé.")
             
     def sendMessage(self, message):
-        payload = {"message": {message}} 
+        payload = {"message": message} 
         self.client_socket.sendall(json.dumps(payload).encode("utf-8"))
 
     def sendHttpRequest(self, message):
