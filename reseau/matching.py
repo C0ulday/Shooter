@@ -48,7 +48,7 @@ class Matching:
         color_hsv = cv2.cvtColor(color_bgr, cv2.COLOR_BGR2HSV)
         return color_hsv[0][0]
 
-    def detect_colors(self, frame, hsv1, hsv2):  # hsv20 corrigé en hsv2
+    def detect_colors(self, frame, hsv1, hsv2): 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         margin = 8
         hsv_ranges = [
@@ -74,9 +74,9 @@ class Matching:
             return (cx, cy)
         return None
 
-    def compare_contours(self, captured_contour, threshold=0.1):
+    def compare_contours(self, captured_contour, threshold):
         shape_match_score = cv2.matchShapes(captured_contour, self.reference_contour, 1, 0.0)
-        print(f"Shape Match Score: {shape_match_score}")
+        print(f"Shape Match Score: {shape_match_score}")    
         return shape_match_score < threshold
 
     def is_contour_centered(self, contour, frame_shape, margin=100):
@@ -100,11 +100,10 @@ class Matching:
     def matching_check(self):
         self.resultat = False
         self.frame_rgb = self.picam2.capture_array()
-        # self.frame_rgb = cv2.cvtColor(self.frame_rgb, cv2.COLOR_RGB2BGR)  # Corrigé
         # cv2.imshow("Original Image", self.frame_rgb)
-        # -----------------------------------------------------
+
         print("Processing captured image...")
-        combined_mask = self.detect_colors(self.frame_rgb, self.hsv1, self.hsv2)  # Corrigé
+        combined_mask = self.detect_colors(self.frame_rgb, self.hsv1, self.hsv2)
         contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if contours:
             largest_contour = max(contours, key=cv2.contourArea)
@@ -118,7 +117,7 @@ class Matching:
             # reference_resized = cv2.resize(self.reference_image_copy, (int(self.reference_image_copy.shape[1] * height / self.reference_image_copy.shape[0]), height))
             # comparison_image = np.hstack((frame_resized, reference_resized))
             # cv2.imshow("Captured vs Reference", comparison_image)
-            match_result = self.compare_contours(largest_contour, threshold=0.5)  # Corrigé (1 seul argument de forme)
+            match_result = self.compare_contours(largest_contour, threshold=0.5)
             if match_result:
                 print("Contours Match: ✅ YES")
                 if self.is_contour_centered(largest_contour, self.frame_rgb.shape):
