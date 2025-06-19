@@ -9,20 +9,20 @@ class Admin(User):
         super().__init__(id, name, email, password_hash, role)
 
 
-    # def update_user_role(self, user_id, new_role):
-    #     """Met à jour le rôle d'un utilisateur."""
-    #     conn = get_db_connection()
-    #     cursor = conn.cursor()
+    def update_user_role(self, user_id, new_role):
+        """Met à jour le rôle d'un utilisateur."""
+        conn = get_db_connection()
+        cursor = conn.cursor()
         
-    #     try:
-    #         cursor.execute("UPDATE users SET role = %s WHERE id = %s", (new_role, user_id))
-    #         conn.commit()
-    #         print(f" Rôle de l'utilisateur {user_id} mis à jour en {new_role}.")
-    #     except Exception as e:
-    #         print(f" Erreur lors de la mise à jour du rôle : {e}")
-    #     finally:
-    #         cursor.close()
-    #         conn.close()
+        try:
+            cursor.execute("UPDATE users SET role = %s WHERE id = %s", (new_role, user_id))
+            conn.commit()
+            print(f" Rôle de l'utilisateur {user_id} mis à jour en {new_role}.")
+        except Exception as e:
+            print(f" Erreur lors de la mise à jour du rôle : {e}")
+        finally:
+            cursor.close()
+            conn.close()
 
     def get_all_users_with_roles(self):
         """Récupère tous les utilisateurs avec leur rôle."""
