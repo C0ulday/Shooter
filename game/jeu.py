@@ -219,7 +219,7 @@ class Jeu:
 
         clock = pygame.time.Clock()
         fps = 240
-        temps = 30000 # 30 secondes 
+        temps = 300000 # 30 secondes 
         self.joueur.score = 0
         temps_passe = False  # Pour gérer l'activation de l'exclamation
         running = True
