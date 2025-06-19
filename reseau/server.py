@@ -26,7 +26,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 class Server:
     currentUser = -1 
     def __init__(self):
-        self.Ip_adress = "localhost"  # À changer avec la vraie adresse IP
+        self.Ip_adress = "172.17.128.1"  # À changer avec la vraie adresse IP
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -80,9 +80,7 @@ class Server:
                 while buffer:
                     try:
                         message, index = json.JSONDecoder().raw_decode(buffer)
-                        print(f"message : {message}")
                         buffer = buffer[index:].lstrip()  # Nettoie le buffer de ce qui a été lu
-                        print(f"message : {message}")
                         if message.get("message") == "hit":
                             self.game.action = "hit"
                             print("Reçu : HIT")

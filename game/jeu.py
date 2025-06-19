@@ -136,7 +136,7 @@ class Jeu:
         if temps_sec <= 1:
             temps_text = self.font.render(f"Temps: {temps_sec:.1f} s", True, (255, 0, 0))
             if not temps_passe:
-                self.exclamationSound.play()
+                #self.exclamationSound.play()
                 temps_passe = True
         else:
             temps_text = self.font.render(f"Temps: {temps_sec:.1f} s", True, (255, 255, 255))
@@ -233,15 +233,16 @@ class Jeu:
         self.monstres = pygame.sprite.Group()
         self.patos = pygame.sprite.Group()
         self.spawnMonsters(temps)
-
+        self.action == "miss"
+        
         while running:
             # Limite le nombre de frames par seconde
             clock.tick(fps)
             if (self.action == "hit") :
                 for monstre in self.monstres:
                     self.scoreMessage(monstre)
-                print(f"Score: {self.joueur.score}")
                 self.monstres.empty()
+                self.action == "miss"
 
             for event in pygame.event.get():
                 
