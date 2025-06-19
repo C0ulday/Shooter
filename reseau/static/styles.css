@@ -54,18 +54,29 @@ h1 {
 }
 
 /* Positionner les boutons autour du cercle */
-#playButton       { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-#leaderboardButton { top: 15%; left: 50%; transform: translateX(-50%); }
+#playButton       { top: 15%; left: 50%; transform: translate(-50%, -50%); }
+#leaderboardButton { top: 35%; left: 50%; transform: translateX(-50%); }
 #quitButton        { bottom: 15%; left: 50%; transform: translateX(-50%); }
+#logout {bottom: 35%; left: 50%; transform: translateX(-50%);}
+
+
 #mode1Button       { top: 50%; left: 50%; transform: translate(-50%, -50%);}
 #mode2Button       { top: 15%; left: 50%; transform: translateX(-50%);}
-#returnButton      { bottom: 15%; left: 50%; transform: translateX(-50%);}
-#returnClassement  { bottom: 15%; left: 50%; transform: translateX(-50%);}
+
 
 /* Positionner les boutons autour du cercle */
 #pauseButton     { top: 50%; left: 50%; transform: translate(-50%, -50%); }
 #reprendreButton { top: 15%; left: 50%; transform: translateX(-50%); }
-#returnButton      { bottom: 15%; left: 50%; transform: translateX(-50%);}
+
+
+/* Pour tous les boutons "Retour" */
+.returnButton {
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+}
+
 
 
 /* Cacher les options de jeu au départ */
@@ -75,4 +86,9 @@ h1 {
 .playOptions {
     display: none;
 }
+
+.Classement {
+    display: none;
+}
+
 

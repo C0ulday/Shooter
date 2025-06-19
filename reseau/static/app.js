@@ -10,6 +10,10 @@ socket.on("returnToMenuButton", () => {
     });
     document.querySelectorAll(".gameOptions").forEach(btn => {
         btn.style.display = "none";
+    });    
+    
+    document.querySelectorAll(".returnButton").forEach(btn => {
+        btn.style.display = "none";
     });
 
     // Réafficher les boutons du menu
@@ -50,16 +54,13 @@ document.addEventListener("DOMContentLoaded", function () {
         socket.emit("startMode2");
     });
 
-    document.getElementById("returnButton").addEventListener("click", () => { 
-        
-        // on cache les options du jeu
-        document.querySelectorAll(".gameOptions").forEach(btn => {
-            btn.style.display = "none";
+    document.querySelectorAll(".returnButton").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".gameOptions").forEach(b => b.style.display = "none");
+            document.querySelectorAll(".playOptions").forEach(b => b.style.display = "none");
+            document.querySelectorAll(".menuOptions").forEach(b => b.style.display = "inline-block");
+            socket.emit("returnToMenu");
         });
-        document.querySelectorAll(".menuOptions").forEach(btn => {
-            btn.style.display = "inline-block";
-        });
-        socket.emit("returnToMenu");
     });
 
     document.getElementById("pauseButton").addEventListener("click", () => { 
@@ -76,25 +77,30 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".menuOptions").forEach(btn => {
             btn.style.display = "none";
         });
-        document.getElementById("returnClassement").style.display = "inline-block";
+        //document.getElementById("returnClassement").style.display = "inline-block";
 
     });
 
-    document.getElementById("returnClassement").addEventListener("click", () => { 
-        socket.emit("returnFromClassement");
-        document.querySelectorAll(".Classement").forEach(btn => {
-            btn.style.display = "none";
-        });
-        document.querySelectorAll(".menuOptions").forEach(btn => {
-            btn.style.display = "inline-block";
-        });
-    });
+    // document.getElementById("returnClassement").addEventListener("click", () => { 
+    //     socket.emit("returnFromClassement");
+    //     document.querySelectorAll(".Classement").forEach(btn => {
+    //         btn.style.display = "none";
+    //     });
+    //     document.querySelectorAll(".menuOptions").forEach(btn => {
+    //         btn.style.display = "inline-block";
+    //     });
+    // });
     
     document.getElementById("quitButton").addEventListener("click", () => {
         socket.emit("quitGame");
         console.log("Fermeture du jeu");
         window.close();
     });
+
+    document.getElementById("logout").addEventListener("click", () => {
+        window.location.href = "/logout";
+    });
+
     
     document.getElementById("settingsButton").addEventListener("click", () => console.log("parametres"));
 
