@@ -15,6 +15,7 @@ class Jeu:
         self.aigles = pygame.sprite.Group()
         self.frogs   = pygame.sprite.Group()
         self.gators = pygame.sprite.Group()
+        self.patos = pygame.sprite.Group()
         self.monstres = pygame.sprite.Group() # Contient tout les cibles
 
         # Chargement des images de l'environnement
@@ -42,6 +43,9 @@ class Jeu:
         # Création d'une surface dédiée pour le jeu
         self.gameSurface = pygame.Surface((self.largeur, self.hauteur))
         self.screen = pygame.display.set_mode((self.largeur, self.hauteur), pygame.RESIZABLE)
+
+        self.mode = "Chill Mode"
+        self.action = "miss"
 
         pygame.mixer.init()
 
@@ -87,6 +91,14 @@ class Jeu:
         self.gators.add(gator)
         self.monstres.add(*self.gators)
 
+    def spawnPatos(self, x, y, speed):
+        pato = Monstre("pato", x, y, speed)
+        h = pato.getHeight()
+        print(f"H =============================================== {h}")
+        pato = Monstre("pato", x, y-h, speed)
+        self.patos.add(pato)
+        self.monstres.add(*self.patos)
+
     def scoreMessage(self, monstre):
         if (monstre.monster_type == "aigle"):
             self.joueur.setScore(50)
@@ -97,6 +109,7 @@ class Jeu:
                 "x": monstre.rect.x,
                 "y": monstre.rect.y
             }
+
         elif (monstre.monster_type == "gator"):
             self.joueur.setScore(100)
             pointsMessage = {
@@ -105,6 +118,16 @@ class Jeu:
                 "x": monstre.rect.x,
                 "y": monstre.rect.y
             }
+
+        elif (monstre.monster_type == "pato"):
+            self.joueur.setScore(50)
+            pointsMessage = {
+                "text": "+50",
+                "start_time": pygame.time.get_ticks(),
+                "x": monstre.rect.x,
+                "y": monstre.rect.y
+            }
+
         return pointsMessage
     
     def affichageTemps(self, temps, temps_passe):
@@ -145,20 +168,25 @@ class Jeu:
     def spawnMonsters(self, temps):
         # Pour n'avoir qu'un seul sprite à la fois
         x = self.largeur
-        if len(self.aigles) <=0:
-            y = random.randint(0, self.hauteur - 120)
-            self.spawnFrog(x, int(self.hauteur * 0.01), 5)
-            # On spawn des aigles avec des vitesses différentes selon le temps restant
-            if temps < 2500:
-                self.spawnAigles(x, y, 20)
-            elif temps < 1500:
-                self.spawnAigles(x, y, 40)
-            else:
-                self.spawnAigles(x, y, 5)
+        y = random.randint(0, self.hauteur - 120)
+        if (self.mode == "Reflex Mode"):
+            if len(self.aigles) <=0:
+                self.spawnFrog(x, int(self.hauteur * 0.01), 5)
+                # On spawn des aigles avec des vitesses différentes selon le temps restant
+                if temps < 2500:
+                    self.spawnAigles(x, y, 20)
+                elif temps < 1500:
+                    self.spawnAigles(x, y, 40)
+                else:
+                    self.spawnAigles(x, y, 5)
 
-        if len(self.gators) <=0:
-            y = random.randint(0, self.hauteur - 120)
-            self.spawnGator(x,y,5)
+            if len(self.gators) <=0:
+                self.spawnGator(x,y,5)
+
+        elif (self.mode == "Chill Mode"):
+            if len(self.patos) == 0:
+                self.spawnPatos(x, y, 20)
+
             
     def drawPause(self):
         # Création d'une surface semi-transparente
@@ -203,11 +231,18 @@ class Jeu:
         self.frogs   = pygame.sprite.Group()
         self.gators = pygame.sprite.Group()
         self.monstres = pygame.sprite.Group()
+        self.patos = pygame.sprite.Group()
         self.spawnMonsters(temps)
-        
+
         while running:
             # Limite le nombre de frames par seconde
             clock.tick(fps)
+            if (self.action == "hit") :
+                for monstre in self.monstres:
+                    self.scoreMessage(monstre)
+                print(f"Score: {self.joueur.score}")
+                self.monstres.empty()
+
             for event in pygame.event.get():
                 
                 # Gestion de la fermeture de la fenêtre
@@ -222,16 +257,16 @@ class Jeu:
                         pointsMessage = self.scoreMessage(monstre)
                         print(f"Score: {self.joueur.score}")
                 
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    if  not self.pause:
-                        print("pause")
-                        self.pause = True             
-                    else:
-                        self.pause = False
+                # if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                #     if  not self.pause:
+                #         print("pause")
+                #         self.pause = True             
+                #     else:
+                #         self.pause = False
 
                 # Gestion de l'événement de spawn des monstres
-                if event.type == SPAWN_EVENT:
-                    self.spawnMonsters(temps)
+                #if event.type == SPAWN_EVENT :
+                self.spawnMonsters(temps)
 
             if not self.pause:
                 self.updateEnvironement(environment)

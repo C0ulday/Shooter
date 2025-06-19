@@ -26,7 +26,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 class Server:
     currentUser = -1 
     def __init__(self):
-        self.Ip_adress = "172.20.10.3"  # À changer avec la vraie adresse IP
+        self.Ip_adress = "localhost"  # À changer avec la vraie adresse IP
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -84,25 +84,26 @@ class Server:
                         buffer = buffer[index:].lstrip()  # Nettoie le buffer de ce qui a été lu
                         print(f"message : {message}")
                         if message.get("message") == "hit":
-                            print("✅ Reçu : HIT")
+                            self.game.action = "hit"
+                            print("Reçu : HIT")
         
                         elif message.get("message") == "miss":
-                            print("❌ Reçu : MISS")
+                            print("Reçu : MISS")
                         else:
-                            print("❓ Message inconnu :", message)
+                            print("Message inconnu :", message)
 
                     except json.JSONDecodeError:
                         # Message incomplet : attendre plus de données
                         break
 
         except ConnectionResetError:
-            print("⚠️ Client déconnecté brutalement")
+            print("Client déconnecté brutalement")
 
         except Exception as e:
-            print("❗ Erreur inattendue :", e)
+            print("Erreur inattendue :", e)
 
         finally:
-            print("🔌 Connexion fermée")
+            print("Connexion fermée")
             conn.close()
 
 
