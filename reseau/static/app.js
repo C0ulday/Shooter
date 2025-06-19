@@ -1,5 +1,5 @@
 // Connexion WebSocket avec le serveur Flask
-const socket = io("http://172.20.10.12:8000");
+const socket = io("http://127.0.0.1:8000");
 
 socket.on("returnToMenuButton", () => {
     console.log("Serveur demande de revenir au menu");

@@ -26,7 +26,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 class Server:
     currentUser = -1 
     def __init__(self):
-        self.Ip_adress = "172.20.10.12"  # À changer avec la vraie adresse IP
+        self.Ip_adress = "localhost"  # À changer avec la vraie adresse IP
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -144,6 +144,7 @@ class Server:
         def handle_returnToMenu():
             print("Retour au menu principal !")
             if self.menu:
+                self.menu.classementMenu = False
                 self.menu.runLaunchMenu = True
             else :
                 print("Le menu n'est pas initialisé.")
@@ -162,14 +163,6 @@ class Server:
 
             print(self.leaderboard)
             self.menu.classementMenu = True
-
-        @socketio.on("returnFromClassement")
-        def handle_returnFromClassement():
-            print("Retour au menu principal !")
-            if self.menu:
-                self.menu.classementMenu = False
-            else :
-                print("Le menu n'est pas initialisé.")
 
 
         socketio.run(app, host=self.Ip_adress, port=8000, debug=False, use_reloader=False)
