@@ -26,7 +26,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 class Server:
     currentUser = -1 
     def __init__(self):
-        self.Ip_adress = "172.17.128.1"  # À changer avec la vraie adresse IP
+        self.Ip_adress = "172.20.10.12"  # À changer avec la vraie adresse IP
         self.Port = 4000
         self.clients = 0
         self.serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
