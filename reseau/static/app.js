@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         btn.addEventListener("click", () => {
             document.querySelectorAll(".gameOptions").forEach(b => b.style.display = "none");
             document.querySelectorAll(".playOptions").forEach(b => b.style.display = "none");
+            document.querySelectorAll(".returnButton").forEach(b => b.style.display = "none");
             document.querySelectorAll(".menuOptions").forEach(b => b.style.display = "inline-block");
             socket.emit("returnToMenu");
         });
@@ -77,8 +78,9 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".menuOptions").forEach(btn => {
             btn.style.display = "none";
         });
-        //document.getElementById("returnClassement").style.display = "inline-block";
-
+        document.querySelectorAll(".returnButton").forEach(btn => {
+            btn.style.display = "inline-block";
+        });
     });
 
     // document.getElementById("returnClassement").addEventListener("click", () => { 

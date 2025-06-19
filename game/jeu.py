@@ -94,7 +94,6 @@ class Jeu:
     def spawnPatos(self, x, y, speed):
         pato = Monstre("pato", x, y, speed)
         h = pato.getHeight()
-        print(f"H =============================================== {h}")
         pato = Monstre("pato", x, y-h, speed)
         self.patos.add(pato)
         self.monstres.add(*self.patos)
@@ -168,7 +167,7 @@ class Jeu:
     def spawnMonsters(self, temps):
         # Pour n'avoir qu'un seul sprite à la fois
         x = self.largeur
-        y = random.randint(0, self.hauteur - 120)
+        y = random.randint(200, self.hauteur - 200)
         if (self.mode == "Reflex Mode"):
             if len(self.aigles) <=0:
                 self.spawnFrog(x, int(self.hauteur * 0.01), 5)
@@ -219,7 +218,7 @@ class Jeu:
         pygame.time.set_timer(SPAWN_EVENT, 1500)
 
         clock = pygame.time.Clock()
-        fps = 60 
+        fps = 240
         temps = 30000 # 30 secondes 
         self.joueur.score = 0
         temps_passe = False  # Pour gérer l'activation de l'exclamation
@@ -234,15 +233,14 @@ class Jeu:
         self.patos = pygame.sprite.Group()
         self.spawnMonsters(temps)
         self.action == "miss"
-        
         while running:
             # Limite le nombre de frames par seconde
             clock.tick(fps)
             if (self.action == "hit") :
                 for monstre in self.monstres:
-                    self.scoreMessage(monstre)
-                self.monstres.empty()
-                self.action == "miss"
+                    monstre.vivant = False
+                    self.scoreMessage(monstre)  
+                self.action = "miss"
 
             for event in pygame.event.get():
                 
@@ -255,7 +253,7 @@ class Jeu:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     monstre = self.viseur.sprites()[0].detecteurTir(self.monstres)
                     if (monstre is not None):
-                        pointsMessage = self.scoreMessage(monstre)
+                        pontsiMessage = self.scoreMessage(monstre)
                         print(f"Score: {self.joueur.score}")
                 
                 # if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:

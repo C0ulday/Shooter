@@ -59,7 +59,7 @@ class Monstre(pygame.sprite.Sprite):
             if not self.has_died:
                 self.has_died = True
                 self.animation_count = 0  # Réinitialiser pour commencer l'animation de mort
-            index = self.animation_count // 5
+            index = self.animation_count // 2
             if index < len(self.death_images):
                 self.image = self.death_images[index]
             else:

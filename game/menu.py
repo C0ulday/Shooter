@@ -133,7 +133,8 @@ class Menu:
         self.screen.fill(self.back_color)
         self.screen.blit(self.logos, (0, -30))
         posSouris = pygame.mouse.get_pos()
-
+        self.playMusic(self.musicPath)
+        
         for btn in buttons:
             btn.update(self.screen, posSouris, self.colorPressed, self.color)
         pygame.display.flip()
