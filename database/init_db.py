@@ -13,7 +13,7 @@ def create_database():
         conn = mysql.connector.connect(
             host=os.getenv("DB_HOST", "localhost"),
             user=os.getenv("DB_USER", "root"),
-            password=os.getenv("DB_PASSWORD", "itachi")
+            password=os.getenv("DB_PASSWORD", "Pxesisar")
         )
         cursor = conn.cursor()
         cursor.execute("CREATE DATABASE IF NOT EXISTS PX")
