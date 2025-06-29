@@ -111,17 +111,4 @@ python client.py
 
 ---
 
-## Documentation
 
-Un rapport détaillé est disponible dans le fichier :  
-`Rapport PX457.pdf`
-
----
-
-## Aperçus
-
-| Menu principal | Gameplay | Classement |
-| -------------- | -------- | ---------- |
-| ![menu](game/assets/gui/logos.png) | ![pato](game/assets/mode1/sprites/pato.png) | _Capture dynamique depuis le jeu_ |
-
----
