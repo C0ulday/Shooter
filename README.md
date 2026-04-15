@@ -8,6 +8,7 @@
 ## Photos
 
 ![Diagramme ULM de l'architecture soft](schema.png)
+![Diagramme ULM de l'architecture soft](SchemaDePrincipe.drawio.png)
 !(image2.png)
 !(capture1.png)
 !(capture2.png)
