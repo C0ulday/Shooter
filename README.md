@@ -7,6 +7,13 @@
 
 ## Photos
 
+![Diagramme ULM de l'architecture soft](schema.png)
+!(image2.png)
+!(capture1.png)
+!(capture2.png)
+!(schema.png)
+![Ecran de chargement](ecran_chargement.png)
+
 
 ---
 ## Présentation
