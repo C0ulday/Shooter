@@ -4,8 +4,11 @@
 > Projet multidisciplinaire – PX457  
 > Auteurs : Ismail El Youssefi, Mahmoud Bouchelaghem, Dario Gomez Baquerizo, Kagnon Coulibaly
 
----
 
+## Photos
+
+
+---
 ## Présentation
 
 ESI-SHOOT est un stand de tir connecté qui combine **jeu interactif**, **traitement d’image en temps réel**, et **architecture client-serveur**. L’objectif : viser des cibles animées affichées à l’écran à l’aide d’un pistolet connecté équipé d’une caméra, et déterminer si un tir est réussi ou non par analyse d’image.
