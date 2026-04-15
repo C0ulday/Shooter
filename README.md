@@ -9,11 +9,11 @@
 
 ![Diagramme ULM de l'architecture soft](schema.png)
 ![Diagramme ULM de l'architecture soft](SchemaDePrincipe.drawio.png)
-!(image2.png)
-!(capture1.png)
-!(capture2.png)
-!(schema.png)
-![Ecran de chargement](ecran_chargement.png)
+![Jeu] (image2.png)
+![Jeu](capture1.png)
+![Jeu] (capture2.png)
+![Jeu] (schema.png)
+![Jeu] [Ecran de chargement](ecran_chargement.png)
 
 
 ---
