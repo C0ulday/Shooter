@@ -1,6 +1,6 @@
 # ESI-SHOOT: Connected Shooting Range
 
-> Multidisciplinary project – PX457  
+> Multidisciplinary project : PX457 - ESISAR Grenoble INP
 > Authors: ita Coulibaly, Ismail El Youssefi, Mahmoud Bouchelaghem, Dario Gomez Baquerizo
 
 ## Photos
@@ -13,6 +13,8 @@
 ![UML diagram of the software architecture](SchemaDePrincipe.drawio.png)
 
 ![Game](pato_test.png)
+## Test the openCV code with an image of a duck
+
 
 ![Loading screen](ecran_chargement.png)
 
@@ -20,6 +22,7 @@
 ## Presentation
 
 ESI-SHOOT is a connected shooting range combining **interactive gameplay**, **real-time image processing**, and a **client-server architecture**. The goal: aim at animated targets displayed on screen using a connected pistol equipped with a camera, and determine whether a shot is successful through image analysis.
+
 
 ---
 
