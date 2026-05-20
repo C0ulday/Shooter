@@ -6,6 +6,7 @@
 ## Photos
 
 ![3D Conception](gun_conception.png)
+![3D Conception](schémaPrincipeArme.drawio.png)
 
 ![UML diagram of the software architecture](game_in.png)
 
