@@ -15,7 +15,7 @@ We’ve got a screen showing the game, a projector, a Raspberry Pi with our gun,
 ## 3D Gun conception
 ![3D Conception](schémaPrincipeArme.drawio.png)
 The gun is made from cardboard.
-![3D Conception](cardboard.png)
+![3D Conception](cardboard.jpg)
 
 ## Little insight into the game
 ![UML diagram of the software architecture](game_in.png)
