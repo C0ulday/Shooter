@@ -1,122 +1,115 @@
+# ESI-SHOOT: Connected Shooting Range
 
-# ESI-SHOOT : Stand de tir connecté
-
-> Projet multidisciplinaire – PX457  
-> Auteurs : ita Coulibaly, Ismail El Youssefi, Mahmoud Bouchelaghem, Dario Gomez Baquerizo
-
+> Multidisciplinary project – PX457  
+> Authors: ita Coulibaly, Ismail El Youssefi, Mahmoud Bouchelaghem, Dario Gomez Baquerizo
 
 ## Photos
 
-![Diagramme ULM de l'architecture soft](schema.png)
-![Diagramme ULM de l'architecture soft](SchemaDePrincipe.drawio.png)
-![Jeu](capture1.png)
-![Jeu](ecran_chargement.png)
-
-
----
-## Présentation
-
-ESI-SHOOT est un stand de tir connecté qui combine **jeu interactif**, **traitement d’image en temps réel**, et **architecture client-serveur**. L’objectif : viser des cibles animées affichées à l’écran à l’aide d’un pistolet connecté équipé d’une caméra, et déterminer si un tir est réussi ou non par analyse d’image.
+![UML diagram of the software architecture](schema.png)
+![UML diagram of the software architecture](SchemaDePrincipe.drawio.png)
+![Game](capture1.png)
+![Loading screen](ecran_chargement.png)
 
 ---
+## Presentation
 
-## Architecture du projet
+ESI-SHOOT is a connected shooting range combining **interactive gameplay**, **real-time image processing**, and a **client-server architecture**. The goal: aim at animated targets displayed on screen using a connected pistol equipped with a camera, and determine whether a shot is successful through image analysis.
 
-### 1. Jeu (Pygame)
-- Affichage des cibles (aigle, gator, pato, grenouille)
-- Deux modes : Chill Mode (facile) et Reflex Mode (plus rapide)
-- Gestion des scores, animations, viseur et temps
+---
 
-Fichier principal : `jeu.py`
+## Project Architecture
+
+### 1. Game (Pygame)
+- Display of targets (aigle, gator, pato, grenouille)
+- Two modes: Chill Mode (easy) and Reflex Mode (faster)
+- Score management, animations, crosshair and time
+
+Main file: `jeu.py`
 
 ### 2. Interface (Menu)
-- Menu de navigation avec options : Jouer, Paramètres, Crédits, Classement
-- Lancement des modes de jeu
-- Intégration graphique et sonore
+- Navigation menu with options: Play, Settings, Credits, Leaderboard
+- Launching game modes
+- Graphic and sound integration
 
-Fichier principal : `menu.py`
+Main file: `menu.py`
 
 ### 3. Client (Raspberry Pi)
-- Gère un bouton physique et la caméra
-- Analyse d'image avec OpenCV via `matching.py`
-- Envoie les résultats (`hit` ou `miss`) au serveur via TCP
+- Manages a physical button and the camera
+- Image analysis with OpenCV via `matching.py`
+- Sends results (`hit` or `miss`) to the server via TCP
 
-Fichier principal : `client.py`
+Main file: `client.py`
 
-### 4. Traitement d’image
-- Détection de la cible à partir d’une image de référence
-- Masquage couleur + comparaison de formes avec `cv2.matchShapes`
-- Vérifie également le centrage de la cible dans l’image
+### 4. Image Processing
+- Target detection from a reference image
+- Color masking + shape comparison using `cv2.matchShapes`
+- Also checks centering of the target in the image
 
-Fichier : `matching.py`
+File: `matching.py`
 
-### 5. Serveur Web & Jeu
-- Serveur Flask avec SocketIO
-- Affichage du jeu (Pygame)
-- Gestion des utilisateurs, scores et sessions
-- Communication avec le client Raspberry via TCP
+### 5. Web & Game Server
+- Flask server with SocketIO
+- Display of the game (Pygame)
+- User, score and session management
+- Communication with the Raspberry client via TCP
 
-Fichier principal : `server.py`
+Main file: `server.py`
 
 ---
 
-## Organisation des fichiers
+## File Organization
 
 ```
 game/
- ├── assets/         # Ressources graphiques et sonores
- ├── jeu.py          # Moteur de jeu Pygame
- ├── monstre.py      # Classe des monstres animés
- ├── menu.py         # Menu principal
+ ├── assets/         # Graphic and sound resources
+ ├── jeu.py          # Pygame game engine
+ ├── monstre.py      # Animated monster class
+ ├── menu.py         # Main menu
  └── ...
 database/
- ├── models/         # Modèles utilisateurs (User)
- ├── db_config.py    # Connexion DB MySQL
- └── init_db.py      # Initialisation
-server.py          # Serveur Flask + Pygame
-client.py          # Client Raspberry Pi (caméra + bouton)
-matching.py        # Analyse d'image via OpenCV
+ ├── models/         # User models (User)
+ ├── db_config.py    # MySQL DB connection
+ └── init_db.py      # Initialization
+server.py          # Flask + Pygame server
+client.py          # Raspberry Pi client (camera + button)
+matching.py        # Image analysis via OpenCV
 ```
 
 ---
 
-## Lancement du projet
+## Project Launch
 
-### Prérequis
+### Prerequisites
 - Python 3.8+
 - MySQL Server
-- Raspberry Pi avec caméra et bouton physique
-- Bibliothèques Python : `pygame`, `opencv-python`, `flask`, `flask-socketio`, `RPi.GPIO`, etc.
+- Raspberry Pi with camera and physical button
+- Python libraries: `pygame`, `opencv-python`, `flask`, `flask-socketio`, `RPi.GPIO`, etc.
 
-### Lancer le jeu
+### Launch the game
 ```bash
 python -m game.server
 ```
 
-### Côté Raspberry Pi
+### On the Raspberry Pi side
 ```bash
 python client.py
 ```
 
 ---
 
-## Fonctionnalités clés
+## Key Features
 
-- Analyse d’image en temps réel
-- Viseur contrôlé à la souris
-- Communication client-serveur (TCP + WebSocket)
-- Système de classement des joueurs
-- Authentification et avatars
-- Détection de contour + centrage de cible
-
----
-
-## Limitations et améliorations possibles
-
-- Spectateurs non encore implémentés
-- Aucun système de calibration automatisée
-- IA de reconnaissance non intégrée (trop complexe pour le besoin)
+- Real-time image analysis
+- Mouse-controlled crosshair
+- Client-server communication (TCP + WebSocket)
+- Player ranking system
+- Authentication and avatars
+- Contour detection + target centering
 
 ---
 
+## Limitations and Possible Improvements
 
+- Spectators not yet implemented
+- No automated calibration system
+- Recognition AI not integrated (too complex for the need)
