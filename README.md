@@ -5,6 +5,9 @@
 
 ## Photos
 
+## Main idea
+![Conception](game.png)
+
 ## Cross-section diagram Gun conception
 ![3D Conception](gun_conception.png)
 ## 3D Gun conception
