@@ -5,7 +5,7 @@
 
 ## Photos
 
-## 2D Gun conception
+## Cross-section diagram Gun conception
 ![3D Conception](gun_conception.png)
 ## 3D Gun conception
 ![3D Conception](schémaPrincipeArme.drawio.png)
