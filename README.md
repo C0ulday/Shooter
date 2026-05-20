@@ -7,8 +7,7 @@
 
 ## Main idea
 ![Conception](game.png)
-We’ve got a screen showing the game, a projector, a Raspberry Pi with our gun, and a phone to connect to the server, all like a remote control. We can start the game, pause it, and even check out the top players!
-
+We’ve got a screen showing the game, through a projector, a Raspberry Pi with our gun, and a phone to connect to the server (like a remote control). We can start the game, pause it, and even check out the top players!
 
 ## Cross-section diagram Gun conception
 ![3D Conception](gun_conception.png)
