@@ -5,15 +5,20 @@
 
 ## Photos
 
+## 2D Gun conception
 ![3D Conception](gun_conception.png)
+## 3D Gun conception
 ![3D Conception](schémaPrincipeArme.drawio.png)
 
+## Little insight into the game
 ![UML diagram of the software architecture](game_in.png)
 
+## Principle of the project (French)
 ![UML diagram of the software architecture](SchemaDePrincipe.drawio.png)
 
+## Testing the openCV code with an image of a duck
 ![Game](pato_test.png)
-## Test the openCV code with an image of a duck
+
 
 
 ![Loading screen](ecran_chargement.png)
