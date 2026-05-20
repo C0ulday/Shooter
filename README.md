@@ -2,7 +2,7 @@
 # ESI-SHOOT : Stand de tir connecté
 
 > Projet multidisciplinaire – PX457  
-> Auteurs : Ismail El Youssefi, Mahmoud Bouchelaghem, Dario Gomez Baquerizo, Kagnon Coulibaly
+> Auteurs : ita Coulibaly, Ismail El Youssefi, Mahmoud Bouchelaghem, Dario Gomez Baquerizo
 
 
 ## Photos
@@ -10,7 +10,7 @@
 ![Diagramme ULM de l'architecture soft](schema.png)
 ![Diagramme ULM de l'architecture soft](SchemaDePrincipe.drawio.png)
 ![Jeu](capture1.png)
-![Jeu] [Ecran de chargement](ecran_chargement.png)
+![Jeu](ecran_chargement.png)
 
 
 ---
