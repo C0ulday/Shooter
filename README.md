@@ -1,7 +1,7 @@
 # ESI-SHOOT: Connected Shooting Range
 
 > Multidisciplinary project : PX457 - ESISAR Grenoble INP
-> Authors: ita Coulibaly, Ismail El Youssefi, Mahmoud Bouchelaghem, Dario Gomez Baquerizo
+> Authors: Sita, Ismail, Mahmoud, Dario
 
 ## Photos
 
