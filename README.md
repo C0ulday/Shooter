@@ -5,9 +5,9 @@
 
 ## Photos
 
-![3D Conception](Arme_a_feu_futuriste v3.png)
-![UML diagram of the software architecture](SchemaDePrincipe.drawio.png)
+![3D Conception](Arme_a_feu_futuriste.png)
 ![UML diagram of the software architecture](game_in.png)
+![UML diagram of the software architecture](SchemaDePrincipe.drawio.png)
 ![Game](pato_test.png)
 ![Loading screen](ecran_chargement.png)
 
