@@ -7,11 +7,15 @@
 
 ## Main idea
 ![Conception](game.png)
+We’ve got a screen showing the game, a projector, a Raspberry Pi with our gun, and a phone to connect to the server, all like a remote control. We can start the game, pause it, and even check out the top players!
+
 
 ## Cross-section diagram Gun conception
 ![3D Conception](gun_conception.png)
 ## 3D Gun conception
 ![3D Conception](schémaPrincipeArme.drawio.png)
+The gun is made from cardboard.
+![3D Conception](cardboard.png)
 
 ## Little insight into the game
 ![UML diagram of the software architecture](game_in.png)
@@ -21,8 +25,6 @@
 
 ## Testing the openCV code with an image of a duck
 ![Game](pato_test.png)
-
-
 
 ![Loading screen](ecran_chargement.png)
 
